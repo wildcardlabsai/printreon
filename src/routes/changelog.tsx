@@ -2,7 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 
 const items = [
-  { date: "2026-05", title: "Launch", body: "MakerMind Club opens to creators with full creator/member/admin dashboards, file uploads, tier memberships, posts, comments, DMs, bundles, promo codes, wishlists, print log and more." },
+  {
+    date: "2026-05",
+    title: "Stripe Connect payouts + creator email notifications",
+    body: "Creators can now onboard to Stripe Connect from dashboard → Payouts to receive subscriber payments directly, with an automatic platform fee split. Subscribers also get an email whenever a creator they follow drops a new file or post. Dashboard empty states (subscribers, files, tiers, announcements) were polished with helpful calls to action.",
+  },
+  {
+    date: "2026-05",
+    title: "Embedded Stripe checkout + subscription lifecycle",
+    body: "Subscribing to a tier now opens an embedded Stripe checkout. New subscriptions, upgrades/downgrades (immediate + prorated) and cancellations (access until period end, then revoked) are all wired up via Stripe webhooks.",
+  },
+  {
+    date: "2026-05",
+    title: "Launch",
+    body: "MakerMind Club opens to creators with full creator/member/admin dashboards, file uploads, tier memberships, posts, comments, DMs, bundles, promo codes, wishlists and print log.",
+  },
 ];
 
 export const Route = createFileRoute("/changelog")({
