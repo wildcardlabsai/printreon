@@ -46,7 +46,7 @@ function Overview() {
     return s;
   })();
 
-  const publicUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/c/${creator.slug}`;
+  const publicUrl = creatorUrl(creator.slug);
 
   return (
     <div>
