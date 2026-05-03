@@ -19,13 +19,20 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MeIndexRouteImport } from './routes/me.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creator'
+import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
+import { Route as MeSettingsRouteImport } from './routes/me.settings'
+import { Route as MeFollowingRouteImport } from './routes/me.following'
+import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
 import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
 import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -78,6 +85,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeIndexRoute = MeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MeRoute,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -87,6 +99,26 @@ const OnboardingCreatorRoute = OnboardingCreatorRouteImport.update({
   id: '/onboarding/creator',
   path: '/onboarding/creator',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MeSubscriptionsRoute = MeSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeSettingsRoute = MeSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeFollowingRoute = MeFollowingRouteImport.update({
+  id: '/following',
+  path: '/following',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeDownloadsRoute = MeDownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => MeRoute,
 } as any)
 const DashboardTiersRoute = DashboardTiersRouteImport.update({
   id: '/tiers',
@@ -103,6 +135,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPayoutsRoute = DashboardPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
   id: '/files',
   path: '/files',
@@ -111,6 +148,11 @@ const DashboardFilesRoute = DashboardFilesRouteImport.update({
 const DashboardAnnouncementsRoute = DashboardAnnouncementsRouteImport.update({
   id: '/announcements',
   path: '/announcements',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => DashboardRoute,
 } as any)
 const CSlugRoute = CSlugRouteImport.update({
@@ -127,17 +169,24 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/me': typeof MeRoute
+  '/me': typeof MeRouteWithChildren
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/me/downloads': typeof MeDownloadsRoute
+  '/me/following': typeof MeFollowingRoute
+  '/me/settings': typeof MeSettingsRoute
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/me/': typeof MeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -146,17 +195,23 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/me': typeof MeRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/me/downloads': typeof MeDownloadsRoute
+  '/me/following': typeof MeFollowingRoute
+  '/me/settings': typeof MeSettingsRoute
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/me': typeof MeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,17 +222,24 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/me': typeof MeRoute
+  '/me': typeof MeRouteWithChildren
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/me/downloads': typeof MeDownloadsRoute
+  '/me/following': typeof MeFollowingRoute
+  '/me/settings': typeof MeSettingsRoute
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/me/': typeof MeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -193,13 +255,20 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/me/downloads'
+    | '/me/following'
+    | '/me/settings'
+    | '/me/subscriptions'
     | '/onboarding/creator'
     | '/dashboard/'
+    | '/me/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -208,17 +277,23 @@ export interface FileRouteTypes {
     | '/explore'
     | '/for-creators'
     | '/forgot-password'
-    | '/me'
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/me/downloads'
+    | '/me/following'
+    | '/me/settings'
+    | '/me/subscriptions'
     | '/onboarding/creator'
     | '/dashboard'
+    | '/me'
   id:
     | '__root__'
     | '/'
@@ -232,13 +307,20 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/me/downloads'
+    | '/me/following'
+    | '/me/settings'
+    | '/me/subscriptions'
     | '/onboarding/creator'
     | '/dashboard/'
+    | '/me/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -249,7 +331,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   ForCreatorsRoute: typeof ForCreatorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
-  MeRoute: typeof MeRoute
+  MeRoute: typeof MeRouteWithChildren
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   CSlugRoute: typeof CSlugRoute
@@ -328,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me/': {
+      id: '/me/'
+      path: '/'
+      fullPath: '/me/'
+      preLoaderRoute: typeof MeIndexRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -341,6 +430,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/creator'
       preLoaderRoute: typeof OnboardingCreatorRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/me/subscriptions': {
+      id: '/me/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/me/subscriptions'
+      preLoaderRoute: typeof MeSubscriptionsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/settings': {
+      id: '/me/settings'
+      path: '/settings'
+      fullPath: '/me/settings'
+      preLoaderRoute: typeof MeSettingsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/following': {
+      id: '/me/following'
+      path: '/following'
+      fullPath: '/me/following'
+      preLoaderRoute: typeof MeFollowingRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/downloads': {
+      id: '/me/downloads'
+      path: '/downloads'
+      fullPath: '/me/downloads'
+      preLoaderRoute: typeof MeDownloadsRouteImport
+      parentRoute: typeof MeRoute
     }
     '/dashboard/tiers': {
       id: '/dashboard/tiers'
@@ -363,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/payouts': {
+      id: '/dashboard/payouts'
+      path: '/payouts'
+      fullPath: '/dashboard/payouts'
+      preLoaderRoute: typeof DashboardPayoutsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/files': {
       id: '/dashboard/files'
       path: '/files'
@@ -377,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAnnouncementsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/c/$slug': {
       id: '/c/$slug'
       path: '/c/$slug'
@@ -388,8 +519,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardPayoutsRoute: typeof DashboardPayoutsRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscribersRoute: typeof DashboardSubscribersRoute
   DashboardTiersRoute: typeof DashboardTiersRoute
@@ -397,8 +530,10 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardPayoutsRoute: DashboardPayoutsRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscribersRoute: DashboardSubscribersRoute,
   DashboardTiersRoute: DashboardTiersRoute,
@@ -409,6 +544,24 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface MeRouteChildren {
+  MeDownloadsRoute: typeof MeDownloadsRoute
+  MeFollowingRoute: typeof MeFollowingRoute
+  MeSettingsRoute: typeof MeSettingsRoute
+  MeSubscriptionsRoute: typeof MeSubscriptionsRoute
+  MeIndexRoute: typeof MeIndexRoute
+}
+
+const MeRouteChildren: MeRouteChildren = {
+  MeDownloadsRoute: MeDownloadsRoute,
+  MeFollowingRoute: MeFollowingRoute,
+  MeSettingsRoute: MeSettingsRoute,
+  MeSubscriptionsRoute: MeSubscriptionsRoute,
+  MeIndexRoute: MeIndexRoute,
+}
+
+const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -417,7 +570,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   ForCreatorsRoute: ForCreatorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
-  MeRoute: MeRoute,
+  MeRoute: MeRouteWithChildren,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   CSlugRoute: CSlugRoute,

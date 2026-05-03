@@ -1,18 +1,15 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote } from "lucide-react";
+import { Heart, Download, Compass, Settings, Sparkles } from "lucide-react";
 
 const items = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/dashboard/files", label: "Files", icon: FileBox },
-  { to: "/dashboard/tiers", label: "Tiers", icon: Layers },
-  { to: "/dashboard/subscribers", label: "Subscribers", icon: Users },
-  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/dashboard/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/dashboard/payouts", label: "Payouts", icon: Banknote },
-  { to: "/dashboard/settings", label: "Settings", icon: Settings },
+  { to: "/me", label: "Overview", icon: Sparkles },
+  { to: "/me/subscriptions", label: "Subscriptions", icon: Heart },
+  { to: "/me/downloads", label: "Downloads", icon: Download },
+  { to: "/me/following", label: "Following", icon: Compass },
+  { to: "/me/settings", label: "Settings", icon: Settings },
 ] as const;
 
-export function DashboardNav() {
+export function MemberNav() {
   const { pathname } = useLocation();
   return (
     <div className="mb-8 -mx-2 flex gap-1 overflow-x-auto border-b border-border px-2">

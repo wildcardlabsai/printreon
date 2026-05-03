@@ -1,0 +1,82 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { useServerFn } from "@tanstack/react-start";
+import { getFileDownloadUrl } from "@/server/downloads.functions";
+import { Download, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/me/downloads")({
+  component: DownloadsPage,
+});
+
+function DownloadsPage() {
+  const { user } = useAuth();
+  const [items, setItems] = useState<any[] | null>(null);
+  const downloadFn = useServerFn(getFileDownloadUrl);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("downloads")
+        .select("id, downloaded_at, file_id, creator_files(id, title, file_type, file_size, slug), creator_profiles:creator_id(display_name, slug)")
+        .eq("user_id", user.id)
+        .order("downloaded_at", { ascending: false })
+        .limit(200);
+      setItems(data ?? []);
+    })();
+  }, [user]);
+
+  const redownload = async (fileId: string) => {
+    setBusyId(fileId);
+    try {
+      const { url } = await downloadFn({ data: { fileId } });
+      window.location.href = url;
+    } catch (e: any) { toast.error(e?.message ?? "Failed"); }
+    finally { setBusyId(null); }
+  };
+
+  if (items === null) return <div className="card-soft h-32 animate-pulse" />;
+
+  if (items.length === 0) {
+    return (
+      <div className="card-soft text-center">
+        <Download className="mx-auto h-10 w-10 text-primary" />
+        <h3 className="mt-3 text-xl font-bold text-ink">No downloads yet</h3>
+        <p className="mt-1 text-ink-soft">Subscribe to a creator and grab their files anytime.</p>
+        <Link to="/explore" className="btn-primary mt-5 inline-flex">Find creators</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="card-soft p-0 overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead className="bg-secondary text-left text-xs uppercase text-ink-soft">
+          <tr><th className="px-4 py-3">File</th><th className="px-4 py-3">Creator</th><th className="px-4 py-3">Date</th><th className="px-4 py-3"></th></tr>
+        </thead>
+        <tbody>
+          {items.map((d) => (
+            <tr key={d.id} className="border-t border-border">
+              <td className="px-4 py-3 font-medium text-ink">{d.creator_files?.title ?? "—"}</td>
+              <td className="px-4 py-3">
+                {d.creator_profiles?.slug ? (
+                  <Link to="/c/$slug" params={{ slug: d.creator_profiles.slug }} className="text-primary hover:underline">{d.creator_profiles.display_name}</Link>
+                ) : "—"}
+              </td>
+              <td className="px-4 py-3 text-ink-soft">{new Date(d.downloaded_at).toLocaleString()}</td>
+              <td className="px-4 py-3 text-right">
+                <button disabled={busyId === d.file_id} onClick={() => redownload(d.file_id)} className="btn-ghost h-8 px-3 text-xs">
+                  {busyId === d.file_id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
