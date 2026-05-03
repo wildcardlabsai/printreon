@@ -19,10 +19,18 @@ function AdminPage() {
   const [creators, setCreators] = useState<any[]>([]);
   const [reports, setReports] = useState<any[]>([]);
   const [waitlist, setWaitlist] = useState<any[]>([]);
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [blog, setBlog] = useState<any[]>([]);
   const [stats, setStats] = useState({ creators: 0, files: 0, members: 0, subs: 0 });
   const [q, setQ] = useState("");
   const [grantEmail, setGrantEmail] = useState("");
   const [grantRole, setGrantRole] = useState<"admin" | "creator" | "member">("creator");
+
+  // Blog editor
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogSlug, setBlogSlug] = useState("");
+  const [blogExcerpt, setBlogExcerpt] = useState("");
+  const [blogBody, setBlogBody] = useState("");
 
   const setPublished = useServerFn(adminSetPublished);
   const grantRoleFn = useServerFn(adminGrantRole);
@@ -33,19 +41,54 @@ function AdminPage() {
   }, [user, loading, isAdmin, navigate]);
 
   const refresh = async () => {
-    const [{ data: c }, { data: r }, { data: w }, { count: cCount }, { count: fCount }, { count: mCount }, { count: sCount }] = await Promise.all([
+    const [{ data: c }, { data: r }, { data: w }, { data: tk }, { data: bl }, { count: cCount }, { count: fCount }, { count: mCount }, { count: sCount }] = await Promise.all([
       supabase.from("creator_profiles").select("*").order("created_at", { ascending: false }).limit(200),
       supabase.from("admin_reports").select("*").eq("status", "open").order("created_at", { ascending: false }),
       supabase.from("waitlist").select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("support_tickets").select("*").order("created_at", { ascending: false }).limit(100),
+      supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
       supabase.from("creator_profiles").select("*", { count: "exact", head: true }),
       supabase.from("creator_files").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "active"),
     ]);
-    setCreators(c ?? []); setReports(r ?? []); setWaitlist(w ?? []);
+    setCreators(c ?? []); setReports(r ?? []); setWaitlist(w ?? []); setTickets(tk ?? []); setBlog(bl ?? []);
     setStats({ creators: cCount ?? 0, files: fCount ?? 0, members: mCount ?? 0, subs: sCount ?? 0 });
   };
   useEffect(() => { if (isAdmin) refresh(); }, [isAdmin]);
+
+  const closeTicket = async (id: string) => {
+    const { error } = await supabase.from("support_tickets").update({ status: "closed" }).eq("id", id);
+    if (error) return toast.error(error.message);
+    setTickets((ts) => ts.map((t) => t.id === id ? { ...t, status: "closed" } : t));
+  };
+
+  const publishBlog = async () => {
+    if (!blogTitle || !blogSlug || !blogBody) return toast.error("Title, slug, and body required");
+    const { error } = await supabase.from("blog_posts").insert({
+      title: blogTitle, slug: blogSlug, excerpt: blogExcerpt, body: blogBody,
+      author_user_id: user!.id, is_published: true, published_at: new Date().toISOString(),
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Published");
+    setBlogTitle(""); setBlogSlug(""); setBlogExcerpt(""); setBlogBody("");
+    refresh();
+  };
+
+  const toggleBlog = async (b: any) => {
+    const { error } = await supabase.from("blog_posts").update({
+      is_published: !b.is_published,
+      published_at: !b.is_published ? new Date().toISOString() : b.published_at,
+    }).eq("id", b.id);
+    if (error) return toast.error(error.message);
+    refresh();
+  };
+
+  const deleteBlog = async (id: string) => {
+    if (!confirm("Delete this post?")) return;
+    await supabase.from("blog_posts").delete().eq("id", id);
+    refresh();
+  };
 
   const verify = async (cp: any, val: boolean) => {
     const { error } = await supabase.from("creator_profiles").update({ is_verified: val }).eq("id", cp.id);
