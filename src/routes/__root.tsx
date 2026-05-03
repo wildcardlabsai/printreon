@@ -3,7 +3,6 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
 import { Link } from "@tanstack/react-router";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 function NotFoundComponent() {
   return (
@@ -30,12 +29,16 @@ export const Route = createRootRoute({
       { title: "MakerMind Club — Memberships for 3D Print Creators" },
       { name: "description", content: "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators. Partnered with MakerMind App." },
       { property: "og:title", content: "MakerMind Club — Memberships for 3D Print Creators" },
-      { property: "og:description", content: "Sell STL, 3MF and printable files through monthly memberships." },
+      { property: "og:description", content: "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators. Partnered with MakerMind App." },
       { property: "og:site_name", content: "MakerMind Club" },
       { property: "og:url", content: "https://makermind.club" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#ea7a2c" },
+      { name: "twitter:title", content: "MakerMind Club — Memberships for 3D Print Creators" },
+      { name: "twitter:description", content: "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators. Partnered with MakerMind App." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/3TUi3JNUmJQa4eVdOnmIkCiRgCJ3/social-images/social-1777834042693-ChatGPT_Image_May_3,_2026,_07_47_06_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/3TUi3JNUmJQa4eVdOnmIkCiRgCJ3/social-images/social-1777834042693-ChatGPT_Image_May_3,_2026,_07_47_06_PM.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -62,7 +65,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <AuthProvider>
-      <PaymentTestModeBanner />
       <Outlet />
       <Toaster richColors position="top-center" />
     </AuthProvider>
