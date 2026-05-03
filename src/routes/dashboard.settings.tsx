@@ -57,7 +57,8 @@ function SettingsPage() {
     const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, { upsert: true, contentType: file.type });
     if (upErr) return toast.error(upErr.message);
     const { data: pub } = supabase.storage.from(bucket).getPublicUrl(path);
-    const { error } = await supabase.from("creator_profiles").update({ [field]: pub.publicUrl }).eq("id", creator.id);
+    const patch: any = { [field]: pub.publicUrl };
+    const { error } = await supabase.from("creator_profiles").update(patch).eq("id", creator.id);
     if (error) return toast.error(error.message);
     toast.success("Image updated");
     refresh();

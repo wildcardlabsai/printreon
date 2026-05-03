@@ -20,6 +20,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creator'
+import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
+import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
+import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -77,6 +82,31 @@ const OnboardingCreatorRoute = OnboardingCreatorRouteImport.update({
   path: '/onboarding/creator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardTiersRoute = DashboardTiersRouteImport.update({
+  id: '/tiers',
+  path: '/tiers',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSubscribersRoute = DashboardSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardFilesRoute = DashboardFilesRouteImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnnouncementsRoute = DashboardAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const CSlugRoute = CSlugRouteImport.update({
   id: '/c/$slug',
   path: '/c/$slug',
@@ -94,6 +124,11 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscribers': typeof DashboardSubscribersRoute
+  '/dashboard/tiers': typeof DashboardTiersRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -107,6 +142,11 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscribers': typeof DashboardSubscribersRoute
+  '/dashboard/tiers': typeof DashboardTiersRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -122,6 +162,11 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscribers': typeof DashboardSubscribersRoute
+  '/dashboard/tiers': typeof DashboardTiersRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -138,6 +183,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/announcements'
+    | '/dashboard/files'
+    | '/dashboard/settings'
+    | '/dashboard/subscribers'
+    | '/dashboard/tiers'
     | '/onboarding/creator'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -151,6 +201,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/announcements'
+    | '/dashboard/files'
+    | '/dashboard/settings'
+    | '/dashboard/subscribers'
+    | '/dashboard/tiers'
     | '/onboarding/creator'
     | '/dashboard'
   id:
@@ -165,6 +220,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/announcements'
+    | '/dashboard/files'
+    | '/dashboard/settings'
+    | '/dashboard/subscribers'
+    | '/dashboard/tiers'
     | '/onboarding/creator'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -262,6 +322,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCreatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/tiers': {
+      id: '/dashboard/tiers'
+      path: '/tiers'
+      fullPath: '/dashboard/tiers'
+      preLoaderRoute: typeof DashboardTiersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/subscribers': {
+      id: '/dashboard/subscribers'
+      path: '/subscribers'
+      fullPath: '/dashboard/subscribers'
+      preLoaderRoute: typeof DashboardSubscribersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/files': {
+      id: '/dashboard/files'
+      path: '/files'
+      fullPath: '/dashboard/files'
+      preLoaderRoute: typeof DashboardFilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/announcements': {
+      id: '/dashboard/announcements'
+      path: '/announcements'
+      fullPath: '/dashboard/announcements'
+      preLoaderRoute: typeof DashboardAnnouncementsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/c/$slug': {
       id: '/c/$slug'
       path: '/c/$slug'
@@ -273,10 +368,20 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
+  DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardSubscribersRoute: typeof DashboardSubscribersRoute
+  DashboardTiersRoute: typeof DashboardTiersRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
+  DashboardFilesRoute: DashboardFilesRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardSubscribersRoute: DashboardSubscribersRoute,
+  DashboardTiersRoute: DashboardTiersRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
