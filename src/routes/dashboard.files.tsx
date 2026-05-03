@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyOnPublish } from "@/server/notify.functions";
 import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
