@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag, Box } from "lucide-react";
 import { STLViewerModal } from "@/components/STLViewer";
+import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/server/downloads.functions";
@@ -25,6 +26,7 @@ function CreatorPage() {
   const [following, setFollowing] = useState(false);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [notFoundFlag, setNotFoundFlag] = useState(false);
+  const [checkoutTierId, setCheckoutTierId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -206,7 +208,15 @@ function CreatorPage() {
                     {t.benefits.map((b: string, i: number) => <li key={i}>• {b}</li>)}
                   </ul>
                 )}
-                <button className="btn-primary mt-6 w-full" disabled>Subscribe (coming soon)</button>
+                <button
+                  className="btn-primary mt-6 w-full"
+                  onClick={() => {
+                    if (!user) { toast.error("Sign in to subscribe"); navigate({ to: "/auth" }); return; }
+                    setCheckoutTierId(t.id);
+                  }}
+                >
+                  Subscribe
+                </button>
               </div>
             ))}
           </div>
@@ -266,6 +276,13 @@ function CreatorPage() {
           title={previewTitle}
           open={!!previewUrl}
           onClose={() => setPreviewUrl(null)}
+        />
+      )}
+      {checkoutTierId && (
+        <SubscribeCheckoutModal
+          tierId={checkoutTierId}
+          open={!!checkoutTierId}
+          onClose={() => setCheckoutTierId(null)}
         />
       )}
     </div>
