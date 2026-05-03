@@ -32,9 +32,22 @@ export function SubscribeCheckoutModal({ tierId, open, onClose }: Props) {
         });
         if (alive) setClientSecret(clientSecret);
       } catch (e: any) {
+        let msg = "Could not start checkout";
+        if (e instanceof Response) {
+          if (e.status === 401 || e.status === 302) {
+            msg = "Please sign in again to continue checkout.";
+          } else {
+            try {
+              const txt = await e.clone().text();
+              msg = txt || `Checkout failed (${e.status})`;
+            } catch { msg = `Checkout failed (${e.status})`; }
+          }
+        } else if (e?.message) {
+          msg = e.message;
+        }
         if (alive) {
-          setError(e?.message ?? "Could not start checkout");
-          toast.error(e?.message ?? "Could not start checkout");
+          setError(msg);
+          toast.error(msg);
         }
       }
     })();
