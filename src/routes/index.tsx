@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
+import { PartnerStrip } from "@/components/PartnerStrip";
+import { SITE_URL } from "@/lib/site";
 import heroImg from "@/assets/hero.jpg";
 import {
   Layers, Lock, Sparkles, TrendingUp, Share2, Wallet,
@@ -10,10 +12,13 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "MakerMind Club — Turn Your 3D Print Files Into Monthly Income" },
-      { name: "description", content: "MakerMind Club gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships. The Patreon alternative built for 3D printing." },
+      { name: "description", content: "MakerMind Club gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships. The Patreon alternative built for 3D printing. Partnered with MakerMind App." },
       { property: "og:title", content: "MakerMind Club — Memberships for 3D Print Creators" },
       { property: "og:description", content: "Sell STL, 3MF and printable files through monthly memberships." },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: SITE_URL }],
   }),
   component: Landing,
 });
@@ -23,6 +28,7 @@ function Landing() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <Hero />
+      <PartnerStrip />
       <BuiltFor />
       <HowItWorks />
       <WhyCreators />

@@ -9,32 +9,64 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PressRouteImport } from './routes/press'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as LegalRouteImport } from './routes/legal'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ForCreatorsRouteImport } from './routes/for-creators'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MeIndexRouteImport } from './routes/me.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creator'
+import { Route as MeWishlistRouteImport } from './routes/me.wishlist'
 import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
 import { Route as MeSettingsRouteImport } from './routes/me.settings'
+import { Route as MePrintLogRouteImport } from './routes/me.print-log'
+import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
+import { Route as MeMessagesRouteImport } from './routes/me.messages'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalDmcaRouteImport } from './routes/legal.dmca'
+import { Route as LegalCreatorAgreementRouteImport } from './routes/legal.creator-agreement'
 import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
 import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardPromosRouteImport } from './routes/dashboard.promos'
+import { Route as DashboardPostsRouteImport } from './routes/dashboard.posts'
 import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
+import { Route as DashboardMessagesRouteImport } from './routes/dashboard.messages'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
+import { Route as DashboardBundlesRouteImport } from './routes/dashboard.bundles'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -45,9 +77,24 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -70,6 +117,21 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -78,6 +140,11 @@ const AuthRoute = AuthRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -100,6 +167,11 @@ const OnboardingCreatorRoute = OnboardingCreatorRouteImport.update({
   path: '/onboarding/creator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeWishlistRoute = MeWishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => MeRoute,
+} as any)
 const MeSubscriptionsRoute = MeSubscriptionsRouteImport.update({
   id: '/subscriptions',
   path: '/subscriptions',
@@ -108,6 +180,21 @@ const MeSubscriptionsRoute = MeSubscriptionsRouteImport.update({
 const MeSettingsRoute = MeSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => MeRoute,
+} as any)
+const MePrintLogRoute = MePrintLogRouteImport.update({
+  id: '/print-log',
+  path: '/print-log',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeNotificationsRoute = MeNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeMessagesRoute = MeMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => MeRoute,
 } as any)
 const MeFollowingRoute = MeFollowingRouteImport.update({
@@ -119,6 +206,26 @@ const MeDownloadsRoute = MeDownloadsRouteImport.update({
   id: '/downloads',
   path: '/downloads',
   getParentRoute: () => MeRoute,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalDmcaRoute = LegalDmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalCreatorAgreementRoute = LegalCreatorAgreementRouteImport.update({
+  id: '/creator-agreement',
+  path: '/creator-agreement',
+  getParentRoute: () => LegalRoute,
 } as any)
 const DashboardTiersRoute = DashboardTiersRouteImport.update({
   id: '/tiers',
@@ -135,14 +242,34 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPromosRoute = DashboardPromosRouteImport.update({
+  id: '/promos',
+  path: '/promos',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPostsRoute = DashboardPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPayoutsRoute = DashboardPayoutsRouteImport.update({
   id: '/payouts',
   path: '/payouts',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardMessagesRoute = DashboardMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
   id: '/files',
   path: '/files',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBundlesRoute = DashboardBundlesRouteImport.update({
+  id: '/bundles',
+  path: '/bundles',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardAnnouncementsRoute = DashboardAnnouncementsRouteImport.update({
@@ -160,55 +287,104 @@ const CSlugRoute = CSlugRouteImport.update({
   path: '/c/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
+  '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
+  '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
@@ -216,27 +392,49 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/explore': typeof ExploreRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
+  '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
@@ -245,79 +443,145 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/admin'
     | '/auth'
+    | '/blog'
+    | '/changelog'
+    | '/contact'
     | '/dashboard'
     | '/explore'
     | '/for-creators'
     | '/forgot-password'
+    | '/help'
+    | '/legal'
     | '/me'
+    | '/press'
     | '/pricing'
     | '/reset-password'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/admin'
     | '/auth'
+    | '/blog'
+    | '/changelog'
+    | '/contact'
     | '/explore'
     | '/for-creators'
     | '/forgot-password'
+    | '/help'
+    | '/legal'
+    | '/press'
     | '/pricing'
     | '/reset-password'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard'
     | '/me'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/admin'
     | '/auth'
+    | '/blog'
+    | '/changelog'
+    | '/contact'
     | '/dashboard'
     | '/explore'
     | '/for-creators'
     | '/forgot-password'
+    | '/help'
+    | '/legal'
     | '/me'
+    | '/press'
     | '/pricing'
     | '/reset-password'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
@@ -325,21 +589,44 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRouteWithChildren
+  ChangelogRoute: typeof ChangelogRoute
+  ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   ForCreatorsRoute: typeof ForCreatorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HelpRoute: typeof HelpRoute
+  LegalRoute: typeof LegalRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
+  PressRoute: typeof PressRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RoadmapRoute: typeof RoadmapRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CSlugRoute: typeof CSlugRoute
   OnboardingCreatorRoute: typeof OnboardingCreatorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -354,11 +641,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/me': {
       id: '/me'
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -389,6 +697,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -401,6 +730,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -431,6 +767,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCreatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me/wishlist': {
+      id: '/me/wishlist'
+      path: '/wishlist'
+      fullPath: '/me/wishlist'
+      preLoaderRoute: typeof MeWishlistRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/me/subscriptions': {
       id: '/me/subscriptions'
       path: '/subscriptions'
@@ -443,6 +786,27 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/me/settings'
       preLoaderRoute: typeof MeSettingsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/print-log': {
+      id: '/me/print-log'
+      path: '/print-log'
+      fullPath: '/me/print-log'
+      preLoaderRoute: typeof MePrintLogRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/notifications': {
+      id: '/me/notifications'
+      path: '/notifications'
+      fullPath: '/me/notifications'
+      preLoaderRoute: typeof MeNotificationsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/messages': {
+      id: '/me/messages'
+      path: '/messages'
+      fullPath: '/me/messages'
+      preLoaderRoute: typeof MeMessagesRouteImport
       parentRoute: typeof MeRoute
     }
     '/me/following': {
@@ -458,6 +822,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/me/downloads'
       preLoaderRoute: typeof MeDownloadsRouteImport
       parentRoute: typeof MeRoute
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/dmca': {
+      id: '/legal/dmca'
+      path: '/dmca'
+      fullPath: '/legal/dmca'
+      preLoaderRoute: typeof LegalDmcaRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/creator-agreement': {
+      id: '/legal/creator-agreement'
+      path: '/creator-agreement'
+      fullPath: '/legal/creator-agreement'
+      preLoaderRoute: typeof LegalCreatorAgreementRouteImport
+      parentRoute: typeof LegalRoute
     }
     '/dashboard/tiers': {
       id: '/dashboard/tiers'
@@ -480,6 +872,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/promos': {
+      id: '/dashboard/promos'
+      path: '/promos'
+      fullPath: '/dashboard/promos'
+      preLoaderRoute: typeof DashboardPromosRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/posts': {
+      id: '/dashboard/posts'
+      path: '/posts'
+      fullPath: '/dashboard/posts'
+      preLoaderRoute: typeof DashboardPostsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/payouts': {
       id: '/dashboard/payouts'
       path: '/payouts'
@@ -487,11 +893,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPayoutsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/messages': {
+      id: '/dashboard/messages'
+      path: '/messages'
+      fullPath: '/dashboard/messages'
+      preLoaderRoute: typeof DashboardMessagesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/files': {
       id: '/dashboard/files'
       path: '/files'
       fullPath: '/dashboard/files'
       preLoaderRoute: typeof DashboardFilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/bundles': {
+      id: '/dashboard/bundles'
+      path: '/bundles'
+      fullPath: '/dashboard/bundles'
+      preLoaderRoute: typeof DashboardBundlesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/announcements': {
@@ -515,14 +935,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
   }
 }
+
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
+  DashboardBundlesRoute: typeof DashboardBundlesRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardMessagesRoute: typeof DashboardMessagesRoute
   DashboardPayoutsRoute: typeof DashboardPayoutsRoute
+  DashboardPostsRoute: typeof DashboardPostsRoute
+  DashboardPromosRoute: typeof DashboardPromosRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscribersRoute: typeof DashboardSubscribersRoute
   DashboardTiersRoute: typeof DashboardTiersRoute
@@ -532,8 +973,12 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
+  DashboardBundlesRoute: DashboardBundlesRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardMessagesRoute: DashboardMessagesRoute,
   DashboardPayoutsRoute: DashboardPayoutsRoute,
+  DashboardPostsRoute: DashboardPostsRoute,
+  DashboardPromosRoute: DashboardPromosRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscribersRoute: DashboardSubscribersRoute,
   DashboardTiersRoute: DashboardTiersRoute,
@@ -544,19 +989,43 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface LegalRouteChildren {
+  LegalCreatorAgreementRoute: typeof LegalCreatorAgreementRoute
+  LegalDmcaRoute: typeof LegalDmcaRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalCreatorAgreementRoute: LegalCreatorAgreementRoute,
+  LegalDmcaRoute: LegalDmcaRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
+  MeMessagesRoute: typeof MeMessagesRoute
+  MeNotificationsRoute: typeof MeNotificationsRoute
+  MePrintLogRoute: typeof MePrintLogRoute
   MeSettingsRoute: typeof MeSettingsRoute
   MeSubscriptionsRoute: typeof MeSubscriptionsRoute
+  MeWishlistRoute: typeof MeWishlistRoute
   MeIndexRoute: typeof MeIndexRoute
 }
 
 const MeRouteChildren: MeRouteChildren = {
   MeDownloadsRoute: MeDownloadsRoute,
   MeFollowingRoute: MeFollowingRoute,
+  MeMessagesRoute: MeMessagesRoute,
+  MeNotificationsRoute: MeNotificationsRoute,
+  MePrintLogRoute: MePrintLogRoute,
   MeSettingsRoute: MeSettingsRoute,
   MeSubscriptionsRoute: MeSubscriptionsRoute,
+  MeWishlistRoute: MeWishlistRoute,
   MeIndexRoute: MeIndexRoute,
 }
 
@@ -564,15 +1033,24 @@ const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRouteWithChildren,
+  ChangelogRoute: ChangelogRoute,
+  ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ExploreRoute: ExploreRoute,
   ForCreatorsRoute: ForCreatorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  HelpRoute: HelpRoute,
+  LegalRoute: LegalRouteWithChildren,
   MeRoute: MeRouteWithChildren,
+  PressRoute: PressRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  RoadmapRoute: RoadmapRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   CSlugRoute: CSlugRoute,
   OnboardingCreatorRoute: OnboardingCreatorRoute,
 }

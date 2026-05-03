@@ -1,12 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2 } from "lucide-react";
+import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/server/downloads.functions";
+import { creatorUrl, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/c/$slug")({
   component: CreatorPage,
@@ -15,10 +16,13 @@ export const Route = createFileRoute("/c/$slug")({
 function CreatorPage() {
   const { slug } = Route.useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [creator, setCreator] = useState<any>(null);
   const [tiers, setTiers] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [following, setFollowing] = useState(false);
+  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [notFoundFlag, setNotFoundFlag] = useState(false);
 
   useEffect(() => {
@@ -26,18 +30,25 @@ function CreatorPage() {
       const { data: cp } = await supabase.from("creator_profiles").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
       if (!cp) { setNotFoundFlag(true); return; }
       setCreator(cp);
-      const [{ data: t }, { data: f }] = await Promise.all([
+      const [{ data: t }, { data: f }, { data: p }] = await Promise.all([
         supabase.from("creator_tiers").select("*").eq("creator_id", cp.id).eq("is_active", true).order("price"),
         supabase.from("creator_files").select("*").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
+        supabase.from("creator_posts").select("*").eq("creator_id", cp.id).eq("status", "published").order("published_at", { ascending: false }).limit(10),
       ]);
       setTiers(t ?? []);
       setFiles(f ?? []);
+      setPosts(p ?? []);
       if (user) {
         const { data: fol } = await supabase.from("followers").select("id").eq("user_id", user.id).eq("creator_id", cp.id).maybeSingle();
         setFollowing(!!fol);
+        const { data: wl } = await supabase.from("wishlist").select("file_id").eq("user_id", user.id);
+        setWishlist(new Set((wl ?? []).map((w) => w.file_id)));
       }
     })();
   }, [slug, user]);
+
+  const downloadFn = useServerFn(getFileDownloadUrl);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   if (notFoundFlag) {
     return (
@@ -63,8 +74,39 @@ function CreatorPage() {
     }
   };
 
-  const downloadFn = useServerFn(getFileDownloadUrl);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const toggleWishlist = async (fileId: string) => {
+    if (!user) { toast.error("Sign in to save"); return; }
+    if (wishlist.has(fileId)) {
+      await supabase.from("wishlist").delete().eq("user_id", user.id).eq("file_id", fileId);
+      const n = new Set(wishlist); n.delete(fileId); setWishlist(n);
+    } else {
+      await supabase.from("wishlist").insert({ user_id: user.id, file_id: fileId });
+      setWishlist(new Set([...wishlist, fileId]));
+    }
+  };
+
+  const startDM = async () => {
+    if (!user) { toast.error("Sign in to message"); return; }
+    const { data: existing } = await supabase.from("dm_threads").select("id").eq("creator_id", creator.id).eq("member_user_id", user.id).maybeSingle();
+    if (!existing) {
+      await supabase.from("dm_threads").insert({ creator_id: creator.id, member_user_id: user.id });
+    }
+    navigate({ to: "/me" });
+  };
+
+  const reportCreator = async () => {
+    if (!user) return toast.error("Sign in to report");
+    const reason = window.prompt("Why are you reporting this creator?");
+    if (!reason) return;
+    await supabase.from("admin_reports").insert({ creator_id: creator.id, reason, reported_by: user.id });
+    toast.success("Reported. Admins will review.");
+  };
+
+  const sharePage = async () => {
+    const url = creatorUrl(creator.slug);
+    try { await navigator.clipboard.writeText(url); toast.success("Link copied: " + url); }
+    catch { window.prompt("Copy this link:", url); }
+  };
 
   const handleDownload = async (fileId: string) => {
     if (!user) { toast.error("Sign in to download"); return; }
@@ -99,12 +141,31 @@ function CreatorPage() {
               {creator.youtube_url && <a href={creator.youtube_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary"><Youtube className="h-4 w-4" />YouTube</a>}
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button onClick={toggleFollow} className={following ? "btn-primary" : "btn-ghost"}>
               <Heart className={`mr-2 h-4 w-4 ${following ? "fill-current" : ""}`} /> {following ? "Following" : "Follow"}
             </button>
+            <button onClick={startDM} className="btn-ghost"><MessageSquare className="mr-2 h-4 w-4" />Message</button>
+            <button onClick={sharePage} className="btn-ghost"><Share2 className="mr-2 h-4 w-4" />Share</button>
+            <button onClick={reportCreator} className="btn-ghost" title="Report"><Flag className="h-4 w-4" /></button>
           </div>
         </div>
+
+        {posts.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-ink">Posts</h2>
+            <div className="mt-4 space-y-4">
+              {posts.map((p) => (
+                <article key={p.id} className="card-soft">
+                  {p.cover_image_url && <img src={p.cover_image_url} alt="" className="mb-4 aspect-video w-full rounded-lg object-cover" />}
+                  <h3 className="text-lg font-bold text-ink">{p.title}</h3>
+                  <p className="mt-1 text-xs text-ink-soft">{new Date(p.published_at ?? p.created_at).toLocaleDateString()}</p>
+                  <p className="mt-3 whitespace-pre-line text-ink-soft">{p.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
 
         {creator.bio && (
           <div className="card-soft mt-6">
@@ -142,7 +203,11 @@ function CreatorPage() {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             {files.map((f) => (
               <div key={f.id} className="card-soft">
-                <div className="aspect-video overflow-hidden rounded-lg bg-secondary" />
+                <div className="aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
+                  {f.preview_images && Array.isArray(f.preview_images) && f.preview_images[0]
+                    ? <img src={f.preview_images[0]} alt="" className="h-full w-full object-cover" />
+                    : "STL preview"}
+                </div>
                 <div className="mt-3 flex items-center justify-between">
                   <h3 className="font-semibold text-ink">{f.title}</h3>
                   {f.is_free ? (
@@ -152,10 +217,20 @@ function CreatorPage() {
                   )}
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
-                <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost mt-4 w-full">
-                  {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                  {f.is_free ? "Download" : "Download (members only)"}
-                </button>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink-soft">
+                  {f.material && <span className="rounded-full bg-secondary px-2 py-0.5">{f.material}</span>}
+                  {f.print_time_minutes && <span className="rounded-full bg-secondary px-2 py-0.5">{Math.round(f.print_time_minutes/60)}h print</span>}
+                  {f.supports_required != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.supports_required ? "Supports" : "No supports"}</span>}
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
+                    {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                    Download
+                  </button>
+                  <button onClick={() => toggleWishlist(f.id)} className="btn-ghost" title="Save to wishlist">
+                    <Bookmark className={`h-4 w-4 ${wishlist.has(f.id) ? "fill-current text-primary" : ""}`} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
