@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useAuth } from "@/lib/auth-context";
+import { PARTNER } from "@/lib/site";
 
 export function SiteHeader() {
   const { user, isCreator, isAdmin, signOut } = useAuth();
@@ -41,13 +42,54 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-surface">
-      <div className="container-page flex flex-col items-start justify-between gap-6 py-10 md:flex-row md:items-center">
-        <Logo />
-        <p className="text-sm text-ink-soft">© {new Date().getFullYear()} MakerMind Club. Built for 3D creators.</p>
-        <div className="flex gap-6 text-sm text-ink-soft">
-          <Link to="/explore" className="hover:text-ink">Explore</Link>
-          <Link to="/for-creators" className="hover:text-ink">For Creators</Link>
-          <Link to="/pricing" className="hover:text-ink">Pricing</Link>
+      <div className="container-page grid gap-10 py-12 md:grid-cols-5">
+        <div className="md:col-span-2">
+          <Logo />
+          <p className="mt-3 max-w-sm text-sm text-ink-soft">
+            Memberships built for 3D printing creators. Sell STL, 3MF, OBJ &amp; ZIP files through monthly subscriptions.
+          </p>
+          <p className="mt-4 text-xs text-ink-soft">
+            In partnership with{" "}
+            <a href={PARTNER.url} target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">
+              {PARTNER.name}
+            </a>{" "}
+            — {PARTNER.tagline}.
+          </p>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink">Platform</div>
+          <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+            <li><Link to="/explore" className="hover:text-ink">Explore</Link></li>
+            <li><Link to="/for-creators" className="hover:text-ink">For Creators</Link></li>
+            <li><Link to="/pricing" className="hover:text-ink">Pricing</Link></li>
+            <li><Link to="/blog" className="hover:text-ink">Blog</Link></li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink">Company</div>
+          <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+            <li><Link to="/about" className="hover:text-ink">About</Link></li>
+            <li><Link to="/changelog" className="hover:text-ink">Changelog</Link></li>
+            <li><Link to="/roadmap" className="hover:text-ink">Roadmap</Link></li>
+            <li><Link to="/press" className="hover:text-ink">Press</Link></li>
+            <li><Link to="/contact" className="hover:text-ink">Contact</Link></li>
+            <li><Link to="/help" className="hover:text-ink">Help</Link></li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink">Legal</div>
+          <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+            <li><Link to="/legal/terms" className="hover:text-ink">Terms</Link></li>
+            <li><Link to="/legal/privacy" className="hover:text-ink">Privacy</Link></li>
+            <li><Link to="/legal/dmca" className="hover:text-ink">DMCA</Link></li>
+            <li><Link to="/legal/creator-agreement" className="hover:text-ink">Creator Agreement</Link></li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-border">
+        <div className="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-ink-soft md:flex-row">
+          <p>© {new Date().getFullYear()} MakerMind Club — makermind.club</p>
+          <p>Made for 3D printing creators worldwide.</p>
         </div>
       </div>
     </footer>
