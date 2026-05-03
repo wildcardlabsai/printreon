@@ -124,6 +124,20 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
             case "subscription.canceled":
               await handleSubscriptionDeleted(event.data.object, env);
               break;
+            case "account.updated": {
+              const acct = event.data.object as any;
+              const status =
+                acct.charges_enabled && acct.payouts_enabled
+                  ? "active"
+                  : acct.details_submitted
+                    ? "pending"
+                    : "incomplete";
+              await supabaseAdmin
+                .from("creator_profiles")
+                .update({ payout_status: status })
+                .eq("connected_account_id", acct.id);
+              break;
+            }
             default:
               console.log("[stripe webhook] unhandled", event.type);
           }

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { EmptyState } from "@/components/EmptyState";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
@@ -68,10 +69,11 @@ function TiersPage() {
       <div className="lg:col-span-2">
         <h2 className="text-lg font-bold text-ink">Your tiers ({tiers.length})</h2>
         {tiers.length === 0 ? (
-          <div className="card-soft mt-3 text-center">
-            <Layers className="mx-auto h-10 w-10 text-primary" />
-            <p className="mt-2 text-ink-soft">No tiers yet. Create your first one.</p>
-          </div>
+          <EmptyState
+            icon={Layers}
+            title="No tiers yet"
+            description="Tiers let members subscribe at different price points. Start with one — you can add more later (e.g. Standard, Patron, Studio)."
+          />
         ) : (
           <div className="mt-3 grid gap-3">
             {tiers.map((t) => (
