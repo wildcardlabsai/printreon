@@ -178,6 +178,170 @@ function WhyCreators() {
   );
 }
 
+function EverythingIncluded() {
+  const groups = [
+    {
+      title: "Files & content",
+      icon: FileBox,
+      items: [
+        "Native STL, 3MF, OBJ & ZIP uploads",
+        "Tier-gated and free-with-account files",
+        "Posts with rich media for subscribers",
+        "Bundles to package multiple files together",
+        "Announcements pinned to your creator page",
+      ],
+    },
+    {
+      title: "Memberships & monetisation",
+      icon: CreditCard,
+      items: [
+        "Unlimited tiers with custom price & benefits",
+        "Embedded Stripe checkout (no redirect)",
+        "Upgrades & downgrades, automatically prorated",
+        "Cancel anytime — access until period end",
+        "Promo codes and subscriber discount links",
+        "Gift subscriptions",
+      ],
+    },
+    {
+      title: "Community & engagement",
+      icon: Users,
+      items: [
+        "Comments on posts and files",
+        "Direct messages between members & creators",
+        "Followers (free) + paid subscribers",
+        "Member wishlists & collections",
+        "Personal print log for makers",
+      ],
+    },
+    {
+      title: "Growth & marketing",
+      icon: Rocket,
+      items: [
+        "Unique referral links per creator",
+        "Free file lead magnets",
+        "Pre-written launch posts (FB, IG, X, Reddit)",
+        "QR codes & embeddable creator badges",
+        "Auto-emails to followers on every new drop",
+      ],
+    },
+    {
+      title: "Insights & operations",
+      icon: BarChart3,
+      items: [
+        "Revenue, MRR & churn analytics",
+        "Download, conversion & follower-to-sub data",
+        "Admin moderation tools",
+        "Reporting & DMCA workflow",
+        "Stripe customer portal for members",
+      ],
+    },
+    {
+      title: "Trust & protection",
+      icon: ShieldCheck,
+      items: [
+        "Signed, time-limited download URLs",
+        "Access re-checked on every download",
+        "Email verification & secure auth",
+        "Row-level security on every table",
+        "Creator-owned brand and audience",
+      ],
+    },
+  ];
+  return (
+    <section className="bg-surface">
+      <div className="container-page py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold text-ink md:text-4xl">Everything you get, in the box.</h2>
+          <p className="mt-3 text-ink-soft">No plugins, no duct tape. MakerMind Club ships with the full stack a 3D print creator actually needs.</p>
+        </div>
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {groups.map((g) => (
+            <div key={g.title} className="card-soft">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-primary">
+                  <g.icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-ink">{g.title}</h3>
+              </div>
+              <ul className="mt-4 space-y-2 text-sm text-ink">
+                {g.items.map((i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                    <span>{i}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PaymentsAndPayouts() {
+  const cards = [
+    { icon: CreditCard, title: "Embedded checkout", desc: "Subscribers pay without ever leaving your creator page. Powered by Stripe." },
+    { icon: Banknote, title: "Stripe Connect payouts", desc: "Money lands in your bank, not ours. Standard Stripe payout schedule." },
+    { icon: Tag, title: "Promo codes & discounts", desc: "Run launches and member-only deals with full code support." },
+    { icon: Gift, title: "Gift subscriptions", desc: "Members can gift a tier to friends — a built-in growth loop." },
+    { icon: Package, title: "Bundles", desc: "Sell curated packs of files alongside your monthly tiers." },
+    { icon: Wallet, title: "Transparent platform fee", desc: "One small fee per paid sub. No monthly minimums, no upsells." },
+  ];
+  return (
+    <section className="container-page py-20">
+      <div className="mx-auto max-w-2xl text-center">
+        <h2 className="text-3xl font-bold text-ink md:text-4xl">Payments & payouts, sorted.</h2>
+        <p className="mt-3 text-ink-soft">From the first $5 sub to your first $5k month — billing, tax handling and payouts are wired in from day one.</p>
+      </div>
+      <div className="mt-12 grid gap-5 md:grid-cols-3">
+        {cards.map((c) => (
+          <div key={c.title} className="card-soft">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-primary">
+              <c.icon className="h-5 w-5" />
+            </div>
+            <h3 className="mt-5 text-lg font-semibold text-ink">{c.title}</h3>
+            <p className="mt-2 text-sm text-ink-soft">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CommunityFeatures() {
+  const cards = [
+    { icon: MessageSquare, title: "Posts & comments", desc: "Share updates, work-in-progress shots and behind-the-scenes for your subscribers." },
+    { icon: Mail, title: "Direct messages", desc: "Private 1:1 chats between you and your members." },
+    { icon: Megaphone, title: "Announcements", desc: "Pin important updates to the top of your creator page." },
+    { icon: Bell, title: "New-drop emails", desc: "Followers and subscribers get an email the second you publish." },
+    { icon: Heart, title: "Wishlist & follows", desc: "Members save the files they want and follow creators for free." },
+    { icon: Hammer, title: "Print log", desc: "Makers track what they've printed, in what filament, with what settings." },
+  ];
+  return (
+    <section className="bg-ink/[0.02]">
+      <div className="container-page py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold text-ink md:text-4xl">A community, not just a paywall.</h2>
+          <p className="mt-3 text-ink-soft">Build the kind of relationship with makers that turns one-off downloaders into long-term subscribers.</p>
+        </div>
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
+          {cards.map((c) => (
+            <div key={c.title} className="card-soft">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-primary">
+                <c.icon className="h-5 w-5" />
+              </div>
+              <h3 className="mt-5 text-lg font-semibold text-ink">{c.title}</h3>
+              <p className="mt-2 text-sm text-ink-soft">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ForSupporters() {
   return (
     <section className="bg-ink text-background">
