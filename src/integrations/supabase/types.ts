@@ -59,6 +59,279 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_user_id: string | null
+          body: string
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_published: boolean
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_user_id?: string | null
+          body: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_user_id?: string | null
+          body?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      broadcasts: {
+        Row: {
+          audience: string
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          sent_at: string | null
+          subject: string
+        }
+        Insert: {
+          audience: string
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sent_at?: string | null
+          subject: string
+        }
+        Update: {
+          audience?: string
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sent_at?: string | null
+          subject?: string
+        }
+        Relationships: []
+      }
+      bundle_files: {
+        Row: {
+          bundle_id: string
+          file_id: string
+          sort_order: number
+        }
+        Insert: {
+          bundle_id: string
+          file_id: string
+          sort_order?: number
+        }
+        Update: {
+          bundle_id?: string
+          file_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_files_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundle_files_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundles: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          id: string
+          is_free: boolean
+          is_published: boolean
+          slug: string
+          tier_required_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_free?: boolean
+          is_published?: boolean
+          slug: string
+          tier_required_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_free?: boolean
+          is_published?: boolean
+          slug?: string
+          tier_required_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundles_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundles_tier_required_id_fkey"
+            columns: ["tier_required_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collection_files: {
+        Row: {
+          collection_id: string
+          file_id: string
+        }
+        Insert: {
+          collection_id: string
+          file_id: string
+        }
+        Update: {
+          collection_id?: string
+          file_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_files_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "user_collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_files_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          body: string
+          created_at: string
+          creator_id: string
+          id: string
+          is_hidden: boolean
+          parent_id: string
+          parent_type: string
+          reply_to: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          is_hidden?: boolean
+          parent_id: string
+          parent_type: string
+          reply_to?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          is_hidden?: boolean
+          parent_id?: string
+          parent_type?: string
+          reply_to?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_announcements: {
         Row: {
           audience: string
@@ -106,6 +379,7 @@ export type Database = {
       }
       creator_files: {
         Row: {
+          bundle_id: string | null
           category: string | null
           created_at: string
           creator_id: string
@@ -115,16 +389,26 @@ export type Database = {
           file_type: string | null
           file_url: string | null
           id: string
+          infill_percent: number | null
           is_free: boolean
           is_published: boolean
+          layer_height_mm: number | null
+          material: string | null
           preview_images: Json
+          print_time_minutes: number | null
+          recommended_printer: string | null
+          scheduled_at: string | null
           slug: string
+          status: string
+          supports_required: boolean | null
           tags: string[] | null
           tier_required_id: string | null
           title: string
           updated_at: string
+          version: number
         }
         Insert: {
+          bundle_id?: string | null
           category?: string | null
           created_at?: string
           creator_id: string
@@ -134,16 +418,26 @@ export type Database = {
           file_type?: string | null
           file_url?: string | null
           id?: string
+          infill_percent?: number | null
           is_free?: boolean
           is_published?: boolean
+          layer_height_mm?: number | null
+          material?: string | null
           preview_images?: Json
+          print_time_minutes?: number | null
+          recommended_printer?: string | null
+          scheduled_at?: string | null
           slug: string
+          status?: string
+          supports_required?: boolean | null
           tags?: string[] | null
           tier_required_id?: string | null
           title: string
           updated_at?: string
+          version?: number
         }
         Update: {
+          bundle_id?: string | null
           category?: string | null
           created_at?: string
           creator_id?: string
@@ -153,14 +447,23 @@ export type Database = {
           file_type?: string | null
           file_url?: string | null
           id?: string
+          infill_percent?: number | null
           is_free?: boolean
           is_published?: boolean
+          layer_height_mm?: number | null
+          material?: string | null
           preview_images?: Json
+          print_time_minutes?: number | null
+          recommended_printer?: string | null
+          scheduled_at?: string | null
           slug?: string
+          status?: string
+          supports_required?: boolean | null
           tags?: string[] | null
           tier_required_id?: string | null
           title?: string
           updated_at?: string
+          version?: number
         }
         Relationships: [
           {
@@ -173,6 +476,66 @@ export type Database = {
           {
             foreignKeyName: "creator_files_tier_required_id_fkey"
             columns: ["tier_required_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_posts: {
+        Row: {
+          audience: string
+          body: string
+          cover_image_url: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          published_at: string | null
+          scheduled_at: string | null
+          status: string
+          tier_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          body: string
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          tier_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          body?: string
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          tier_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_posts_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_posts_tier_id_fkey"
+            columns: ["tier_id"]
             isOneToOne: false
             referencedRelation: "creator_tiers"
             referencedColumns: ["id"]
@@ -304,6 +667,73 @@ export type Database = {
           },
         ]
       }
+      dm_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read_at: string | null
+          sender_user_id: string
+          thread_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_user_id: string
+          thread_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_user_id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dm_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "dm_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dm_threads: {
+        Row: {
+          created_at: string
+          creator_id: string
+          id: string
+          last_message_at: string
+          member_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          id?: string
+          last_message_at?: string
+          member_user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          id?: string
+          last_message_at?: string
+          member_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dm_threads_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       downloads: {
         Row: {
           creator_id: string
@@ -343,6 +773,91 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          description: string | null
+          enabled: boolean
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          enabled?: boolean
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          enabled?: boolean
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      featured_creators: {
+        Row: {
+          creator_id: string
+          featured_at: string
+          sort_order: number
+        }
+        Insert: {
+          creator_id: string
+          featured_at?: string
+          sort_order?: number
+        }
+        Update: {
+          creator_id?: string
+          featured_at?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_creators_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: true
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      file_versions: {
+        Row: {
+          changelog: string | null
+          created_at: string
+          file_id: string
+          file_size: number | null
+          file_url: string
+          id: string
+          version: number
+        }
+        Insert: {
+          changelog?: string | null
+          created_at?: string
+          file_id: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          version: number
+        }
+        Update: {
+          changelog?: string | null
+          created_at?: string
+          file_id?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "file_versions_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       followers: {
         Row: {
           created_at: string
@@ -368,6 +883,174 @@ export type Database = {
             columns: ["creator_id"]
             isOneToOne: false
             referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gift_subscriptions: {
+        Row: {
+          buyer_user_id: string
+          created_at: string
+          creator_id: string
+          id: string
+          months: number
+          recipient_email: string
+          recipient_user_id: string | null
+          redeem_code: string
+          redeemed_at: string | null
+          status: string
+          tier_id: string
+        }
+        Insert: {
+          buyer_user_id: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          months?: number
+          recipient_email: string
+          recipient_user_id?: string | null
+          redeem_code: string
+          redeemed_at?: string | null
+          status?: string
+          tier_id: string
+        }
+        Update: {
+          buyer_user_id?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          months?: number
+          recipient_email?: string
+          recipient_user_id?: string | null
+          redeem_code?: string
+          redeemed_at?: string | null
+          status?: string
+          tier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_subscriptions_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_subscriptions_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_prefs: {
+        Row: {
+          email_dm: boolean
+          email_new_file: boolean
+          email_new_post: boolean
+          email_weekly_digest: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          email_dm?: boolean
+          email_new_file?: boolean
+          email_new_post?: boolean
+          email_weekly_digest?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          email_dm?: boolean
+          email_new_file?: boolean
+          email_new_post?: boolean
+          email_weekly_digest?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      print_log: {
+        Row: {
+          created_at: string
+          creator_id: string
+          file_id: string
+          id: string
+          is_public: boolean
+          notes: string | null
+          photo_url: string | null
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          file_id: string
+          id?: string
+          is_public?: boolean
+          notes?: string | null
+          photo_url?: string | null
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          file_id?: string
+          id?: string
+          is_public?: boolean
+          notes?: string | null
+          photo_url?: string | null
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_log_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_log_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
             referencedColumns: ["id"]
           },
         ]
@@ -402,6 +1085,77 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          creator_id: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          percent_off: number
+          uses_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          creator_id: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          percent_off: number
+          uses_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          creator_id?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          percent_off?: number
+          uses_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_codes_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          parent_id: string
+          parent_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          parent_id: string
+          parent_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          parent_id?: string
+          parent_type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -506,6 +1260,60 @@ export type Database = {
           },
         ]
       }
+      support_tickets: {
+        Row: {
+          body: string
+          category: string | null
+          created_at: string
+          email: string
+          id: string
+          status: string
+          subject: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          category?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          status?: string
+          subject: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          category?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          status?: string
+          subject?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_collections: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -547,6 +1355,32 @@ export type Database = {
           role_interest?: string | null
         }
         Relationships: []
+      }
+      wishlist: {
+        Row: {
+          created_at: string
+          file_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
