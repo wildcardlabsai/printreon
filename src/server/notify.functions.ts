@@ -21,11 +21,11 @@ export const notifyOnPublish = createServerFn({ method: "POST" })
 
     // Verify caller owns the creator that owns the item.
     const table = data.kind === "file" ? "creator_files" : "creator_posts";
-    const { data: item } = await supabaseAdmin
+    const { data: item } = (await supabaseAdmin
       .from(table)
-      .select("id, title, creator_id, tier_required_id, tier_id, audience")
+      .select("id, title, creator_id")
       .eq("id", data.itemId)
-      .maybeSingle();
+      .maybeSingle()) as { data: { id: string; title: string; creator_id: string } | null };
     if (!item) throw new Error("Item not found");
 
     const { data: creator } = await supabaseAdmin
