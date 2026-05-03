@@ -16,10 +16,13 @@ export const Route = createFileRoute("/c/$slug")({
 function CreatorPage() {
   const { slug } = Route.useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [creator, setCreator] = useState<any>(null);
   const [tiers, setTiers] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [following, setFollowing] = useState(false);
+  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [notFoundFlag, setNotFoundFlag] = useState(false);
 
   useEffect(() => {
@@ -27,18 +30,25 @@ function CreatorPage() {
       const { data: cp } = await supabase.from("creator_profiles").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
       if (!cp) { setNotFoundFlag(true); return; }
       setCreator(cp);
-      const [{ data: t }, { data: f }] = await Promise.all([
+      const [{ data: t }, { data: f }, { data: p }] = await Promise.all([
         supabase.from("creator_tiers").select("*").eq("creator_id", cp.id).eq("is_active", true).order("price"),
         supabase.from("creator_files").select("*").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
+        supabase.from("creator_posts").select("*").eq("creator_id", cp.id).eq("status", "published").order("published_at", { ascending: false }).limit(10),
       ]);
       setTiers(t ?? []);
       setFiles(f ?? []);
+      setPosts(p ?? []);
       if (user) {
         const { data: fol } = await supabase.from("followers").select("id").eq("user_id", user.id).eq("creator_id", cp.id).maybeSingle();
         setFollowing(!!fol);
+        const { data: wl } = await supabase.from("wishlist").select("file_id").eq("user_id", user.id);
+        setWishlist(new Set((wl ?? []).map((w) => w.file_id)));
       }
     })();
   }, [slug, user]);
+
+  const downloadFn = useServerFn(getFileDownloadUrl);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   if (notFoundFlag) {
     return (
@@ -64,8 +74,39 @@ function CreatorPage() {
     }
   };
 
-  const downloadFn = useServerFn(getFileDownloadUrl);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const toggleWishlist = async (fileId: string) => {
+    if (!user) { toast.error("Sign in to save"); return; }
+    if (wishlist.has(fileId)) {
+      await supabase.from("wishlist").delete().eq("user_id", user.id).eq("file_id", fileId);
+      const n = new Set(wishlist); n.delete(fileId); setWishlist(n);
+    } else {
+      await supabase.from("wishlist").insert({ user_id: user.id, file_id: fileId });
+      setWishlist(new Set([...wishlist, fileId]));
+    }
+  };
+
+  const startDM = async () => {
+    if (!user) { toast.error("Sign in to message"); return; }
+    const { data: existing } = await supabase.from("dm_threads").select("id").eq("creator_id", creator.id).eq("member_user_id", user.id).maybeSingle();
+    if (!existing) {
+      await supabase.from("dm_threads").insert({ creator_id: creator.id, member_user_id: user.id });
+    }
+    navigate({ to: "/me/messages" });
+  };
+
+  const reportCreator = async () => {
+    if (!user) return toast.error("Sign in to report");
+    const reason = window.prompt("Why are you reporting this creator?");
+    if (!reason) return;
+    await supabase.from("admin_reports").insert({ creator_id: creator.id, reason, reported_by: user.id });
+    toast.success("Reported. Admins will review.");
+  };
+
+  const sharePage = async () => {
+    const url = creatorUrl(creator.slug);
+    try { await navigator.clipboard.writeText(url); toast.success("Link copied: " + url); }
+    catch { window.prompt("Copy this link:", url); }
+  };
 
   const handleDownload = async (fileId: string) => {
     if (!user) { toast.error("Sign in to download"); return; }
