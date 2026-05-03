@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyOnPublish } from "@/server/notify.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/posts")({
