@@ -106,7 +106,7 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
             onUpdate(tier, {
               name,
               price: Number(price),
-              benefits: benefits.split("\n").map((s) => s.trim()).filter(Boolean),
+              benefits: benefits.split("\n").map((s: string) => s.trim()).filter(Boolean),
               is_active: active,
             })
           }
