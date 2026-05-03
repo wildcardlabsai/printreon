@@ -1,0 +1,32 @@
+import { Link, useLocation } from "@tanstack/react-router";
+import { Heart, Download, Compass, Settings, Sparkles } from "lucide-react";
+
+const items = [
+  { to: "/me", label: "Overview", icon: Sparkles },
+  { to: "/me/subscriptions", label: "Subscriptions", icon: Heart },
+  { to: "/me/downloads", label: "Downloads", icon: Download },
+  { to: "/me/following", label: "Following", icon: Compass },
+  { to: "/me/settings", label: "Settings", icon: Settings },
+] as const;
+
+export function MemberNav() {
+  const { pathname } = useLocation();
+  return (
+    <div className="mb-8 -mx-2 flex gap-1 overflow-x-auto border-b border-border px-2">
+      {items.map((it) => {
+        const active = pathname === it.to;
+        return (
+          <Link
+            key={it.to}
+            to={it.to}
+            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition-colors ${
+              active ? "border-primary text-ink" : "border-transparent text-ink-soft hover:text-ink"
+            }`}
+          >
+            <it.icon className="h-4 w-4" /> {it.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
