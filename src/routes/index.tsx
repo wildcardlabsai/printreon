@@ -6,6 +6,8 @@ import heroImg from "@/assets/hero.jpg";
 import {
   Layers, Lock, Sparkles, TrendingUp, Share2, Wallet,
   Upload, CreditCard, Rocket, ArrowRight, Check, Box,
+  Mail, MessageSquare, Heart, Tag, Gift, Package, BarChart3,
+  Bell, Banknote, ShieldCheck, Users, FileBox, Hammer, Megaphone,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -32,6 +34,9 @@ function Landing() {
       <BuiltFor />
       <HowItWorks />
       <WhyCreators />
+      <EverythingIncluded />
+      <PaymentsAndPayouts />
+      <CommunityFeatures />
       <ForSupporters />
       <GrowthTools />
       <Pricing />
