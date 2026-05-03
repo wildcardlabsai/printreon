@@ -169,10 +169,11 @@ function FilesPage() {
       <div className="lg:col-span-2">
         <h2 className="text-lg font-bold text-ink">Your library ({files.length})</h2>
         {files.length === 0 ? (
-          <div className="card-soft mt-3 text-center">
-            <FileBox className="mx-auto h-10 w-10 text-primary" />
-            <p className="mt-2 text-ink-soft">No files yet. Upload your first STL.</p>
-          </div>
+          <EmptyState
+            icon={FileBox}
+            title="Your library is empty"
+            description="Upload your first STL or 3MF on the left. You can keep it as a draft, set it as a freebie, or lock it behind a tier."
+          />
         ) : (
           <ul className="mt-3 grid gap-3">
             {files.map((f) => (

@@ -5,6 +5,7 @@ import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { listSubscribersForOwnCreator } from "@/server/admin.functions";
 import { Users, Mail, Search } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export const Route = createFileRoute("/dashboard/subscribers")({
   component: SubscribersPage,
@@ -66,10 +67,13 @@ function SubscribersPage() {
 
       <h2 className="mt-6 text-lg font-bold text-ink">Subscribers ({subs.length})</h2>
       {subs.length === 0 ? (
-        <div className="card-soft mt-3 text-center">
-          <Users className="mx-auto h-10 w-10 text-primary" />
-          <p className="mt-2 text-ink-soft">No subscribers yet. Share your page to get going.</p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="No subscribers yet"
+          description="Share your creator page on social to start growing your community. Once members subscribe, they'll show up here."
+          actionLabel={creator?.slug ? "Open my page" : undefined}
+          actionTo={creator?.slug ? `/c/${creator.slug}` : undefined}
+        />
       ) : (
         <div className="card-soft mt-3 overflow-x-auto p-0">
           <table className="w-full text-sm">

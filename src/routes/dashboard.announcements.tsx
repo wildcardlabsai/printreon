@@ -59,10 +59,11 @@ function AnnouncementsPage() {
       <div className="lg:col-span-2">
         <h2 className="text-lg font-bold text-ink">Recent updates</h2>
         {items.length === 0 ? (
-          <div className="card-soft mt-3 text-center">
-            <Megaphone className="mx-auto h-10 w-10 text-primary" />
-            <p className="mt-2 text-ink-soft">No updates posted yet.</p>
-          </div>
+          <EmptyState
+            icon={Megaphone}
+            title="No updates yet"
+            description="Send a quick note to followers, subscribers, or a specific tier. Great for new drops, behind-the-scenes, or polls."
+          />
         ) : (
           <ul className="mt-3 grid gap-3">
             {items.map((i) => (
