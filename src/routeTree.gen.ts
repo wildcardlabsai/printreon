@@ -29,8 +29,10 @@ import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
 import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
 import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -133,6 +135,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPayoutsRoute = DashboardPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
   id: '/files',
   path: '/files',
@@ -141,6 +148,11 @@ const DashboardFilesRoute = DashboardFilesRouteImport.update({
 const DashboardAnnouncementsRoute = DashboardAnnouncementsRouteImport.update({
   id: '/announcements',
   path: '/announcements',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => DashboardRoute,
 } as any)
 const CSlugRoute = CSlugRouteImport.update({
@@ -161,8 +173,10 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -184,8 +198,10 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -210,8 +226,10 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/c/$slug': typeof CSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -237,8 +255,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -260,8 +280,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -285,8 +307,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/c/$slug'
+    | '/dashboard/analytics'
     | '/dashboard/announcements'
     | '/dashboard/files'
+    | '/dashboard/payouts'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -456,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/payouts': {
+      id: '/dashboard/payouts'
+      path: '/payouts'
+      fullPath: '/dashboard/payouts'
+      preLoaderRoute: typeof DashboardPayoutsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/files': {
       id: '/dashboard/files'
       path: '/files'
@@ -470,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAnnouncementsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/c/$slug': {
       id: '/c/$slug'
       path: '/c/$slug'
@@ -481,8 +519,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardPayoutsRoute: typeof DashboardPayoutsRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscribersRoute: typeof DashboardSubscribersRoute
   DashboardTiersRoute: typeof DashboardTiersRoute
@@ -490,8 +530,10 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardPayoutsRoute: DashboardPayoutsRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscribersRoute: DashboardSubscribersRoute,
   DashboardTiersRoute: DashboardTiersRoute,

@@ -1,12 +1,14 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings } from "lucide-react";
+import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/dashboard/files", label: "Files", icon: FileBox },
   { to: "/dashboard/tiers", label: "Tiers", icon: Layers },
   { to: "/dashboard/subscribers", label: "Subscribers", icon: Users },
+  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/dashboard/announcements", label: "Announcements", icon: Megaphone },
+  { to: "/dashboard/payouts", label: "Payouts", icon: Banknote },
   { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ] as const;
 
