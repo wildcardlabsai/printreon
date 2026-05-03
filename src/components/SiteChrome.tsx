@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useAuth } from "@/lib/auth-context";
 import { PARTNER } from "@/lib/site";
+import { LayoutDashboard, ShoppingBag, Plus } from "lucide-react";
 
 export function SiteHeader() {
   const { user, isCreator, isAdmin, signOut } = useAuth();
@@ -17,11 +18,28 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           {user ? (
             <>
-              {isAdmin && <Link to="/admin" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">Admin</Link>}
-              <Link to={isCreator ? "/dashboard" : "/me"} className="btn-ghost h-9 px-3 py-2 text-sm">
-                Dashboard
+              {isAdmin && (
+                <Link to="/admin" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
+                  Admin
+                </Link>
+              )}
+              <Link to="/me" className="btn-ghost h-9 px-3 py-2 text-sm" title="Your buyer account">
+                <ShoppingBag className="mr-1.5 h-4 w-4" /> My account
               </Link>
-              <button onClick={signOut} className="text-sm font-medium text-ink-soft hover:text-ink">
+              {isCreator ? (
+                <Link to="/dashboard" className="btn-primary h-9 px-3 py-2 text-sm" title="Your creator studio">
+                  <LayoutDashboard className="mr-1.5 h-4 w-4" /> Creator studio
+                </Link>
+              ) : (
+                <Link
+                  to="/onboarding/creator"
+                  className="hidden text-sm font-medium text-primary hover:underline sm:inline-flex sm:items-center"
+                  title="Open a creator studio"
+                >
+                  <Plus className="mr-1 h-4 w-4" /> Become a creator
+                </Link>
+              )}
+              <button onClick={signOut} className="ml-1 text-sm font-medium text-ink-soft hover:text-ink">
                 Sign out
               </button>
             </>
