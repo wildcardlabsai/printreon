@@ -246,6 +246,62 @@ function AdminPage() {
             </tbody>
           </table>
         </div>
+
+        <h2 className="mt-10 text-lg font-bold text-ink">Support tickets ({tickets.filter((t) => t.status === "open").length} open)</h2>
+        <div className="card-soft mt-3 max-h-96 overflow-y-auto p-0">
+          <table className="w-full text-sm">
+            <thead className="bg-secondary text-left text-xs uppercase text-ink-soft">
+              <tr><th className="px-4 py-3">Subject</th><th className="px-4 py-3">From</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Created</th><th className="px-4 py-3"></th></tr>
+            </thead>
+            <tbody>
+              {tickets.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-6 text-center text-ink-soft">No tickets.</td></tr>
+              ) : tickets.map((t) => (
+                <tr key={t.id} className="border-t border-border">
+                  <td className="px-4 py-3">
+                    <div className="font-semibold text-ink">{t.subject}</div>
+                    <div className="text-xs text-ink-soft line-clamp-2">{t.body}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">{t.email}</td>
+                  <td className="px-4 py-3 capitalize">{t.status}</td>
+                  <td className="px-4 py-3 text-xs text-ink-soft">{new Date(t.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-right">
+                    {t.status === "open" && <button onClick={() => closeTicket(t.id)} className="btn-ghost h-8 text-xs">Close</button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="mt-10 text-lg font-bold text-ink">Blog</h2>
+        <div className="mt-3 grid gap-6 lg:grid-cols-2">
+          <div className="card-soft">
+            <h3 className="font-bold text-ink">New post</h3>
+            <input value={blogTitle} onChange={(e) => { setBlogTitle(e.target.value); if (!blogSlug) setBlogSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")); }} placeholder="Title" className="mt-3 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <input value={blogSlug} onChange={(e) => setBlogSlug(e.target.value)} placeholder="slug-here" className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm font-mono" />
+            <input value={blogExcerpt} onChange={(e) => setBlogExcerpt(e.target.value)} placeholder="Short excerpt" className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <textarea value={blogBody} onChange={(e) => setBlogBody(e.target.value)} placeholder="Markdown body" rows={6} className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <button onClick={publishBlog} className="btn-primary mt-3">Publish</button>
+          </div>
+          <div className="card-soft">
+            <h3 className="font-bold text-ink">Posts ({blog.length})</h3>
+            <div className="mt-3 max-h-96 space-y-2 overflow-y-auto">
+              {blog.map((b) => (
+                <div key={b.id} className="flex items-center justify-between rounded-lg border border-border p-2 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-semibold text-ink">{b.title}</div>
+                    <div className="text-xs text-ink-soft">/blog/{b.slug} · {b.is_published ? "Published" : "Draft"}</div>
+                  </div>
+                  <div className="flex gap-1">
+                    <button onClick={() => toggleBlog(b)} className="btn-ghost h-8 text-xs">{b.is_published ? "Unpublish" : "Publish"}</button>
+                    <button onClick={() => deleteBlog(b.id)} className="btn-ghost h-8 text-xs text-destructive">Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
