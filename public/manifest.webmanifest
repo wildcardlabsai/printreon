@@ -1,0 +1,13 @@
+{
+  "name": "MakerMind Club",
+  "short_name": "MakerMind",
+  "description": "Memberships for 3D printing creators",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ea7a2c",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}
