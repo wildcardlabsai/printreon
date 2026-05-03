@@ -22,7 +22,7 @@ export function createStripeClient(env: StripeEnv): Stripe {
 
   return new Stripe(connectionApiKey, {
     apiVersion: "2026-03-25.dahlia" as any,
-    httpClient: Stripe.createFetchHttpClient(((input: any, init?: RequestInit) => {
+    httpClient: Stripe.createFetchHttpClient((async (input: any, init?: RequestInit) => {
       const url = typeof input === "string" || input instanceof URL ? input.toString() : (input as Request).url;
       const gatewayUrl = url.replace("https://api.stripe.com", GATEWAY_STRIPE_BASE);
       return fetch(gatewayUrl, {
@@ -33,7 +33,7 @@ export function createStripeClient(env: StripeEnv): Stripe {
           "Lovable-API-Key": lovableApiKey,
         },
       });
-    }),
+    }) as any),
   });
 }
 
