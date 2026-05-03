@@ -37,6 +37,7 @@ import { Route as MeSettingsRouteImport } from './routes/me.settings'
 import { Route as MePrintLogRouteImport } from './routes/me.print-log'
 import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
 import { Route as MeMessagesRouteImport } from './routes/me.messages'
+import { Route as MeGiftsRouteImport } from './routes/me.gifts'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
@@ -197,6 +198,11 @@ const MeMessagesRoute = MeMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => MeRoute,
 } as any)
+const MeGiftsRoute = MeGiftsRouteImport.update({
+  id: '/gifts',
+  path: '/gifts',
+  getParentRoute: () => MeRoute,
+} as any)
 const MeFollowingRoute = MeFollowingRouteImport.update({
   id: '/following',
   path: '/following',
@@ -332,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/gifts': typeof MeGiftsRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -379,6 +386,7 @@ export interface FileRoutesByTo {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/gifts': typeof MeGiftsRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -429,6 +437,7 @@ export interface FileRoutesById {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/gifts': typeof MeGiftsRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -480,6 +489,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/gifts'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -527,6 +537,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/gifts'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -576,6 +587,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/gifts'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -809,6 +821,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeMessagesRouteImport
       parentRoute: typeof MeRoute
     }
+    '/me/gifts': {
+      id: '/me/gifts'
+      path: '/gifts'
+      fullPath: '/me/gifts'
+      preLoaderRoute: typeof MeGiftsRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/me/following': {
       id: '/me/following'
       path: '/following'
@@ -1008,6 +1027,7 @@ const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
 interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
+  MeGiftsRoute: typeof MeGiftsRoute
   MeMessagesRoute: typeof MeMessagesRoute
   MeNotificationsRoute: typeof MeNotificationsRoute
   MePrintLogRoute: typeof MePrintLogRoute
@@ -1020,6 +1040,7 @@ interface MeRouteChildren {
 const MeRouteChildren: MeRouteChildren = {
   MeDownloadsRoute: MeDownloadsRoute,
   MeFollowingRoute: MeFollowingRoute,
+  MeGiftsRoute: MeGiftsRoute,
   MeMessagesRoute: MeMessagesRoute,
   MeNotificationsRoute: MeNotificationsRoute,
   MePrintLogRoute: MePrintLogRoute,
@@ -1057,12 +1078,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

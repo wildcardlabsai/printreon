@@ -19,10 +19,18 @@ function AdminPage() {
   const [creators, setCreators] = useState<any[]>([]);
   const [reports, setReports] = useState<any[]>([]);
   const [waitlist, setWaitlist] = useState<any[]>([]);
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [blog, setBlog] = useState<any[]>([]);
   const [stats, setStats] = useState({ creators: 0, files: 0, members: 0, subs: 0 });
   const [q, setQ] = useState("");
   const [grantEmail, setGrantEmail] = useState("");
   const [grantRole, setGrantRole] = useState<"admin" | "creator" | "member">("creator");
+
+  // Blog editor
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogSlug, setBlogSlug] = useState("");
+  const [blogExcerpt, setBlogExcerpt] = useState("");
+  const [blogBody, setBlogBody] = useState("");
 
   const setPublished = useServerFn(adminSetPublished);
   const grantRoleFn = useServerFn(adminGrantRole);
@@ -33,19 +41,54 @@ function AdminPage() {
   }, [user, loading, isAdmin, navigate]);
 
   const refresh = async () => {
-    const [{ data: c }, { data: r }, { data: w }, { count: cCount }, { count: fCount }, { count: mCount }, { count: sCount }] = await Promise.all([
+    const [{ data: c }, { data: r }, { data: w }, { data: tk }, { data: bl }, { count: cCount }, { count: fCount }, { count: mCount }, { count: sCount }] = await Promise.all([
       supabase.from("creator_profiles").select("*").order("created_at", { ascending: false }).limit(200),
       supabase.from("admin_reports").select("*").eq("status", "open").order("created_at", { ascending: false }),
       supabase.from("waitlist").select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("support_tickets").select("*").order("created_at", { ascending: false }).limit(100),
+      supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
       supabase.from("creator_profiles").select("*", { count: "exact", head: true }),
       supabase.from("creator_files").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "active"),
     ]);
-    setCreators(c ?? []); setReports(r ?? []); setWaitlist(w ?? []);
+    setCreators(c ?? []); setReports(r ?? []); setWaitlist(w ?? []); setTickets(tk ?? []); setBlog(bl ?? []);
     setStats({ creators: cCount ?? 0, files: fCount ?? 0, members: mCount ?? 0, subs: sCount ?? 0 });
   };
   useEffect(() => { if (isAdmin) refresh(); }, [isAdmin]);
+
+  const closeTicket = async (id: string) => {
+    const { error } = await supabase.from("support_tickets").update({ status: "closed" }).eq("id", id);
+    if (error) return toast.error(error.message);
+    setTickets((ts) => ts.map((t) => t.id === id ? { ...t, status: "closed" } : t));
+  };
+
+  const publishBlog = async () => {
+    if (!blogTitle || !blogSlug || !blogBody) return toast.error("Title, slug, and body required");
+    const { error } = await supabase.from("blog_posts").insert({
+      title: blogTitle, slug: blogSlug, excerpt: blogExcerpt, body: blogBody,
+      author_user_id: user!.id, is_published: true, published_at: new Date().toISOString(),
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Published");
+    setBlogTitle(""); setBlogSlug(""); setBlogExcerpt(""); setBlogBody("");
+    refresh();
+  };
+
+  const toggleBlog = async (b: any) => {
+    const { error } = await supabase.from("blog_posts").update({
+      is_published: !b.is_published,
+      published_at: !b.is_published ? new Date().toISOString() : b.published_at,
+    }).eq("id", b.id);
+    if (error) return toast.error(error.message);
+    refresh();
+  };
+
+  const deleteBlog = async (id: string) => {
+    if (!confirm("Delete this post?")) return;
+    await supabase.from("blog_posts").delete().eq("id", id);
+    refresh();
+  };
 
   const verify = async (cp: any, val: boolean) => {
     const { error } = await supabase.from("creator_profiles").update({ is_verified: val }).eq("id", cp.id);
@@ -202,6 +245,62 @@ function AdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <h2 className="mt-10 text-lg font-bold text-ink">Support tickets ({tickets.filter((t) => t.status === "open").length} open)</h2>
+        <div className="card-soft mt-3 max-h-96 overflow-y-auto p-0">
+          <table className="w-full text-sm">
+            <thead className="bg-secondary text-left text-xs uppercase text-ink-soft">
+              <tr><th className="px-4 py-3">Subject</th><th className="px-4 py-3">From</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Created</th><th className="px-4 py-3"></th></tr>
+            </thead>
+            <tbody>
+              {tickets.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-6 text-center text-ink-soft">No tickets.</td></tr>
+              ) : tickets.map((t) => (
+                <tr key={t.id} className="border-t border-border">
+                  <td className="px-4 py-3">
+                    <div className="font-semibold text-ink">{t.subject}</div>
+                    <div className="text-xs text-ink-soft line-clamp-2">{t.body}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">{t.email}</td>
+                  <td className="px-4 py-3 capitalize">{t.status}</td>
+                  <td className="px-4 py-3 text-xs text-ink-soft">{new Date(t.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-right">
+                    {t.status === "open" && <button onClick={() => closeTicket(t.id)} className="btn-ghost h-8 text-xs">Close</button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="mt-10 text-lg font-bold text-ink">Blog</h2>
+        <div className="mt-3 grid gap-6 lg:grid-cols-2">
+          <div className="card-soft">
+            <h3 className="font-bold text-ink">New post</h3>
+            <input value={blogTitle} onChange={(e) => { setBlogTitle(e.target.value); if (!blogSlug) setBlogSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")); }} placeholder="Title" className="mt-3 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <input value={blogSlug} onChange={(e) => setBlogSlug(e.target.value)} placeholder="slug-here" className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm font-mono" />
+            <input value={blogExcerpt} onChange={(e) => setBlogExcerpt(e.target.value)} placeholder="Short excerpt" className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <textarea value={blogBody} onChange={(e) => setBlogBody(e.target.value)} placeholder="Markdown body" rows={6} className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            <button onClick={publishBlog} className="btn-primary mt-3">Publish</button>
+          </div>
+          <div className="card-soft">
+            <h3 className="font-bold text-ink">Posts ({blog.length})</h3>
+            <div className="mt-3 max-h-96 space-y-2 overflow-y-auto">
+              {blog.map((b) => (
+                <div key={b.id} className="flex items-center justify-between rounded-lg border border-border p-2 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-semibold text-ink">{b.title}</div>
+                    <div className="text-xs text-ink-soft">/blog/{b.slug} · {b.is_published ? "Published" : "Draft"}</div>
+                  </div>
+                  <div className="flex gap-1">
+                    <button onClick={() => toggleBlog(b)} className="btn-ghost h-8 text-xs">{b.is_published ? "Unpublish" : "Publish"}</button>
+                    <button onClick={() => deleteBlog(b.id)} className="btn-ghost h-8 text-xs text-destructive">Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
