@@ -57,7 +57,6 @@ import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.a
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as MeSubscriptionsIndexRouteImport } from './routes/me.subscriptions.index'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -300,11 +299,6 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
-const MeSubscriptionsIndexRoute = MeSubscriptionsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MeSubscriptionsRoute,
-} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -356,12 +350,11 @@ export interface FileRoutesByFullPath {
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
-  '/me/subscriptions': typeof MeSubscriptionsRouteWithChildren
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
-  '/me/subscriptions/': typeof MeSubscriptionsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -406,11 +399,11 @@ export interface FileRoutesByTo {
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
-  '/me/subscriptions': typeof MeSubscriptionsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -458,12 +451,11 @@ export interface FileRoutesById {
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
-  '/me/subscriptions': typeof MeSubscriptionsRouteWithChildren
+  '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
-  '/me/subscriptions/': typeof MeSubscriptionsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -517,7 +509,6 @@ export interface FileRouteTypes {
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
-    | '/me/subscriptions/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -562,11 +553,11 @@ export interface FileRouteTypes {
     | '/me/notifications'
     | '/me/print-log'
     | '/me/settings'
+    | '/me/subscriptions'
     | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard'
     | '/me'
-    | '/me/subscriptions'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -618,7 +609,6 @@ export interface FileRouteTypes {
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
-    | '/me/subscriptions/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -985,13 +975,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
-    '/me/subscriptions/': {
-      id: '/me/subscriptions/'
-      path: '/'
-      fullPath: '/me/subscriptions/'
-      preLoaderRoute: typeof MeSubscriptionsIndexRouteImport
-      parentRoute: typeof MeSubscriptionsRoute
-    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -1062,18 +1045,6 @@ const LegalRouteChildren: LegalRouteChildren = {
 
 const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
 
-interface MeSubscriptionsRouteChildren {
-  MeSubscriptionsIndexRoute: typeof MeSubscriptionsIndexRoute
-}
-
-const MeSubscriptionsRouteChildren: MeSubscriptionsRouteChildren = {
-  MeSubscriptionsIndexRoute: MeSubscriptionsIndexRoute,
-}
-
-const MeSubscriptionsRouteWithChildren = MeSubscriptionsRoute._addFileChildren(
-  MeSubscriptionsRouteChildren,
-)
-
 interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
@@ -1082,7 +1053,7 @@ interface MeRouteChildren {
   MeNotificationsRoute: typeof MeNotificationsRoute
   MePrintLogRoute: typeof MePrintLogRoute
   MeSettingsRoute: typeof MeSettingsRoute
-  MeSubscriptionsRoute: typeof MeSubscriptionsRouteWithChildren
+  MeSubscriptionsRoute: typeof MeSubscriptionsRoute
   MeWishlistRoute: typeof MeWishlistRoute
   MeIndexRoute: typeof MeIndexRoute
 }
@@ -1095,7 +1066,7 @@ const MeRouteChildren: MeRouteChildren = {
   MeNotificationsRoute: MeNotificationsRoute,
   MePrintLogRoute: MePrintLogRoute,
   MeSettingsRoute: MeSettingsRoute,
-  MeSubscriptionsRoute: MeSubscriptionsRouteWithChildren,
+  MeSubscriptionsRoute: MeSubscriptionsRoute,
   MeWishlistRoute: MeWishlistRoute,
   MeIndexRoute: MeIndexRoute,
 }
@@ -1129,3 +1100,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
