@@ -14,16 +14,555 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_reports: {
+        Row: {
+          created_at: string
+          creator_id: string | null
+          file_id: string | null
+          id: string
+          reason: string
+          reported_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id?: string | null
+          file_id?: string | null
+          id?: string
+          reason: string
+          reported_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string | null
+          file_id?: string | null
+          id?: string
+          reason?: string
+          reported_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_reports_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_reports_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_announcements: {
+        Row: {
+          audience: string
+          content: string
+          created_at: string
+          creator_id: string
+          id: string
+          tier_id: string | null
+          title: string
+        }
+        Insert: {
+          audience?: string
+          content: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          tier_id?: string | null
+          title: string
+        }
+        Update: {
+          audience?: string
+          content?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          tier_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_announcements_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_announcements_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_files: {
+        Row: {
+          category: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          download_count: number
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          is_free: boolean
+          is_published: boolean
+          preview_images: Json
+          slug: string
+          tags: string[] | null
+          tier_required_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          download_count?: number
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_free?: boolean
+          is_published?: boolean
+          preview_images?: Json
+          slug: string
+          tags?: string[] | null
+          tier_required_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          download_count?: number
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_free?: boolean
+          is_published?: boolean
+          preview_images?: Json
+          slug?: string
+          tags?: string[] | null
+          tier_required_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_files_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_files_tier_required_id_fkey"
+            columns: ["tier_required_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_profiles: {
+        Row: {
+          banner_image_url: string | null
+          bio: string | null
+          connected_account_id: string | null
+          created_at: string
+          cults_url: string | null
+          display_name: string
+          id: string
+          instagram_url: string | null
+          is_published: boolean
+          is_verified: boolean
+          makerworld_url: string | null
+          payout_status: string | null
+          platform_fee_percentage: number | null
+          printables_url: string | null
+          profile_image_url: string | null
+          short_intro: string | null
+          slug: string
+          tiktok_url: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          banner_image_url?: string | null
+          bio?: string | null
+          connected_account_id?: string | null
+          created_at?: string
+          cults_url?: string | null
+          display_name: string
+          id?: string
+          instagram_url?: string | null
+          is_published?: boolean
+          is_verified?: boolean
+          makerworld_url?: string | null
+          payout_status?: string | null
+          platform_fee_percentage?: number | null
+          printables_url?: string | null
+          profile_image_url?: string | null
+          short_intro?: string | null
+          slug: string
+          tiktok_url?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          banner_image_url?: string | null
+          bio?: string | null
+          connected_account_id?: string | null
+          created_at?: string
+          cults_url?: string | null
+          display_name?: string
+          id?: string
+          instagram_url?: string | null
+          is_published?: boolean
+          is_verified?: boolean
+          makerworld_url?: string | null
+          payout_status?: string | null
+          platform_fee_percentage?: number | null
+          printables_url?: string | null
+          profile_image_url?: string | null
+          short_intro?: string | null
+          slug?: string
+          tiktok_url?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      creator_tiers: {
+        Row: {
+          benefits: Json
+          created_at: string
+          creator_id: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          sort_order: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          benefits?: Json
+          created_at?: string
+          creator_id: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price: number
+          sort_order?: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          benefits?: Json
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          sort_order?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_tiers_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      downloads: {
+        Row: {
+          creator_id: string
+          downloaded_at: string
+          file_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          creator_id: string
+          downloaded_at?: string
+          file_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          creator_id?: string
+          downloaded_at?: string
+          file_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "downloads_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "downloads_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      followers: {
+        Row: {
+          created_at: string
+          creator_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "followers_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          creator_id: string | null
+          id: string
+          referral_code: string
+          referred_user_id: string | null
+          referrer_user_id: string | null
+          reward_type: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id?: string | null
+          id?: string
+          referral_code: string
+          referred_user_id?: string | null
+          referrer_user_id?: string | null
+          reward_type?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string | null
+          id?: string
+          referral_code?: string
+          referred_user_id?: string | null
+          referrer_user_id?: string | null
+          reward_type?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          creator_id: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          creator_id: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          creator_id?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role_interest: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role_interest?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role_interest?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "member" | "creator" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +689,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["member", "creator", "admin"],
+    },
   },
 } as const
