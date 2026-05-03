@@ -3,8 +3,8 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { Check, Loader2 } from "lucide-react";
 
 const groups: Array<{ status: "shipped" | "next" | "later"; items: string[] }> = [
-  { status: "shipped", items: ["Creator dashboard", "Tiered memberships", "STL/3MF uploads", "Member dashboard", "Admin tools", "Posts, comments, DMs", "Bundles, promo codes", "Wishlist + collections", "Print log"] },
-  { status: "next", items: ["Stripe checkout & payouts", "Email digests via Resend", "STL 3D viewer", "Affiliate program payouts", "Mobile PWA"] },
+  { status: "shipped", items: ["Creator dashboard", "Tiered memberships", "STL/3MF uploads", "Member dashboard", "Admin tools", "Posts, comments, DMs", "Bundles, promo codes", "Wishlist + collections", "Print log", "Embedded Stripe checkout", "Stripe Connect payouts", "Subscription upgrades, downgrades & cancel", "New-drop email notifications to followers", "Polished dashboard empty states"] },
+  { status: "next", items: ["STL 3D viewer in browser", "Weekly creator email digests", "Affiliate program payouts", "Mobile PWA", "Admin moderation queue"] },
   { status: "later", items: ["Print farm integrations", "Marketplace search", "Native iOS/Android apps", "AI auto-tagging for STLs"] },
 ];
 
