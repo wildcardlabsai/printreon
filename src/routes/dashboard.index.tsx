@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { Plus, Upload, Megaphone, Layers, Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
+import { creatorUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
