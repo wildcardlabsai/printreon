@@ -15,6 +15,7 @@ function PostsPage() {
   const { creator } = useCreatorProfile();
   const [posts, setPosts] = useState<any[]>([]);
   const [form, setForm] = useState({ title: "", body: "", audience: "everyone" });
+  const notify = useServerFn(notifyOnPublish);
 
   const load = async () => {
     if (!creator) return;
