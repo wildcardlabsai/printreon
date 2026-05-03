@@ -46,8 +46,12 @@ import { Route as LegalCreatorAgreementRouteImport } from './routes/legal.creato
 import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
 import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardPromosRouteImport } from './routes/dashboard.promos'
+import { Route as DashboardPostsRouteImport } from './routes/dashboard.posts'
 import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
+import { Route as DashboardMessagesRouteImport } from './routes/dashboard.messages'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
+import { Route as DashboardBundlesRouteImport } from './routes/dashboard.bundles'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
@@ -238,14 +242,34 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPromosRoute = DashboardPromosRouteImport.update({
+  id: '/promos',
+  path: '/promos',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPostsRoute = DashboardPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPayoutsRoute = DashboardPayoutsRouteImport.update({
   id: '/payouts',
   path: '/payouts',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardMessagesRoute = DashboardMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
   id: '/files',
   path: '/files',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBundlesRoute = DashboardBundlesRouteImport.update({
+  id: '/bundles',
+  path: '/bundles',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardAnnouncementsRoute = DashboardAnnouncementsRouteImport.update({
@@ -293,8 +317,12 @@ export interface FileRoutesByFullPath {
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -336,8 +364,12 @@ export interface FileRoutesByTo {
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -382,8 +414,12 @@ export interface FileRoutesById {
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
+  '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
+  '/dashboard/posts': typeof DashboardPostsRoute
+  '/dashboard/promos': typeof DashboardPromosRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
@@ -429,8 +465,12 @@ export interface FileRouteTypes {
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -472,8 +512,12 @@ export interface FileRouteTypes {
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -517,8 +561,12 @@ export interface FileRouteTypes {
     | '/c/$slug'
     | '/dashboard/analytics'
     | '/dashboard/announcements'
+    | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/messages'
     | '/dashboard/payouts'
+    | '/dashboard/posts'
+    | '/dashboard/promos'
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
@@ -824,6 +872,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/promos': {
+      id: '/dashboard/promos'
+      path: '/promos'
+      fullPath: '/dashboard/promos'
+      preLoaderRoute: typeof DashboardPromosRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/posts': {
+      id: '/dashboard/posts'
+      path: '/posts'
+      fullPath: '/dashboard/posts'
+      preLoaderRoute: typeof DashboardPostsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/payouts': {
       id: '/dashboard/payouts'
       path: '/payouts'
@@ -831,11 +893,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPayoutsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/messages': {
+      id: '/dashboard/messages'
+      path: '/messages'
+      fullPath: '/dashboard/messages'
+      preLoaderRoute: typeof DashboardMessagesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/files': {
       id: '/dashboard/files'
       path: '/files'
       fullPath: '/dashboard/files'
       preLoaderRoute: typeof DashboardFilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/bundles': {
+      id: '/dashboard/bundles'
+      path: '/bundles'
+      fullPath: '/dashboard/bundles'
+      preLoaderRoute: typeof DashboardBundlesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/announcements': {
@@ -882,8 +958,12 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 interface DashboardRouteChildren {
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
+  DashboardBundlesRoute: typeof DashboardBundlesRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardMessagesRoute: typeof DashboardMessagesRoute
   DashboardPayoutsRoute: typeof DashboardPayoutsRoute
+  DashboardPostsRoute: typeof DashboardPostsRoute
+  DashboardPromosRoute: typeof DashboardPromosRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscribersRoute: typeof DashboardSubscribersRoute
   DashboardTiersRoute: typeof DashboardTiersRoute
@@ -893,8 +973,12 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
+  DashboardBundlesRoute: DashboardBundlesRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardMessagesRoute: DashboardMessagesRoute,
   DashboardPayoutsRoute: DashboardPayoutsRoute,
+  DashboardPostsRoute: DashboardPostsRoute,
+  DashboardPromosRoute: DashboardPromosRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscribersRoute: DashboardSubscribersRoute,
   DashboardTiersRoute: DashboardTiersRoute,
