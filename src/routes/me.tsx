@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteChrome";
 import { MemberNav } from "@/components/MemberNav";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect } from "react";
 
@@ -31,8 +32,11 @@ function MemberLayout() {
       <SiteHeader />
       <div className="container-page py-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Your account</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+            Your account · buying
+          </p>
           <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">{user.email}</h1>
+          <RoleSwitcher active="buying" />
         </div>
         <MemberNav />
         <Outlet />

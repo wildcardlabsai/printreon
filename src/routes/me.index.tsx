@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Compass, Download, Heart, Sparkles } from "lucide-react";
+import { Compass, Download, Heart, Sparkles, Palette, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/me/")({
   component: MemberOverview,
@@ -31,6 +31,25 @@ function MemberOverview() {
         <Stat label="Files downloaded" value={stats.downloads} icon={Download} />
         <Stat label="Creators followed" value={stats.following} icon={Compass} />
       </div>
+      {isCreator && (
+        <Link
+          to="/dashboard"
+          className="card-soft mt-6 flex items-center justify-between gap-4 border-primary/40 bg-primary/5 hover:border-primary"
+        >
+          <div className="flex items-start gap-3">
+            <Palette className="mt-0.5 h-6 w-6 text-primary" />
+            <div>
+              <h3 className="text-base font-bold text-ink">You also have a creator studio</h3>
+              <p className="mt-1 text-sm text-ink-soft">
+                Switch to your seller view to manage tiers, files, subscribers and payouts.
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center text-sm font-semibold text-primary">
+            Open studio <ArrowRight className="ml-1 h-4 w-4" />
+          </span>
+        </Link>
+      )}
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Link to="/explore" className="card-soft block hover:border-primary">
           <Compass className="h-6 w-6 text-primary" />

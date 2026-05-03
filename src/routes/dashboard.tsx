@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteChrome";
 import { DashboardNav } from "@/components/DashboardNav";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useEffect } from "react";
@@ -37,10 +38,13 @@ function DashboardLayout() {
     <div className="min-h-screen bg-surface">
       <SiteHeader />
       <div className="container-page py-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">Creator studio</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              Creator studio · selling
+            </p>
             <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">{creator.display_name}</h1>
+            <RoleSwitcher active="selling" />
           </div>
           <Link
             to="/c/$slug"
