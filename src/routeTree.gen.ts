@@ -31,8 +31,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MeIndexRouteImport } from './routes/me.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creator'
+import { Route as MeWishlistRouteImport } from './routes/me.wishlist'
 import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
 import { Route as MeSettingsRouteImport } from './routes/me.settings'
+import { Route as MePrintLogRouteImport } from './routes/me.print-log'
+import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
+import { Route as MeMessagesRouteImport } from './routes/me.messages'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
@@ -159,6 +163,11 @@ const OnboardingCreatorRoute = OnboardingCreatorRouteImport.update({
   path: '/onboarding/creator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeWishlistRoute = MeWishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => MeRoute,
+} as any)
 const MeSubscriptionsRoute = MeSubscriptionsRouteImport.update({
   id: '/subscriptions',
   path: '/subscriptions',
@@ -167,6 +176,21 @@ const MeSubscriptionsRoute = MeSubscriptionsRouteImport.update({
 const MeSettingsRoute = MeSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => MeRoute,
+} as any)
+const MePrintLogRoute = MePrintLogRouteImport.update({
+  id: '/print-log',
+  path: '/print-log',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeNotificationsRoute = MeNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeMessagesRoute = MeMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => MeRoute,
 } as any)
 const MeFollowingRoute = MeFollowingRouteImport.update({
@@ -280,8 +304,12 @@ export interface FileRoutesByFullPath {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
@@ -319,8 +347,12 @@ export interface FileRoutesByTo {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
@@ -361,8 +393,12 @@ export interface FileRoutesById {
   '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
+  '/me/messages': typeof MeMessagesRoute
+  '/me/notifications': typeof MeNotificationsRoute
+  '/me/print-log': typeof MePrintLogRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
+  '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
@@ -404,8 +440,12 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
@@ -443,8 +483,12 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard'
     | '/me'
@@ -484,8 +528,12 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
+    | '/me/messages'
+    | '/me/notifications'
+    | '/me/print-log'
     | '/me/settings'
     | '/me/subscriptions'
+    | '/me/wishlist'
     | '/onboarding/creator'
     | '/dashboard/'
     | '/me/'
@@ -671,6 +719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCreatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me/wishlist': {
+      id: '/me/wishlist'
+      path: '/wishlist'
+      fullPath: '/me/wishlist'
+      preLoaderRoute: typeof MeWishlistRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/me/subscriptions': {
       id: '/me/subscriptions'
       path: '/subscriptions'
@@ -683,6 +738,27 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/me/settings'
       preLoaderRoute: typeof MeSettingsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/print-log': {
+      id: '/me/print-log'
+      path: '/print-log'
+      fullPath: '/me/print-log'
+      preLoaderRoute: typeof MePrintLogRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/notifications': {
+      id: '/me/notifications'
+      path: '/notifications'
+      fullPath: '/me/notifications'
+      preLoaderRoute: typeof MeNotificationsRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/messages': {
+      id: '/me/messages'
+      path: '/messages'
+      fullPath: '/me/messages'
+      preLoaderRoute: typeof MeMessagesRouteImport
       parentRoute: typeof MeRoute
     }
     '/me/following': {
@@ -848,16 +924,24 @@ const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
 interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
+  MeMessagesRoute: typeof MeMessagesRoute
+  MeNotificationsRoute: typeof MeNotificationsRoute
+  MePrintLogRoute: typeof MePrintLogRoute
   MeSettingsRoute: typeof MeSettingsRoute
   MeSubscriptionsRoute: typeof MeSubscriptionsRoute
+  MeWishlistRoute: typeof MeWishlistRoute
   MeIndexRoute: typeof MeIndexRoute
 }
 
 const MeRouteChildren: MeRouteChildren = {
   MeDownloadsRoute: MeDownloadsRoute,
   MeFollowingRoute: MeFollowingRoute,
+  MeMessagesRoute: MeMessagesRoute,
+  MeNotificationsRoute: MeNotificationsRoute,
+  MePrintLogRoute: MePrintLogRoute,
   MeSettingsRoute: MeSettingsRoute,
   MeSubscriptionsRoute: MeSubscriptionsRoute,
+  MeWishlistRoute: MeWishlistRoute,
   MeIndexRoute: MeIndexRoute,
 }
 
