@@ -152,8 +152,9 @@ function CreatorPage() {
                   )}
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
-                <button className="btn-ghost mt-4 w-full" disabled={!f.is_free}>
-                  <Download className="mr-2 h-4 w-4" />{f.is_free ? "Download (login required)" : "Subscribe to unlock"}
+                <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost mt-4 w-full">
+                  {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                  {f.is_free ? "Download" : "Download (members only)"}
                 </button>
               </div>
             ))}
