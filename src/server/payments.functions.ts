@@ -95,24 +95,28 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
     const useConnect =
       creatorProfile?.connected_account_id && creatorProfile?.payout_status === "active";
 
-    const session = await stripe.checkout.sessions.create({
-      line_items: [{ price: stripePriceId, quantity: 1 }],
-      mode: "subscription",
-      ui_mode: "embedded_page",
-      return_url: data.returnUrl,
-      ...(profile?.email && { customer_email: profile.email }),
-      metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
-      subscription_data: {
+    try {
+      const session = await stripe.checkout.sessions.create({
+        line_items: [{ price: stripePriceId, quantity: 1 }],
+        mode: "subscription",
+        ui_mode: "embedded_page",
+        return_url: data.returnUrl,
+        ...(profile?.email && { customer_email: profile.email }),
         metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
-        ...(useConnect && {
-          application_fee_percent: feePct,
-          transfer_data: { destination: creatorProfile!.connected_account_id! },
-        }),
-      },
-    });
-
-    if (!session.client_secret) throw new Error("Stripe did not return a client secret");
-    return { clientSecret: session.client_secret };
+        subscription_data: {
+          metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
+          ...(useConnect && {
+            application_fee_percent: feePct,
+            transfer_data: { destination: creatorProfile!.connected_account_id! },
+          }),
+        },
+      });
+      if (!session.client_secret) throw new Error("Stripe did not return a client secret");
+      return { clientSecret: session.client_secret };
+    } catch (e: any) {
+      console.error("[checkout] stripe error:", e?.message ?? e);
+      throw new Error(e?.message ?? "Could not start checkout");
+    }
   });
 
 const PortalInput = z.object({
