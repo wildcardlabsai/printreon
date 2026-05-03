@@ -203,7 +203,11 @@ function CreatorPage() {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             {files.map((f) => (
               <div key={f.id} className="card-soft">
-                <div className="aspect-video overflow-hidden rounded-lg bg-secondary" />
+                <div className="aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
+                  {f.preview_images && Array.isArray(f.preview_images) && f.preview_images[0]
+                    ? <img src={f.preview_images[0]} alt="" className="h-full w-full object-cover" />
+                    : "STL preview"}
+                </div>
                 <div className="mt-3 flex items-center justify-between">
                   <h3 className="font-semibold text-ink">{f.title}</h3>
                   {f.is_free ? (
@@ -213,10 +217,20 @@ function CreatorPage() {
                   )}
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
-                <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost mt-4 w-full">
-                  {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                  {f.is_free ? "Download" : "Download (members only)"}
-                </button>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink-soft">
+                  {f.material && <span className="rounded-full bg-secondary px-2 py-0.5">{f.material}</span>}
+                  {f.print_time_minutes && <span className="rounded-full bg-secondary px-2 py-0.5">{Math.round(f.print_time_minutes/60)}h print</span>}
+                  {f.supports_required != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.supports_required ? "Supports" : "No supports"}</span>}
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
+                    {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                    Download
+                  </button>
+                  <button onClick={() => toggleWishlist(f.id)} className="btn-ghost" title="Save to wishlist">
+                    <Bookmark className={`h-4 w-4 ${wishlist.has(f.id) ? "fill-current text-primary" : ""}`} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
