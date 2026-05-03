@@ -75,6 +75,12 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!tier) throw new Error("Tier not found");
 
+    const { data: creatorProfile } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("connected_account_id, payout_status, platform_fee_percentage")
+      .eq("id", tier.creator_id)
+      .maybeSingle();
+
     const stripePriceId = await ensureStripePriceForTier(data.environment, data.tierId);
 
     // Get user email
