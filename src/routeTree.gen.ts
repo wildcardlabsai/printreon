@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ForCreatorsRouteImport } from './routes/for-creators'
@@ -33,6 +34,10 @@ import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
 import { Route as MeSettingsRouteImport } from './routes/me.settings'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalDmcaRouteImport } from './routes/legal.dmca'
+import { Route as LegalCreatorAgreementRouteImport } from './routes/legal.creator-agreement'
 import { Route as DashboardTiersRouteImport } from './routes/dashboard.tiers'
 import { Route as DashboardSubscribersRouteImport } from './routes/dashboard.subscribers'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
@@ -66,6 +71,11 @@ const PressRoute = PressRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -163,6 +173,26 @@ const MeDownloadsRoute = MeDownloadsRouteImport.update({
   path: '/downloads',
   getParentRoute: () => MeRoute,
 } as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalDmcaRoute = LegalDmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalCreatorAgreementRoute = LegalCreatorAgreementRouteImport.update({
+  id: '/creator-agreement',
+  path: '/creator-agreement',
+  getParentRoute: () => LegalRoute,
+} as any)
 const DashboardTiersRoute = DashboardTiersRouteImport.update({
   id: '/tiers',
   path: '/tiers',
@@ -222,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
   '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
@@ -236,6 +267,10 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/settings': typeof MeSettingsRoute
@@ -256,6 +291,7 @@ export interface FileRoutesByTo {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
   '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -269,6 +305,10 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/settings': typeof MeSettingsRoute
@@ -291,6 +331,7 @@ export interface FileRoutesById {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
   '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
@@ -305,6 +346,10 @@ export interface FileRoutesById {
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscribers': typeof DashboardSubscribersRoute
   '/dashboard/tiers': typeof DashboardTiersRoute
+  '/legal/creator-agreement': typeof LegalCreatorAgreementRoute
+  '/legal/dmca': typeof LegalDmcaRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/settings': typeof MeSettingsRoute
@@ -328,6 +373,7 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/legal'
     | '/me'
     | '/press'
     | '/pricing'
@@ -342,6 +388,10 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
     | '/me/settings'
@@ -362,6 +412,7 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/legal'
     | '/press'
     | '/pricing'
     | '/reset-password'
@@ -375,6 +426,10 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
     | '/me/settings'
@@ -396,6 +451,7 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/legal'
     | '/me'
     | '/press'
     | '/pricing'
@@ -410,6 +466,10 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/subscribers'
     | '/dashboard/tiers'
+    | '/legal/creator-agreement'
+    | '/legal/dmca'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/me/downloads'
     | '/me/following'
     | '/me/settings'
@@ -432,6 +492,7 @@ export interface RootRouteChildren {
   ForCreatorsRoute: typeof ForCreatorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HelpRoute: typeof HelpRoute
+  LegalRoute: typeof LegalRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
   PressRoute: typeof PressRoute
   PricingRoute: typeof PricingRoute
@@ -476,6 +537,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -611,6 +679,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeDownloadsRouteImport
       parentRoute: typeof MeRoute
     }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/dmca': {
+      id: '/legal/dmca'
+      path: '/dmca'
+      fullPath: '/legal/dmca'
+      preLoaderRoute: typeof LegalDmcaRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/creator-agreement': {
+      id: '/legal/creator-agreement'
+      path: '/creator-agreement'
+      fullPath: '/legal/creator-agreement'
+      preLoaderRoute: typeof LegalCreatorAgreementRouteImport
+      parentRoute: typeof LegalRoute
+    }
     '/dashboard/tiers': {
       id: '/dashboard/tiers'
       path: '/tiers'
@@ -713,6 +809,22 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface LegalRouteChildren {
+  LegalCreatorAgreementRoute: typeof LegalCreatorAgreementRoute
+  LegalDmcaRoute: typeof LegalDmcaRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalCreatorAgreementRoute: LegalCreatorAgreementRoute,
+  LegalDmcaRoute: LegalDmcaRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
@@ -744,6 +856,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForCreatorsRoute: ForCreatorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HelpRoute: HelpRoute,
+  LegalRoute: LegalRouteWithChildren,
   MeRoute: MeRouteWithChildren,
   PressRoute: PressRoute,
   PricingRoute: PricingRoute,
