@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyOnPublish } from "@/server/notify.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/posts")({
@@ -13,6 +15,7 @@ function PostsPage() {
   const { creator } = useCreatorProfile();
   const [posts, setPosts] = useState<any[]>([]);
   const [form, setForm] = useState({ title: "", body: "", audience: "everyone" });
+  const notify = useServerFn(notifyOnPublish);
 
   const load = async () => {
     if (!creator) return;
@@ -24,9 +27,20 @@ function PostsPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!creator) return;
-    const { error } = await supabase.from("creator_posts").insert({ creator_id: creator.id, ...form, status: "published", published_at: new Date().toISOString() });
+    const { data: inserted, error } = await supabase
+      .from("creator_posts")
+      .insert({ creator_id: creator.id, ...form, status: "published", published_at: new Date().toISOString() })
+      .select("id")
+      .single();
     if (error) return toast.error(error.message);
     setForm({ title: "", body: "", audience: "everyone" });
+    if (inserted?.id) {
+      try {
+        const r = await notify({ data: { kind: "post", itemId: inserted.id } });
+        if (r.notified > 0) toast.success(`Published — notified ${r.notified} ${r.notified === 1 ? "person" : "people"}`);
+        else toast.success("Published");
+      } catch { toast.success("Published"); }
+    }
     load();
   };
 

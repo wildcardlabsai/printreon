@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyOnPublish } from "@/server/notify.functions";
 import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -81,9 +83,18 @@ function FilesPage() {
     } finally { setBusy(false); setProgress(""); }
   };
 
+  const notify = useServerFn(notifyOnPublish);
   const togglePublish = async (f: any) => {
-    const { error } = await supabase.from("creator_files").update({ is_published: !f.is_published }).eq("id", f.id);
+    const willPublish = !f.is_published;
+    const { error } = await supabase.from("creator_files").update({ is_published: willPublish }).eq("id", f.id);
     if (error) return toast.error(error.message);
+    if (willPublish) {
+      try {
+        const r = await notify({ data: { kind: "file", itemId: f.id } });
+        if (r.notified > 0) toast.success(`Published — notified ${r.notified} ${r.notified === 1 ? "person" : "people"}`);
+        else toast.success("Published");
+      } catch { toast.success("Published"); }
+    }
     await refresh();
   };
 
