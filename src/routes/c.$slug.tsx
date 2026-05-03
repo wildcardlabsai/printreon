@@ -91,7 +91,7 @@ function CreatorPage() {
     if (!existing) {
       await supabase.from("dm_threads").insert({ creator_id: creator.id, member_user_id: user.id });
     }
-    navigate({ to: "/me/messages" });
+    navigate({ to: "/me" });
   };
 
   const reportCreator = async () => {
@@ -141,12 +141,31 @@ function CreatorPage() {
               {creator.youtube_url && <a href={creator.youtube_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary"><Youtube className="h-4 w-4" />YouTube</a>}
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button onClick={toggleFollow} className={following ? "btn-primary" : "btn-ghost"}>
               <Heart className={`mr-2 h-4 w-4 ${following ? "fill-current" : ""}`} /> {following ? "Following" : "Follow"}
             </button>
+            <button onClick={startDM} className="btn-ghost"><MessageSquare className="mr-2 h-4 w-4" />Message</button>
+            <button onClick={sharePage} className="btn-ghost"><Share2 className="mr-2 h-4 w-4" />Share</button>
+            <button onClick={reportCreator} className="btn-ghost" title="Report"><Flag className="h-4 w-4" /></button>
           </div>
         </div>
+
+        {posts.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-ink">Posts</h2>
+            <div className="mt-4 space-y-4">
+              {posts.map((p) => (
+                <article key={p.id} className="card-soft">
+                  {p.cover_image_url && <img src={p.cover_image_url} alt="" className="mb-4 aspect-video w-full rounded-lg object-cover" />}
+                  <h3 className="text-lg font-bold text-ink">{p.title}</h3>
+                  <p className="mt-1 text-xs text-ink-soft">{new Date(p.published_at ?? p.created_at).toLocaleDateString()}</p>
+                  <p className="mt-3 whitespace-pre-line text-ink-soft">{p.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
 
         {creator.bio && (
           <div className="card-soft mt-6">
