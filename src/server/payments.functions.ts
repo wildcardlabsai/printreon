@@ -99,7 +99,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
       const session = await stripe.checkout.sessions.create({
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        ui_mode: "embedded" as any,
+        ui_mode: "embedded_page",
         return_url: data.returnUrl,
         ...(profile?.email && { customer_email: profile.email }),
         metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
