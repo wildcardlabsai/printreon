@@ -3,7 +3,8 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag } from "lucide-react";
+import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag, Box } from "lucide-react";
+import { STLViewerModal } from "@/components/STLViewer";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/server/downloads.functions";
@@ -49,6 +50,23 @@ function CreatorPage() {
 
   const downloadFn = useServerFn(getFileDownloadUrl);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState<string>("");
+  const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
+
+  const openPreview = async (file: any) => {
+    if (!user) { toast.error("Sign in to preview"); return; }
+    setPreviewLoadingId(file.id);
+    try {
+      const { url } = await downloadFn({ data: { fileId: file.id } });
+      setPreviewUrl(url);
+      setPreviewTitle(file.title);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Preview unavailable");
+    } finally {
+      setPreviewLoadingId(null);
+    }
+  };
 
   if (notFoundFlag) {
     return (
@@ -227,6 +245,11 @@ function CreatorPage() {
                     {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
                     Download
                   </button>
+                  {(f.file_type?.toLowerCase() === "stl" || f.file_url?.toLowerCase().endsWith(".stl")) && (
+                    <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost" title="3D preview">
+                      {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
+                    </button>
+                  )}
                   <button onClick={() => toggleWishlist(f.id)} className="btn-ghost" title="Save to wishlist">
                     <Bookmark className={`h-4 w-4 ${wishlist.has(f.id) ? "fill-current text-primary" : ""}`} />
                   </button>
@@ -237,6 +260,14 @@ function CreatorPage() {
         )}
       </div>
       <SiteFooter />
+      {previewUrl && (
+        <STLViewerModal
+          url={previewUrl}
+          title={previewTitle}
+          open={!!previewUrl}
+          onClose={() => setPreviewUrl(null)}
+        />
+      )}
     </div>
   );
 }
