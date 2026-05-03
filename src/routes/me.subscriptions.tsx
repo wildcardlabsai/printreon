@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
 import { cancelSubscription, resumeSubscription } from "@/server/subscriptions.functions";
-import { Heart, ArrowRight, AlertTriangle } from "lucide-react";
+import { createBillingPortalSession } from "@/server/payments.functions";
+import { getStripeEnvironment } from "@/lib/stripe";
+import { Heart, ArrowRight, AlertTriangle, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/subscriptions")({
@@ -16,6 +18,7 @@ function SubsPage() {
   const [subs, setSubs] = useState<any[] | null>(null);
   const cancel = useServerFn(cancelSubscription);
   const resume = useServerFn(resumeSubscription);
+  const portal = useServerFn(createBillingPortalSession);
 
   const refresh = async () => {
     if (!user) return;
@@ -23,6 +26,7 @@ function SubsPage() {
       .from("subscriptions")
       .select("*, creator_profiles(display_name, slug, profile_image_url), creator_tiers(name, price)")
       .eq("user_id", user.id)
+      .eq("environment", getStripeEnvironment())
       .order("created_at", { ascending: false });
     setSubs(data ?? []);
   };
@@ -30,12 +34,18 @@ function SubsPage() {
 
   const onCancel = async (id: string) => {
     if (!confirm("Cancel this subscription at the end of the period?")) return;
-    try { await cancel({ data: { subscriptionId: id } }); toast.success("Canceled"); refresh(); }
+    try { await cancel({ data: { subscriptionId: id, environment: getStripeEnvironment() } }); toast.success("Canceled"); refresh(); }
     catch (e: any) { toast.error(e?.message ?? "Failed"); }
   };
   const onResume = async (id: string) => {
-    try { await resume({ data: { subscriptionId: id } }); toast.success("Resumed"); refresh(); }
+    try { await resume({ data: { subscriptionId: id, environment: getStripeEnvironment() } }); toast.success("Resumed"); refresh(); }
     catch (e: any) { toast.error(e?.message ?? "Failed"); }
+  };
+  const onPortal = async () => {
+    try {
+      const { url } = await portal({ data: { returnUrl: window.location.href, environment: getStripeEnvironment() } });
+      window.open(url, "_blank");
+    } catch (e: any) { toast.error(e?.message ?? "Failed"); }
   };
 
   if (subs === null) return <div className="grid gap-4 md:grid-cols-2">{Array.from({ length: 2 }).map((_, i) => <div key={i} className="card-soft h-32 animate-pulse" />)}</div>;
@@ -52,7 +62,11 @@ function SubsPage() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <>
+      <div className="mb-4 flex justify-end">
+        <button onClick={onPortal} className="btn-ghost h-9 px-3 text-sm"><CreditCard className="mr-2 h-4 w-4" />Manage billing</button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
       {subs.map((s) => {
         const cp = s.creator_profiles;
         return (
