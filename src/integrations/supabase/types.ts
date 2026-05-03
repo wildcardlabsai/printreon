@@ -773,6 +773,39 @@ export type Database = {
           },
         ]
       }
+      email_outbox: {
+        Row: {
+          created_at: string
+          error: string | null
+          html: string
+          id: string
+          sent_at: string | null
+          status: string
+          subject: string
+          to_email: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          html: string
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          to_email: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          html?: string
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          to_email?: string
+        }
+        Relationships: []
+      }
       feature_flags: {
         Row: {
           description: string | null
@@ -1207,6 +1240,7 @@ export type Database = {
           creator_id: string
           current_period_end: string | null
           current_period_start: string | null
+          environment: string
           id: string
           status: string
           stripe_customer_id: string | null
@@ -1221,6 +1255,7 @@ export type Database = {
           creator_id: string
           current_period_end?: string | null
           current_period_start?: string | null
+          environment?: string
           id?: string
           status?: string
           stripe_customer_id?: string | null
@@ -1235,6 +1270,7 @@ export type Database = {
           creator_id?: string
           current_period_end?: string | null
           current_period_start?: string | null
+          environment?: string
           id?: string
           status?: string
           stripe_customer_id?: string | null
