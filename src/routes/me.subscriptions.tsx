@@ -101,6 +101,7 @@ function SubsPage() {
           </div>
         );
       })}
-    </div>
+      </div>
+    </>
   );
 }
