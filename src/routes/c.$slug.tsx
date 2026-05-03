@@ -1,10 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Heart, Lock, Download, Globe, Instagram, Youtube } from "lucide-react";
+import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { getFileDownloadUrl } from "@/server/downloads.functions";
 
 export const Route = createFileRoute("/c/$slug")({
   component: CreatorPage,
@@ -58,6 +60,22 @@ function CreatorPage() {
     } else {
       await supabase.from("followers").insert({ user_id: user.id, creator_id: creator.id });
       setFollowing(true);
+    }
+  };
+
+  const downloadFn = useServerFn(getFileDownloadUrl);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownload = async (fileId: string) => {
+    if (!user) { toast.error("Sign in to download"); return; }
+    setDownloadingId(fileId);
+    try {
+      const { url } = await downloadFn({ data: { fileId } });
+      window.location.href = url;
+    } catch (e: any) {
+      toast.error(e?.message ?? "Download failed");
+    } finally {
+      setDownloadingId(null);
     }
   };
 
