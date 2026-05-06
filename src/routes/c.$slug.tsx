@@ -224,7 +224,7 @@ function CreatorPage() {
                   onClick={async () => {
                     if (!user) { toast.error("Sign in first"); navigate({ to: "/auth" }); return; }
                     try {
-                      await simulateSubscribe({ data: { tierId: t.id } });
+                      await simulateFn({ data: { tierId: t.id } });
                       toast.success("Simulated subscription active!");
                       navigate({ to: "/me/subscriptions" });
                     } catch (e) {
