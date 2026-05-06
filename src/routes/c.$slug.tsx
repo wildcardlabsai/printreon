@@ -52,6 +52,7 @@ function CreatorPage() {
   }, [slug, user]);
 
   const downloadFn = useServerFn(getFileDownloadUrl);
+  const simulateFn = useServerFn(simulateSubscribe);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>("");
