@@ -82,6 +82,32 @@ function AuthPage() {
     navigate({ to: target });
   };
 
+  const ensureDemos = useServerFn(ensureDemoAccounts);
+  const onQuickLogin = async (acc: typeof DEMO_ACCOUNTS[number]) => {
+    setLoading(true);
+    try {
+      let { error } = await supabase.auth.signInWithPassword({
+        email: acc.email,
+        password: DEMO_PASSWORD,
+      });
+      if (error) {
+        toast.message("Setting up demo accounts…");
+        await ensureDemos({ data: undefined as any });
+        ({ error } = await supabase.auth.signInWithPassword({
+          email: acc.email,
+          password: DEMO_PASSWORD,
+        }));
+        if (error) throw error;
+      }
+      toast.success(`Signed in as ${acc.label}`);
+      navigate({ to: acc.redirect });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Quick login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
       <div className="w-full max-w-md">
