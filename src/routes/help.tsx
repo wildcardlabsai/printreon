@@ -13,7 +13,7 @@ const topics = [
 ];
 
 export const Route = createFileRoute("/help")({
-  head: () => ({ meta: [{ title: "Help — MakerMind Club" }, { name: "description", content: "Help and FAQs." }] }),
+  head: () => ({ meta: [{ title: "Help — Printreon" }, { name: "description", content: "Help and FAQs." }] }),
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />

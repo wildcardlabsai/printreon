@@ -13,9 +13,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MakerMind Club — Turn Your 3D Print Files Into Monthly Income" },
-      { name: "description", content: "MakerMind Club gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships. The Patreon alternative built for 3D printing. Partnered with MakerMind App." },
-      { property: "og:title", content: "MakerMind Club — Memberships for 3D Print Creators" },
+      { title: "Printreon — Turn Your 3D Print Files Into Monthly Income" },
+      { name: "description", content: "Printreon gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships. The Patreon alternative built for 3D printing. Partnered with MakerMind App." },
+      { property: "og:title", content: "Printreon — Memberships for 3D Print Creators" },
       { property: "og:description", content: "Sell STL, 3MF and printable files through monthly memberships." },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
@@ -59,7 +59,7 @@ function Hero() {
             Turn your 3D print files into <span className="text-primary">monthly income</span>.
           </h1>
           <p className="mt-5 max-w-lg text-lg text-ink-soft">
-            MakerMind Club gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships — without trying to force Patreon to do something it was never built for.
+            Printreon gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships — without trying to force Patreon to do something it was never built for.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary">
@@ -102,7 +102,7 @@ function BuiltFor() {
     <section className="container-page py-20">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-bold text-ink md:text-4xl">Built for 3D creators, not generic content creators.</h2>
-        <p className="mt-3 text-ink-soft">From STL designers to print farms, MakerMind Club is the membership platform that actually understands 3D files.</p>
+        <p className="mt-3 text-ink-soft">From STL designers to print farms, Printreon is the membership platform that actually understands 3D files.</p>
       </div>
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         {items.map((it) => (
@@ -161,7 +161,7 @@ function WhyCreators() {
   return (
     <section className="container-page py-20">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold text-ink md:text-4xl">Why creators use MakerMind Club</h2>
+        <h2 className="text-3xl font-bold text-ink md:text-4xl">Why creators use Printreon</h2>
       </div>
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         {cards.map((c) => (
@@ -253,7 +253,7 @@ function EverythingIncluded() {
       <div className="container-page py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Everything you get, in the box.</h2>
-          <p className="mt-3 text-ink-soft">No plugins, no duct tape. MakerMind Club ships with the full stack a 3D print creator actually needs.</p>
+          <p className="mt-3 text-ink-soft">No plugins, no duct tape. Printreon ships with the full stack a 3D print creator actually needs.</p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {groups.map((g) => (
@@ -377,7 +377,7 @@ function GrowthTools() {
       <div className="grid gap-10 md:grid-cols-2 md:items-center">
         <div>
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Growth tools, in the box.</h2>
-          <p className="mt-3 text-ink-soft">Stop building your own funnels. MakerMind Club ships with the growth loops creators actually need.</p>
+          <p className="mt-3 text-ink-soft">Stop building your own funnels. Printreon ships with the growth loops creators actually need.</p>
         </div>
         <ul className="grid gap-3">
           {items.map((i) => (
@@ -434,7 +434,7 @@ function FAQ() {
     ["Can I upload STL files?", "Yes. STL is a first-class file type along with 3MF, OBJ and ZIP archives."],
     ["Can I offer free files?", "Yes — mark any file free with account. It's the best lead magnet for new subscribers."],
     ["Can I create multiple tiers?", "Absolutely. Build Supporter, Standard, Premium Vault and Commercial Licence tiers."],
-    ["Can I use it instead of Patreon?", "That's exactly what it's for. Patreon was never built for STL files. MakerMind Club is."],
+    ["Can I use it instead of Patreon?", "That's exactly what it's for. Patreon was never built for STL files. Printreon is."],
     ["How do payouts work?", "Subscriptions are processed by Stripe. Payouts route through our connected-account system."],
     ["Can subscribers cancel anytime?", "Yes. Members manage everything through the secure Stripe customer portal."],
   ];
@@ -462,7 +462,7 @@ function FinalCTA() {
   return (
     <section className="container-page py-20">
       <div className="rounded-3xl bg-ink p-10 text-center md:p-16">
-        <h2 className="text-3xl font-bold text-background md:text-5xl">Start your MakerMind Club page today.</h2>
+        <h2 className="text-3xl font-bold text-background md:text-5xl">Start your Printreon page today.</h2>
         <p className="mx-auto mt-4 max-w-xl text-background/70">Free to set up. Built for STL creators. Ready when your first subscriber arrives.</p>
         <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary mt-8 inline-flex">
           Become a Creator <ArrowRight className="ml-2 h-4 w-4" />

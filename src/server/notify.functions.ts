@@ -6,7 +6,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { enqueueEmail } from "./email.server";
 
-const SITE = "https://makermind.club";
+const SITE = "https://printreon.com";
 
 const Input = z.object({
   kind: z.enum(["file", "post"]),
@@ -125,12 +125,12 @@ function emailHtml(o: {
   return `<!doctype html><html><body style="font-family:system-ui,sans-serif;background:#f7f6f2;padding:24px">
     <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;padding:28px">
       <h1 style="margin:0 0 12px;font-size:22px;color:#1a1a1a">Hi ${escape(o.recipientName)},</h1>
-      <p style="color:#444;line-height:1.5;margin:0 0 16px"><strong>${escape(o.creatorName)}</strong> just ${verb} on MakerMind Club:</p>
+      <p style="color:#444;line-height:1.5;margin:0 0 16px"><strong>${escape(o.creatorName)}</strong> just ${verb} on Printreon:</p>
       <p style="font-size:18px;font-weight:700;margin:0 0 20px;color:#1a1a1a">${escape(o.itemTitle)}</p>
-      <a href="${o.link}" style="display:inline-block;background:#ff6b35;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">View on MakerMind</a>
+      <a href="${o.link}" style="display:inline-block;background:#ff6b35;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">View on Printreon</a>
       <hr style="border:none;border-top:1px solid #eee;margin:28px 0"/>
-      <p style="font-size:12px;color:#888">You're receiving this because you follow or subscribe to ${escape(o.creatorName)} on <a href="${SITE}" style="color:#888">MakerMind.club</a>. Manage email preferences in your <a href="${SITE}/me/notifications" style="color:#888">notification settings</a>.</p>
-      <p style="font-size:12px;color:#888;margin-top:8px">MakerMind Club is partnered with <a href="https://www.makermindapp.com" style="color:#888">MakerMind App</a>.</p>
+      <p style="font-size:12px;color:#888">You're receiving this because you follow or subscribe to ${escape(o.creatorName)} on <a href="${SITE}" style="color:#888">printreon.com</a>. Manage email preferences in your <a href="${SITE}/me/notifications" style="color:#888">notification settings</a>.</p>
+      <p style="font-size:12px;color:#888;margin-top:8px">Printreon is partnered with <a href="https://www.makermindapp.com" style="color:#888">MakerMind App</a>.</p>
     </div>
   </body></html>`;
 }

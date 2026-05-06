@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/print-log")({
-  head: () => ({ meta: [{ title: "Print log — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Print log — Printreon" }] }),
   component: PrintLogPage,
 });
 

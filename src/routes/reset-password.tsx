@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Set new password — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Set new password — Printreon" }] }),
   component: ResetPage,
 });
 

@@ -9,7 +9,7 @@ const groups: Array<{ status: "shipped" | "next" | "later"; items: string[] }> =
 ];
 
 export const Route = createFileRoute("/roadmap")({
-  head: () => ({ meta: [{ title: "Roadmap — MakerMind Club" }, { name: "description", content: "What's coming next for MakerMind Club." }] }),
+  head: () => ({ meta: [{ title: "Roadmap — Printreon" }, { name: "description", content: "What's coming next for Printreon." }] }),
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />

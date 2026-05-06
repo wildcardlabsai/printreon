@@ -106,7 +106,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-ink-soft md:flex-row">
-          <p>© {new Date().getFullYear()} MakerMind Club — makermind.club</p>
+          <p>© {new Date().getFullYear()} Printreon — printreon.com</p>
           <p>Made for 3D printing creators worldwide.</p>
         </div>
       </div>

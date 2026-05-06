@@ -7,9 +7,9 @@ import { SITE_URL, blogUrl } from "@/lib/site";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — MakerMind Club" },
+      { title: "Blog — Printreon" },
       { name: "description", content: "Stories, guides and tips for 3D printing creators selling STL files online." },
-      { property: "og:title", content: "MakerMind Club Blog" },
+      { property: "og:title", content: "Printreon Blog" },
       { property: "og:url", content: `${SITE_URL}/blog` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/blog` }],

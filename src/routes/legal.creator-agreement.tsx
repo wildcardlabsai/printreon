@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/legal/creator-agreement")({
-  head: () => ({ meta: [{ title: "Creator Agreement — MakerMind Club" }, { name: "description", content: "Terms specific to creators on MakerMind Club." }] }),
+  head: () => ({ meta: [{ title: "Creator Agreement — Printreon" }, { name: "description", content: "Terms specific to creators on Printreon." }] }),
   component: () => (
     <article className="text-ink">
       <h1>Creator Agreement</h1>
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/legal/creator-agreement")({
       <h2>Ownership</h2>
       <p>You retain all rights to your STL, 3MF, OBJ and ZIP files. We host them on your behalf.</p>
       <h2>Platform fee</h2>
-      <p>MakerMind Club retains a small platform fee on paid subscriptions (default 10%). Stripe processing fees apply separately. Free files are always free to distribute.</p>
+      <p>Printreon retains a small platform fee on paid subscriptions (default 10%). Stripe processing fees apply separately. Free files are always free to distribute.</p>
       <h2>Payouts</h2>
       <p>Payouts are made via Stripe Connect to your linked account on a recurring schedule.</p>
       <h2>Content responsibility</h2>

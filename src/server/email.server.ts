@@ -3,7 +3,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const FROM_DEFAULT = "MakerMind Club <onboarding@resend.dev>";
+const FROM_DEFAULT = "Printreon <onboarding@resend.dev>";
 
 export interface EnqueueEmailInput {
   to: string;

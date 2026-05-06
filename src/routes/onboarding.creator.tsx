@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { ArrowRight, Layers, Upload, User as UserIcon, Sparkles, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding/creator")({
-  head: () => ({ meta: [{ title: "Creator onboarding — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Creator onboarding — Printreon" }] }),
   component: CreatorOnboarding,
 });
 
@@ -193,7 +193,7 @@ function CreatorOnboarding() {
                 <p className="mt-1 text-sm text-ink-soft">This is how supporters will find you.</p>
                 <div className="mt-5 space-y-3">
                   <Field label="Display name"><input value={displayName} onChange={(e) => { setDisplayName(e.target.value); if (!creatorId) setSlug(slugify(e.target.value)); }} className={input} /></Field>
-                  <Field label="URL slug"><div className="flex items-stretch overflow-hidden rounded-lg border border-input"><span className="bg-secondary px-3 py-2 text-sm text-ink-soft">makermind.club/c/</span><input value={slug} onChange={(e) => setSlug(slugify(e.target.value))} className="flex-1 bg-background px-3 py-2 text-sm outline-none" /></div></Field>
+                  <Field label="URL slug"><div className="flex items-stretch overflow-hidden rounded-lg border border-input"><span className="bg-secondary px-3 py-2 text-sm text-ink-soft">printreon.com/c/</span><input value={slug} onChange={(e) => setSlug(slugify(e.target.value))} className="flex-1 bg-background px-3 py-2 text-sm outline-none" /></div></Field>
                   <Field label="Short intro (one line)"><input value={shortIntro} onChange={(e) => setShortIntro(e.target.value)} maxLength={120} className={input} /></Field>
                 </div>
                 <Footer onNext={saveStep1} disabled={!displayName || busy} />
@@ -257,7 +257,7 @@ function CreatorOnboarding() {
               <>
                 <h2 className="text-xl font-bold text-ink">Publish your creator page</h2>
                 <p className="mt-2 text-ink-soft">Your page will be live at:</p>
-                <div className="mt-2 rounded-lg border border-border bg-secondary px-4 py-3 font-mono text-sm">makermind.club/c/{slug}</div>
+                <div className="mt-2 rounded-lg border border-border bg-secondary px-4 py-3 font-mono text-sm">printreon.com/c/{slug}</div>
                 <div className="mt-6 flex items-center gap-3">
                   <button onClick={() => setStep(4)} className="btn-ghost">Back</button>
                   <button onClick={publish} disabled={busy} className="btn-primary">

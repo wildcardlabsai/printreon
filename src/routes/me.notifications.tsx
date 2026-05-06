@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/me/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Notifications — Printreon" }] }),
   component: NotifPage,
 });
 

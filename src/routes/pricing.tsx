@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { Check } from "lucide-react";
 export const Route = createFileRoute("/pricing")({
-  head: () => ({ meta: [{ title: "Pricing — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Pricing — Printreon" }] }),
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />

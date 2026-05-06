@@ -22,7 +22,7 @@ async function ensureStripePriceForTier(env: StripeEnv, tierId: string): Promise
 
   const stripe = createStripeClient(env);
   const product = await stripe.products.create({
-    name: `MakerMind: ${tier.name}`,
+    name: `Printreon: ${tier.name}`,
     description: tier.description ?? undefined,
     metadata: { tier_id: tier.id, creator_id: tier.creator_id },
   });

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/explore")({
   head: () => ({
     meta: [
-      { title: "Explore creators — MakerMind Club" },
+      { title: "Explore creators — Printreon" },
       { name: "description", content: "Browse 3D printing creators and subscribe to support their STL drops." },
     ],
   }),
@@ -56,7 +56,7 @@ function Explore() {
         ) : creators.length === 0 ? (
           <div className="mt-10 rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-soft)]">
             <Sparkles className="mx-auto h-10 w-10 text-primary" />
-            <h2 className="mt-4 text-2xl font-bold text-ink">MakerMind Club is opening for creators soon.</h2>
+            <h2 className="mt-4 text-2xl font-bold text-ink">Printreon is opening for creators soon.</h2>
             <p className="mx-auto mt-2 max-w-md text-ink-soft">
               We're onboarding the first wave of 3D printing designers. Join the waitlist to be notified when new creators go live.
             </p>

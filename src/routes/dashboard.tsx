@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Creator dashboard — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Creator dashboard — Printreon" }] }),
   component: DashboardLayout,
 });
 

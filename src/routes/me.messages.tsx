@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/messages")({
-  head: () => ({ meta: [{ title: "Messages — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Messages — Printreon" }] }),
   component: MessagesPage,
 });
 
