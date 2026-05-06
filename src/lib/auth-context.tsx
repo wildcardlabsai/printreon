@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { installServerFnAuth } from "./server-fn-auth";
+
+// Install once at module load so server fn calls are authed even before
+// AuthProvider mounts (e.g. during loaders).
+installServerFnAuth();
 
 type Role = "member" | "creator" | "admin";
 
