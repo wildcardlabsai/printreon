@@ -22,7 +22,7 @@ function DownloadsPage() {
     (async () => {
       const { data } = await supabase
         .from("downloads")
-        .select("id, downloaded_at, file_id, creator_files(id, title, file_type, file_size, slug), creator_profiles:creator_id(display_name, slug)")
+        .select("id, downloaded_at, file_id, creator_files(id, title, file_type, file_size, slug, preview_images), creator_profiles:creator_id(display_name, slug)")
         .eq("user_id", user.id)
         .order("downloaded_at", { ascending: false })
         .limit(200);
