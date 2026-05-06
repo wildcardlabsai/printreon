@@ -5,6 +5,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+// Bundled demo thumbnail bytes (Vite turns these into ArrayBuffer at build time).
+import demoCubeThumb from "@/assets/demo-preview-cube.jpg?arraybuffer";
+import demoBundleThumb from "@/assets/demo-preview-bundle.jpg?arraybuffer";
 
 const DEMO_PASSWORD = "DemoPass123!";
 
