@@ -51,9 +51,9 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
         await supabaseAdmin.from("user_roles").insert({ user_id: user.id, role: acc.role });
       }
 
-      // Ensure creator profile for the creator demo account
+      // Ensure creator profile + demo content for the creator demo account
       if (acc.role === "creator") {
-        const { data: cp } = await supabaseAdmin
+        let { data: cp } = await supabaseAdmin
           .from("creator_profiles")
           .select("id")
           .eq("user_id", user.id)
@@ -71,12 +71,12 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
             })
             .select("id")
             .single();
+          cp = newCp ?? null;
 
-          if (newCp) {
-            // Seed a couple of tiers
+          if (cp) {
             await supabaseAdmin.from("creator_tiers").insert([
               {
-                creator_id: newCp.id,
+                creator_id: cp.id,
                 name: "Supporter",
                 price: 5,
                 currency: "USD",
@@ -85,7 +85,7 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
                 sort_order: 1,
               },
               {
-                creator_id: newCp.id,
+                creator_id: cp.id,
                 name: "Pro Maker",
                 price: 12,
                 currency: "USD",
@@ -95,6 +95,10 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
               },
             ]);
           }
+        }
+
+        if (cp) {
+          await seedDemoFiles(cp.id, user.id);
         }
       }
 
