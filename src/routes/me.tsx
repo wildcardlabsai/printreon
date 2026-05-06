@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/me")({
-  head: () => ({ meta: [{ title: "Your account — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Your account — Printreon" }] }),
   component: MemberLayout,
 });
 

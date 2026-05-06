@@ -15,12 +15,12 @@ const items = [
   {
     date: "2026-05",
     title: "Launch",
-    body: "MakerMind Club opens to creators with full creator/member/admin dashboards, file uploads, tier memberships, posts, comments, DMs, bundles, promo codes, wishlists and print log.",
+    body: "Printreon opens to creators with full creator/member/admin dashboards, file uploads, tier memberships, posts, comments, DMs, bundles, promo codes, wishlists and print log.",
   },
 ];
 
 export const Route = createFileRoute("/changelog")({
-  head: () => ({ meta: [{ title: "Changelog — MakerMind Club" }, { name: "description", content: "What's new in MakerMind Club." }] }),
+  head: () => ({ meta: [{ title: "Changelog — Printreon" }, { name: "description", content: "What's new in Printreon." }] }),
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />

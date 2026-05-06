@@ -5,7 +5,7 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const base = "https://makermind.club";
+        const base = "https://printreon.com";
         const staticPaths = ["/", "/explore", "/for-creators", "/pricing", "/about", "/blog", "/changelog", "/roadmap", "/press", "/contact", "/help", "/legal/terms", "/legal/privacy", "/legal/dmca", "/legal/creator-agreement"];
 
         const [{ data: creators }, { data: posts }] = await Promise.all([

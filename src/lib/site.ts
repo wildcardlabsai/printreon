@@ -1,10 +1,10 @@
 // Canonical site config. Use these helpers everywhere we generate
 // shareable URLs (creator pages, share buttons, OG tags, referral links,
-// emails) so links always point at makermind.club regardless of where
+// emails) so links always point at printreon.com regardless of where
 // the code is running (preview, sandbox, prod).
 
-export const SITE_NAME = "MakerMind Club";
-export const SITE_URL = "https://makermind.club";
+export const SITE_NAME = "Printreon";
+export const SITE_URL = "https://printreon.com";
 export const SITE_DESCRIPTION =
   "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators.";
 

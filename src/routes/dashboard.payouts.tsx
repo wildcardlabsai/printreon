@@ -210,7 +210,7 @@ function PayoutsPage() {
         <h3 className="text-base font-bold text-ink">Payout schedule</h3>
         <ul className="mt-2 list-disc pl-5 text-sm text-ink-soft">
           <li>Payouts run on Stripe's standard schedule once your account is active.</li>
-          <li>MakerMind takes a {fee}% platform fee on each subscription payment.</li>
+          <li>Printreon takes a {fee}% platform fee on each subscription payment.</li>
           <li>Refunds and chargebacks are netted from upcoming payouts.</li>
         </ul>
       </div>

@@ -50,11 +50,11 @@ async function handleSubscriptionCreated(subscription: any, env: StripeEnv) {
     if (profile?.email && creator) {
       await enqueueEmail({
         to: profile.email,
-        subject: `Welcome to ${creator.display_name} on MakerMind Club`,
+        subject: `Welcome to ${creator.display_name} on Printreon`,
         html: `<p>Hi ${profile.full_name ?? ""},</p>
 <p>You're now subscribed to <strong>${creator.display_name}</strong>. Enjoy your member files at
-<a href="https://makermind.club/c/${creator.slug}">makermind.club/c/${creator.slug}</a>.</p>
-<p>— The MakerMind Club team</p>`,
+<a href="https://printreon.com/c/${creator.slug}">printreon.com/c/${creator.slug}</a>.</p>
+<p>— The Printreon team</p>`,
       });
     }
     await supabaseAdmin.from("notifications").insert({

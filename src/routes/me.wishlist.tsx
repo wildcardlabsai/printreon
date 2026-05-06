@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/me/wishlist")({
-  head: () => ({ meta: [{ title: "Wishlist — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Wishlist — Printreon" }] }),
   component: WishlistPage,
 });
 

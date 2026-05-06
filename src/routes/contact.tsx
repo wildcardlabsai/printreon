@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({ meta: [{ title: "Contact — MakerMind Club" }, { name: "description", content: "Contact the MakerMind Club team." }] }),
+  head: () => ({ meta: [{ title: "Contact — Printreon" }, { name: "description", content: "Contact the Printreon team." }] }),
   component: ContactPage,
 });
 

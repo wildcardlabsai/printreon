@@ -14,7 +14,7 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s) => searchSchema.parse(s),
-  head: () => ({ meta: [{ title: "Sign in — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Sign in — Printreon" }] }),
   component: AuthPage,
 });
 
@@ -123,7 +123,7 @@ function AuthPage() {
             {mode === "signup" ? (
               <>Already have an account? <button onClick={() => setMode("signin")} className="font-semibold text-primary">Sign in</button></>
             ) : (
-              <>New to MakerMind Club? <button onClick={() => setMode("signup")} className="font-semibold text-primary">Create account</button></>
+              <>New to Printreon? <button onClick={() => setMode("signup")} className="font-semibold text-primary">Create account</button></>
             )}
           </p>
         </div>

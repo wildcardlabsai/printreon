@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/legal/dmca")({
-  head: () => ({ meta: [{ title: "DMCA — MakerMind Club" }, { name: "description", content: "DMCA takedown policy and form." }] }),
+  head: () => ({ meta: [{ title: "DMCA — Printreon" }, { name: "description", content: "DMCA takedown policy and form." }] }),
   component: DmcaPage,
 });
 
@@ -25,8 +25,8 @@ function DmcaPage() {
   return (
     <article className="text-ink">
       <h1>DMCA Policy</h1>
-      <p>MakerMind Club respects intellectual property rights. To report infringing content, complete the form below or email <a href="mailto:dmca@makermind.club">dmca@makermind.club</a>.</p>
-      <p>Your notice must include: identification of the work, the URL of the infringing content on makermind.club, your contact info, a good-faith statement, an accuracy statement under penalty of perjury, and your physical or electronic signature.</p>
+      <p>Printreon respects intellectual property rights. To report infringing content, complete the form below or email <a href="mailto:dmca@printreon.com">dmca@printreon.com</a>.</p>
+      <p>Your notice must include: identification of the work, the URL of the infringing content on printreon.com, your contact info, a good-faith statement, an accuracy statement under penalty of perjury, and your physical or electronic signature.</p>
       <form onSubmit={submit} className="card-soft not-prose mt-6 space-y-4">
         <div>
           <label className="text-sm font-medium text-ink">Your email</label>

@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/legal/privacy")({
-  head: () => ({ meta: [{ title: "Privacy Policy — MakerMind Club" }, { name: "description", content: "How MakerMind Club collects and uses your data." }] }),
+  head: () => ({ meta: [{ title: "Privacy Policy — Printreon" }, { name: "description", content: "How Printreon collects and uses your data." }] }),
   component: () => (
     <article className="text-ink">
       <h1>Privacy Policy</h1>
       <p>Last updated: May 2026</p>
-      <p>MakerMind Club (makermind.club) respects your privacy. This policy explains what we collect and why.</p>
+      <p>Printreon (printreon.com) respects your privacy. This policy explains what we collect and why.</p>
       <h2>What we collect</h2>
       <ul>
         <li>Account info: email, name, avatar</li>
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/legal/privacy")({
       <h2>Sharing</h2>
       <p>We share data with payment processors (Stripe), email providers and infrastructure providers. We never sell personal data.</p>
       <h2>Your rights</h2>
-      <p>You can access, export or delete your data anytime. Contact privacy@makermind.club.</p>
+      <p>You can access, export or delete your data anytime. Contact privacy@printreon.com.</p>
       <h2>Cookies</h2>
       <p>We use essential cookies for authentication and minimal analytics.</p>
     </article>

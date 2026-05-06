@@ -5,9 +5,9 @@ import { PARTNER, SITE_URL } from "@/lib/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — MakerMind Club" },
-      { name: "description", content: "MakerMind Club is the membership platform purpose-built for 3D printing creators. Partnered with MakerMind App." },
-      { property: "og:title", content: "About MakerMind Club" },
+      { title: "About — Printreon" },
+      { name: "description", content: "Printreon is the membership platform purpose-built for 3D printing creators. Partnered with MakerMind App." },
+      { property: "og:title", content: "About Printreon" },
       { property: "og:description", content: "Built for 3D printing creators. Partnered with MakerMind App." },
       { property: "og:url", content: `${SITE_URL}/about` },
     ],
@@ -17,9 +17,9 @@ export const Route = createFileRoute("/about")({
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <article className="container-page max-w-3xl py-16">
-        <h1 className="text-4xl font-bold text-ink md:text-5xl">About MakerMind Club</h1>
+        <h1 className="text-4xl font-bold text-ink md:text-5xl">About Printreon</h1>
         <p className="mt-6 text-lg text-ink-soft">
-          MakerMind Club is the membership platform purpose-built for 3D printing creators —
+          Printreon is the membership platform purpose-built for 3D printing creators —
           STL designers, miniature sculptors, cosplay makers, functional-print designers and print farms.
         </p>
         <p className="mt-4 text-ink-soft">

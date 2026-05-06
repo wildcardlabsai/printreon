@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /dashboard
 Disallow: /me
 
-Sitemap: https://makermind.club/sitemap.xml
+Sitemap: https://printreon.com/sitemap.xml

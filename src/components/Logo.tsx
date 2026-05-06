@@ -10,7 +10,7 @@ export function Logo({ className = "" }: { className?: string }) {
         <path d="M16 16 L16 30 L30 22 Z" fill="oklch(0.55 0.18 42)" />
       </svg>
       <span className="text-lg font-bold tracking-tight text-ink">
-        MakerMind <span className="text-primary">Club</span>
+        Printreon <span className="text-primary">Club</span>
       </span>
     </Link>
   );

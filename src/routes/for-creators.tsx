@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 export const Route = createFileRoute("/for-creators")({
-  head: () => ({ meta: [{ title: "For Creators — MakerMind Club" }, { name: "description", content: "Why STL designers and 3D print creators are choosing MakerMind Club over Patreon." }] }),
+  head: () => ({ meta: [{ title: "For Creators — Printreon" }, { name: "description", content: "Why STL designers and 3D print creators are choosing Printreon over Patreon." }] }),
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />

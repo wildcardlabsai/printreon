@@ -9,7 +9,7 @@ import { Shield, Users, FileBox, Flag, CheckCircle2, XCircle, Eye, EyeOff, Searc
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — MakerMind Club" }] }),
+  head: () => ({ meta: [{ title: "Admin — Printreon" }] }),
   component: AdminPage,
 });
 
