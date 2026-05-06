@@ -218,6 +218,21 @@ function CreatorPage() {
                 >
                   Subscribe
                 </button>
+                <button
+                  className="mt-2 w-full rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900 hover:bg-amber-100"
+                  onClick={async () => {
+                    if (!user) { toast.error("Sign in first"); navigate({ to: "/auth" }); return; }
+                    try {
+                      await simulateSubscribe({ data: { tierId: t.id } });
+                      toast.success("Simulated subscription active!");
+                      navigate({ to: "/me/subscriptions" });
+                    } catch (e) {
+                      toast.error(e instanceof Error ? e.message : "Could not simulate");
+                    }
+                  }}
+                >
+                  ⚡ Simulate subscribe (dev)
+                </button>
               </div>
             ))}
           </div>
