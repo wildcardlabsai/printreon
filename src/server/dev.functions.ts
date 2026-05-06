@@ -5,6 +5,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+// Bundled demo thumbnail bytes (Vite turns these into ArrayBuffer at build time).
+import demoCubeThumb from "@/assets/demo-preview-cube.jpg?arraybuffer";
+import demoBundleThumb from "@/assets/demo-preview-bundle.jpg?arraybuffer";
 
 const DEMO_PASSWORD = "DemoPass123!";
 
@@ -146,6 +149,29 @@ async function seedDemoFiles(creatorId: string, userId: string) {
     console.error("[dev] failed to upload demo ZIP", zipErr.message);
   }
 
+  // Upload thumbnails to the public `previews` bucket and capture public URLs
+  async function uploadPreview(
+    bytes: ArrayBuffer,
+    name: string,
+  ): Promise<string | null> {
+    const path = `${userId}/${creatorId}/${name}-${Date.now()}.jpg`;
+    const { error } = await supabaseAdmin.storage
+      .from("previews")
+      .upload(path, new Uint8Array(bytes), {
+        contentType: "image/jpeg",
+        upsert: false,
+      });
+    if (error) {
+      console.error(`[dev] failed to upload preview ${name}`, error.message);
+      return null;
+    }
+    const { data } = supabaseAdmin.storage.from("previews").getPublicUrl(path);
+    return data.publicUrl ?? null;
+  }
+
+  const cubePreviewUrl = await uploadPreview(demoCubeThumb, "demo-cube");
+  const bundlePreviewUrl = await uploadPreview(demoBundleThumb, "demo-bundle");
+
   await supabaseAdmin.from("creator_files").insert([
     {
       creator_id: creatorId,
@@ -159,6 +185,7 @@ async function seedDemoFiles(creatorId: string, userId: string) {
       file_url: stlPath,
       file_type: "stl",
       file_size: stlBytes.length,
+      preview_images: cubePreviewUrl ? [cubePreviewUrl] : [],
     },
     {
       creator_id: creatorId,
@@ -172,6 +199,7 @@ async function seedDemoFiles(creatorId: string, userId: string) {
       file_url: zipErr ? null : zipPath,
       file_type: "zip",
       file_size: zipErr ? null : zipBytes.length,
+      preview_images: bundlePreviewUrl ? [bundlePreviewUrl] : [],
     },
   ]);
 }
