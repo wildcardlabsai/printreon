@@ -177,8 +177,24 @@ function FilesPage() {
           />
         ) : (
           <ul className="mt-3 grid gap-3">
-            {files.map((f) => (
+            {files.map((f) => {
+              const thumb = Array.isArray(f.preview_images) && f.preview_images.length > 0
+                ? (typeof f.preview_images[0] === "string" ? f.preview_images[0] : f.preview_images[0]?.url)
+                : null;
+              return (
               <li key={f.id} className="card-soft flex flex-wrap items-center gap-4">
+                {thumb ? (
+                  <img
+                    src={thumb}
+                    alt=""
+                    loading="lazy"
+                    className="h-16 w-16 flex-shrink-0 rounded-md object-cover bg-secondary"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-md bg-secondary text-ink-soft">
+                    <FileBox className="h-6 w-6" />
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-ink truncate">{f.title}</h3>
@@ -206,7 +222,8 @@ function FilesPage() {
                   </button>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </div>

@@ -22,7 +22,7 @@ function DownloadsPage() {
     (async () => {
       const { data } = await supabase
         .from("downloads")
-        .select("id, downloaded_at, file_id, creator_files(id, title, file_type, file_size, slug), creator_profiles:creator_id(display_name, slug)")
+        .select("id, downloaded_at, file_id, creator_files(id, title, file_type, file_size, slug, preview_images), creator_profiles:creator_id(display_name, slug)")
         .eq("user_id", user.id)
         .order("downloaded_at", { ascending: false })
         .limit(200);
@@ -59,9 +59,25 @@ function DownloadsPage() {
           <tr><th className="px-4 py-3">File</th><th className="px-4 py-3">Creator</th><th className="px-4 py-3">Date</th><th className="px-4 py-3"></th></tr>
         </thead>
         <tbody>
-          {items.map((d) => (
+          {items.map((d) => {
+            const pi = d.creator_files?.preview_images;
+            const thumb = Array.isArray(pi) && pi.length > 0
+              ? (typeof pi[0] === "string" ? pi[0] : pi[0]?.url)
+              : null;
+            return (
             <tr key={d.id} className="border-t border-border">
-              <td className="px-4 py-3 font-medium text-ink">{d.creator_files?.title ?? "—"}</td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  {thumb ? (
+                    <img src={thumb} alt="" loading="lazy" className="h-10 w-10 flex-shrink-0 rounded-md object-cover bg-secondary" />
+                  ) : (
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-secondary text-ink-soft">
+                      <Download className="h-4 w-4" />
+                    </div>
+                  )}
+                  <span className="font-medium text-ink">{d.creator_files?.title ?? "—"}</span>
+                </div>
+              </td>
               <td className="px-4 py-3">
                 {d.creator_profiles?.slug ? (
                   <Link to="/c/$slug" params={{ slug: d.creator_profiles.slug }} className="text-primary hover:underline">{d.creator_profiles.display_name}</Link>
@@ -74,7 +90,8 @@ function DownloadsPage() {
                 </button>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
