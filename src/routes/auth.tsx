@@ -5,6 +5,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
+import { useServerFn } from "@tanstack/react-start";
+import { ensureDemoAccounts } from "@/server/dev.functions";
+import { Zap } from "lucide-react";
+
+const DEMO_PASSWORD = "DemoPass123!";
+const DEMO_ACCOUNTS = [
+  { label: "Buyer", email: "buyer@demo.printreon.test", redirect: "/me" },
+  { label: "Creator", email: "creator@demo.printreon.test", redirect: "/dashboard" },
+  { label: "Admin", email: "admin@demo.printreon.test", redirect: "/admin" },
+] as const;
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup"]).optional(),
