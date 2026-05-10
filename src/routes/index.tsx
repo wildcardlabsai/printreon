@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { PartnerStrip } from "@/components/PartnerStrip";
 import { WaitlistForm } from "@/components/WaitlistForm";
