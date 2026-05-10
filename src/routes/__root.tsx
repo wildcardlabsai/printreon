@@ -37,6 +37,8 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#ea7a2c" },
       { name: "twitter:title", content: "Printreon — Memberships for 3D Print Creators" },
       { name: "twitter:description", content: "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators. Partnered with MakerMind App." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/3TUi3JNUmJQa4eVdOnmIkCiRgCJ3/social-images/social-1778446462523-ChatGPT_Image_May_10,_2026,_09_54_08_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/3TUi3JNUmJQa4eVdOnmIkCiRgCJ3/social-images/social-1778446462523-ChatGPT_Image_May_10,_2026,_09_54_08_PM.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
