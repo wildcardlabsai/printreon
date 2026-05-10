@@ -14,10 +14,10 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Printreon — Turn Your 3D Print Files Into Monthly Income" },
-      { name: "description", content: "Printreon gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships. The Patreon alternative built for 3D printing. Partnered with MakerMind App." },
-      { property: "og:title", content: "Printreon — Memberships for 3D Print Creators" },
-      { property: "og:description", content: "Sell STL, 3MF and printable files through monthly memberships." },
+      { title: "Printreon — Join the waitlist for memberships built for 3D print creators" },
+      { name: "description", content: "Printreon is launching soon — the Patreon alternative built for STL, 3MF and printable files. Join the waitlist to get early access." },
+      { property: "og:title", content: "Printreon — Join the waitlist" },
+      { property: "og:description", content: "Memberships built for 3D print creators. Launching soon — join the waitlist." },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
     ],
@@ -62,16 +62,13 @@ function Hero() {
           <p className="mt-5 max-w-lg text-lg text-ink-soft">
             Printreon gives 3D creators a simple way to sell STL, 3MF and printable files through monthly memberships — without trying to force Patreon to do something it was never built for.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary">
-              Start as a Creator <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link to="/explore" className="btn-ghost">Explore Creators</Link>
+          <div id="waitlist" className="mt-8 scroll-mt-24">
+            <WaitlistForm />
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Free to start</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> STL, 3MF, OBJ, ZIP</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cancel anytime</span>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Free to join</span>
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Early creator perks</span>
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> No spam, ever</span>
           </div>
         </div>
         <div className="relative">
@@ -352,7 +349,7 @@ function ForSupporters() {
           <p className="mt-4 text-background/70">
             Back the designers behind your favourite prints. Get fresh STL drops every month, exclusive tiers, and follow creators for free until you're ready to subscribe.
           </p>
-          <Link to="/explore" className="btn-primary mt-6 inline-flex">Explore creators</Link>
+          <a href="#waitlist" className="btn-primary mt-6 inline-flex">Join the waitlist</a>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {["Miniatures", "Cosplay", "Functional", "Toys", "Tools", "Tabletop"].map((t) => (
@@ -411,7 +408,7 @@ function Pricing() {
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Unlimited STL/3MF uploads</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Built-in growth tools</li>
             </ul>
-            <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary mt-6 w-full">Start as a Creator</Link>
+            <a href="#waitlist" className="btn-primary mt-6 w-full text-center">Join as a creator</a>
           </div>
           <div className="card-soft">
             <h3 className="text-lg font-semibold text-ink">Member</h3>
@@ -422,7 +419,7 @@ function Pricing() {
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Download free files</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cancel any subscription anytime</li>
             </ul>
-            <Link to="/auth" search={{ mode: "signup" }} className="btn-ghost mt-6 w-full">Create free account</Link>
+            <a href="#waitlist" className="btn-ghost mt-6 w-full text-center">Join as a supporter</a>
           </div>
         </div>
       </div>
@@ -463,11 +460,11 @@ function FinalCTA() {
   return (
     <section className="container-page py-20">
       <div className="rounded-3xl bg-ink p-10 text-center md:p-16">
-        <h2 className="text-3xl font-bold text-background md:text-5xl">Start your Printreon page today.</h2>
-        <p className="mx-auto mt-4 max-w-xl text-background/70">Free to set up. Built for STL creators. Ready when your first subscriber arrives.</p>
-        <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary mt-8 inline-flex">
-          Become a Creator <ArrowRight className="ml-2 h-4 w-4" />
-        </Link>
+        <h2 className="text-3xl font-bold text-background md:text-5xl">Be first in line when Printreon opens.</h2>
+        <p className="mx-auto mt-4 max-w-xl text-background/70">Built for STL creators and the people who love their work. Join the waitlist for early access.</p>
+        <div className="mt-8 flex justify-center">
+          <WaitlistForm variant="dark" />
+        </div>
       </div>
     </section>
   );
