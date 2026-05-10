@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { PartnerStrip } from "@/components/PartnerStrip";
 import { WaitlistForm } from "@/components/WaitlistForm";
@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 import heroImg from "@/assets/hero.jpg";
 import {
   Layers, Lock, Sparkles, TrendingUp, Share2, Wallet,
-  Upload, CreditCard, Rocket, ArrowRight, Check, Box,
+  Upload, CreditCard, Rocket, Check, Box,
   Mail, MessageSquare, Heart, Tag, Gift, Package, BarChart3,
   Bell, Banknote, ShieldCheck, Users, FileBox, Hammer, Megaphone,
 } from "lucide-react";
