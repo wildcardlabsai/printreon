@@ -1,52 +1,41 @@
+## Goal
 
-## Problem
+Turn the public site into a pre-launch landing page that captures interest (email + role) while keeping the existing marketing content visible. Hide all navigation/auth so the public can't sign up or sign in yet — testing accounts still reachable via direct `/auth` URL.
 
-A user can be both a buyer (member) and a seller (creator), but the UI hides the buyer side once they become a creator:
+## Changes
 
-- The header's single "Dashboard" button sends creators only to `/dashboard` (creator studio). There is no link to `/me` (buyer account).
-- Inside `/dashboard` there is no way to jump to `/me`, and vice versa.
-- Nothing visually signals "you are wearing your seller hat right now".
+### 1. Database — `waitlist_signups` table
+New table to store interest:
+- `email` (unique, lowercased)
+- `role` — `'creator' | 'supporter'`
+- `source` (default `'landing'`, for future channels)
+- `user_agent`, `referrer` (optional, for light attribution)
 
-## Fix
+RLS:
+- Public (anon) can INSERT (so the form works without login).
+- Only admins can SELECT/UPDATE/DELETE (via existing `has_role` pattern).
 
-Make the two roles always visible and switchable for any creator account.
+### 2. Waitlist form component
+New `src/components/WaitlistForm.tsx`:
+- Email input + segmented toggle: "I'm a creator" / "I'm a supporter".
+- Zod validation (email, role enum), max length, trim.
+- Inserts directly via supabase client; shows success state ("You're on the list — we'll email you at launch.").
+- Handles duplicate-email gracefully ("You're already on the list").
 
-### 1. Header (`src/components/SiteChrome.tsx`)
+### 3. Landing page (`src/routes/index.tsx`)
+- Replace the Hero CTAs ("Start as a Creator" / "Explore Creators") with the `WaitlistForm`.
+- Replace the Final CTA section's button with a second `WaitlistForm` instance.
+- Remove the `/auth` and `/explore` Links from the Pricing section cards (replace with a "Join waitlist" anchor that scrolls to the hero form).
+- Keep all other marketing sections (Built For, How It Works, Features, etc.) intact.
 
-Replace the single `Dashboard` button with two buttons when the user is signed in:
+### 4. Site chrome (`src/components/SiteChrome.tsx`)
+- **Header:** remove nav links (Explore / For Creators / Pricing), remove all auth buttons (Sign in / Get started / My account / Creator studio / Sign out). Header becomes just the Logo + a small "Join waitlist" button that scrolls to the form. Direct `/auth` URL still works for you.
+- **Footer:** strip to minimal — Logo + tagline on the left, Legal links (Terms, Privacy, DMCA, Creator Agreement) + Contact link on the right. Remove Platform & Company columns.
 
-- **My account** → `/me` (always shown, icon: `User`)
-- **Creator studio** → `/dashboard` (only if `isCreator`, icon: `LayoutDashboard`, primary style so it stands out)
+### 5. SEO
+Update landing `head()` title/description to reflect pre-launch ("Printreon — Join the waitlist for memberships built for 3D print creators").
 
-Non-creators still only see "My account" plus a subtle "Become a creator" link → `/onboarding/creator`.
-
-### 2. Role switcher banner on dashboards
-
-Add a small `RoleSwitcher` component used at the top of both `dashboard.tsx` and `me.tsx`. It renders a pill-style segmented control:
-
-```text
-[ 🛒 Buying  ] [ 🎨 Selling ]
-```
-
-- Highlights the active side based on current path.
-- "Selling" tab is shown only if the user is a creator; for non-creators it shows "+ Become a creator" pointing at `/onboarding/creator`.
-- Clicking the inactive tab navigates to `/me` or `/dashboard`.
-
-### 3. Page headers reword for clarity
-
-- `dashboard.tsx` eyebrow: `Creator studio · selling` (already says Creator studio, add "selling" suffix).
-- `me.tsx` eyebrow: `Your account · buying`.
-
-### 4. Member overview cross-link
-
-On `/me` overview (`src/routes/me.index.tsx`), if the user is a creator, show a small card "You also have a creator studio → Open studio". On `/dashboard` overview, if the creator profile exists, show a matching "Switch to buyer view → My account" link near the public-page button.
-
-## Files to change
-
-- `src/components/SiteChrome.tsx` — split Dashboard button into "My account" + "Creator studio".
-- `src/components/RoleSwitcher.tsx` — new component (segmented buying/selling switcher).
-- `src/routes/dashboard.tsx` — render `<RoleSwitcher />` above `DashboardNav`, tweak eyebrow text, add "Switch to buyer view" link.
-- `src/routes/me.tsx` — render `<RoleSwitcher />` above `MemberNav`, tweak eyebrow text.
-- `src/routes/me.index.tsx` — add small "You also have a creator studio" card when `isCreator`.
-
-No DB or backend changes needed; `useAuth()` already exposes `isCreator`.
+## Out of scope
+- No email confirmation / double opt-in (can add later via Lovable Emails).
+- No admin UI to view the waitlist yet — you can query it directly through the backend if needed.
+- Internal routes (`/dashboard`, `/me`, `/admin`, `/auth`) remain functional via direct URL for testing.
