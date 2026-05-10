@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { PartnerStrip } from "@/components/PartnerStrip";
+import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL } from "@/lib/site";
 import heroImg from "@/assets/hero.jpg";
 import {
