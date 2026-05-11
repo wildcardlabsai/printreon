@@ -77,7 +77,7 @@ function Hero() {
           </span>
 
           <h1 className="mt-6 text-[44px] leading-[0.98] text-ink md:text-[88px] md:leading-[0.92]">
-            <span className="font-display italic text-primary">Print</span>
+            <span className="font-display italic text-primary">Printr</span>
             <span className="font-display italic">eon turns your</span>
             <br />
             <span className="font-bold">3D files into</span>{" "}
