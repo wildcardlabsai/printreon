@@ -9,9 +9,18 @@ function scrollToWaitlist() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between">
-        <Logo />
+        <div className="flex items-center gap-3">
+          <Logo />
+          <span className="hidden items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft sm:inline-flex font-mono">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+            </span>
+            Pre-launch
+          </span>
+        </div>
         <button onClick={scrollToWaitlist} className="btn-primary h-9 px-4 py-2 text-sm">
           Join the waitlist
         </button>
