@@ -14,12 +14,15 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Printreon — Memberships built for 3D print creators. Launching soon." },
-      { name: "description", content: "Printreon is the Patreon alternative purpose-built for STL, 3MF and printable files. Join the waitlist for early creator access." },
-      { property: "og:title", content: "Printreon — Memberships for 3D print creators" },
-      { property: "og:description", content: "STL-native memberships, file protection, growth tools. Join the waitlist." },
+      { title: "Printreon | Membership Platform Built for 3D Creators" },
+      { name: "description", content: "Invite-only beta. Run STL memberships, manage subscribers and offer commercial licences on a platform built for the 3D printing creator economy. Founding creators lock in higher payouts for life." },
+      { property: "og:title", content: "Printreon — Memberships built for 3D creators" },
+      { property: "og:description", content: "Apply for early beta access. Founding creators lock in higher payouts for life." },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Printreon — Memberships built for 3D creators" },
+      { name: "twitter:description", content: "Invite-only beta for founding 3D creators." },
     ],
     links: [{ rel: "canonical", href: SITE_URL }],
   }),
@@ -32,16 +35,20 @@ function Landing() {
       <SiteHeader />
       <Hero />
       <Marquee />
+      <div id="features" />
       <BuiltFor />
+      <WhyPrintreonExists />
       <PullQuote />
       <HowItWorks />
       <ProductPeek />
       <EverythingBento />
       <PaymentsAndPayouts />
       <CommunityFeatures />
+      <FounderBenefits />
       <ForSupporters />
       <GrowthTools />
       <Pricing />
+      <BetaApplication />
       <FAQ />
       <FinalCTA />
       <SiteFooter />
