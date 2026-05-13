@@ -91,9 +91,8 @@ export function WaitlistForm({
     setStatus("loading");
 
     const d = parsed.data;
-    const hasInvite = !!inviteCode;
     const isCreator = role === "creator";
-    const row = {
+    const payload = {
       email: d.email.toLowerCase(),
       full_name: d.full_name || null,
       creator_name: isCreator ? d.creator_name || null : null,
@@ -111,25 +110,22 @@ export function WaitlistForm({
       tags: [role],
       invite_code: inviteCode,
       referred_by: referredBy,
-      status: hasInvite ? "invited" : "pending",
-      invited_at: hasInvite ? new Date().toISOString() : null,
-      founder_pricing_eligible: true,
     };
 
-    const { data, error } = await supabase
-      .from("beta_preregistrations")
-      .insert(row)
-      .select("referral_code, email, status, founder_pricing_eligible")
-      .single();
+    const { data: rows, error } = await supabase.rpc(
+      "submit_beta_preregistration",
+      { payload },
+    );
+    const data = Array.isArray(rows) ? rows[0] : rows;
 
     if (error) {
-      const dup = error.code === "23505";
+      const dup = error.code === "23505" || /duplicate/i.test(error.message ?? "");
       if (dup) {
         // Already applied — still send to /waitlist with email lookup.
         try {
           localStorage.setItem(
             "printreon_application",
-            JSON.stringify({ email: row.email, returning: true }),
+            JSON.stringify({ email: payload.email, returning: true }),
           );
         } catch {
           /* no-op */
@@ -146,10 +142,10 @@ export function WaitlistForm({
       localStorage.setItem(
         "printreon_application",
         JSON.stringify({
-          email: data.email,
-          referral_code: data.referral_code,
-          status: data.status,
-          founder_pricing_eligible: data.founder_pricing_eligible,
+          email: data?.email ?? payload.email,
+          referral_code: data?.referral_code ?? null,
+          status: data?.status ?? (inviteCode ? "invited" : "pending"),
+          founder_pricing_eligible: data?.founder_pricing_eligible ?? true,
         }),
       );
     } catch {
