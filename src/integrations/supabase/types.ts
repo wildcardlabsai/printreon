@@ -123,10 +123,12 @@ export type Database = {
         Row: {
           accepted_at: string | null
           audience_size: string | null
+          biggest_frustration: string | null
           created_at: string
           creator_name: string | null
           current_platform: string | null
           email: string
+          founder_pricing_eligible: boolean
           full_name: string | null
           id: string
           interested_in_commercial_licensing: boolean
@@ -134,6 +136,9 @@ export type Database = {
           invited_at: string | null
           notes: string | null
           reason_for_joining: string | null
+          referral_code: string | null
+          referral_count: number
+          referred_by: string | null
           sells_physical_prints: boolean
           sells_stls: boolean
           social_url: string | null
@@ -146,10 +151,12 @@ export type Database = {
         Insert: {
           accepted_at?: string | null
           audience_size?: string | null
+          biggest_frustration?: string | null
           created_at?: string
           creator_name?: string | null
           current_platform?: string | null
           email: string
+          founder_pricing_eligible?: boolean
           full_name?: string | null
           id?: string
           interested_in_commercial_licensing?: boolean
@@ -157,6 +164,9 @@ export type Database = {
           invited_at?: string | null
           notes?: string | null
           reason_for_joining?: string | null
+          referral_code?: string | null
+          referral_count?: number
+          referred_by?: string | null
           sells_physical_prints?: boolean
           sells_stls?: boolean
           social_url?: string | null
@@ -169,10 +179,12 @@ export type Database = {
         Update: {
           accepted_at?: string | null
           audience_size?: string | null
+          biggest_frustration?: string | null
           created_at?: string
           creator_name?: string | null
           current_platform?: string | null
           email?: string
+          founder_pricing_eligible?: boolean
           full_name?: string | null
           id?: string
           interested_in_commercial_licensing?: boolean
@@ -180,6 +192,9 @@ export type Database = {
           invited_at?: string | null
           notes?: string | null
           reason_for_joining?: string | null
+          referral_code?: string | null
+          referral_count?: number
+          referred_by?: string | null
           sells_physical_prints?: boolean
           sells_stls?: boolean
           social_url?: string | null
@@ -1626,6 +1641,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_beta_referral_code: { Args: never; Returns: string }
+      get_beta_referral_stats: {
+        Args: { _code: string }
+        Returns: {
+          founder_pricing_eligible: boolean
+          referral_count: number
+          status: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
