@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_activity_log: {
+        Row: {
+          action: string
+          admin_user_id: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
       admin_reports: {
         Row: {
           created_at: string
@@ -86,6 +116,78 @@ export type Database = {
           id?: string
           target_id?: string | null
           target_type?: string | null
+        }
+        Relationships: []
+      }
+      beta_preregistrations: {
+        Row: {
+          accepted_at: string | null
+          audience_size: string | null
+          created_at: string
+          creator_name: string | null
+          current_platform: string | null
+          email: string
+          full_name: string | null
+          id: string
+          interested_in_commercial_licensing: boolean
+          invite_code: string | null
+          invited_at: string | null
+          notes: string | null
+          reason_for_joining: string | null
+          sells_physical_prints: boolean
+          sells_stls: boolean
+          social_url: string | null
+          source: string | null
+          status: string
+          tags: Json
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          audience_size?: string | null
+          created_at?: string
+          creator_name?: string | null
+          current_platform?: string | null
+          email: string
+          full_name?: string | null
+          id?: string
+          interested_in_commercial_licensing?: boolean
+          invite_code?: string | null
+          invited_at?: string | null
+          notes?: string | null
+          reason_for_joining?: string | null
+          sells_physical_prints?: boolean
+          sells_stls?: boolean
+          social_url?: string | null
+          source?: string | null
+          status?: string
+          tags?: Json
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          audience_size?: string | null
+          created_at?: string
+          creator_name?: string | null
+          current_platform?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          interested_in_commercial_licensing?: boolean
+          invite_code?: string | null
+          invited_at?: string | null
+          notes?: string | null
+          reason_for_joining?: string | null
+          sells_physical_prints?: boolean
+          sells_stls?: boolean
+          social_url?: string | null
+          source?: string | null
+          status?: string
+          tags?: Json
+          updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -808,21 +910,27 @@ export type Database = {
       }
       feature_flags: {
         Row: {
+          audience: string
           description: string | null
           enabled: boolean
           key: string
+          name: string | null
           updated_at: string
         }
         Insert: {
+          audience?: string
           description?: string | null
           enabled?: boolean
           key: string
+          name?: string | null
           updated_at?: string
         }
         Update: {
+          audience?: string
           description?: string | null
           enabled?: boolean
           key?: string
+          name?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -977,6 +1085,56 @@ export type Database = {
           },
         ]
       }
+      invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          email: string | null
+          expires_at: string | null
+          id: string
+          max_uses: number
+          preregistration_id: string | null
+          status: string
+          used_at: string | null
+          uses: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number
+          preregistration_id?: string | null
+          status?: string
+          used_at?: string | null
+          uses?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number
+          preregistration_id?: string | null
+          status?: string
+          used_at?: string | null
+          uses?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_codes_preregistration_id_fkey"
+            columns: ["preregistration_id"]
+            isOneToOne: false
+            referencedRelation: "beta_preregistrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_prefs: {
         Row: {
           email_dm: boolean
@@ -1034,6 +1192,42 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      platform_announcements: {
+        Row: {
+          audience: string
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          published_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1298,31 +1492,40 @@ export type Database = {
       }
       support_tickets: {
         Row: {
+          admin_notes: string | null
+          assigned_to: string | null
           body: string
           category: string | null
           created_at: string
           email: string
           id: string
+          priority: string
           status: string
           subject: string
           user_id: string | null
         }
         Insert: {
+          admin_notes?: string | null
+          assigned_to?: string | null
           body: string
           category?: string | null
           created_at?: string
           email: string
           id?: string
+          priority?: string
           status?: string
           subject: string
           user_id?: string | null
         }
         Update: {
+          admin_notes?: string | null
+          assigned_to?: string | null
           body?: string
           category?: string | null
           created_at?: string
           email?: string
           id?: string
+          priority?: string
           status?: string
           subject?: string
           user_id?: string | null
