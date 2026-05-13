@@ -837,3 +837,145 @@ function FinalCTA() {
     </section>
   );
 }
+
+/* ------------------------------ WHY PRINTREON ------------------------------ */
+
+function WhyPrintreonExists() {
+  const problems = [
+    "Awkward STL delivery patched together with Drive links",
+    "No real commercial-licence handling for creators",
+    "Generic creator tooling that ignores 3D-specific workflows",
+    "Membership platforms that can't handle file versioning",
+    "Payouts and fees built for video, not recurring STL drops",
+  ];
+  return (
+    <section className="container-wide py-24">
+      <div className="grid gap-10 md:grid-cols-12 md:items-start">
+        <div className="md:col-span-5">
+          <span className="eyebrow">// Why Printreon exists</span>
+          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
+            <span className="font-display italic">Most creator platforms</span>{" "}
+            <span className="font-bold">were never built for 3D creators.</span>
+          </h2>
+          <p className="mt-5 text-lg text-ink-soft">
+            Printreon is purpose-built infrastructure for the 3D creator economy — STL-native from
+            day one, with the payments, licensing and community tools recurring STL businesses
+            actually need.
+          </p>
+        </div>
+        <ul className="md:col-span-7 grid gap-3">
+          {problems.map((p) => (
+            <li key={p} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
+              <X className="mt-0.5 h-4 w-4 flex-shrink-0 text-destructive" />
+              <span className="text-sm text-ink">{p}</span>
+            </li>
+          ))}
+          <li className="mt-2 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+            <span className="text-sm font-semibold text-ink">
+              Printreon: purpose-built infrastructure for the 3D creator economy.
+            </span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ FOUNDER BENEFITS ------------------------------ */
+
+function FounderBenefits() {
+  return (
+    <section id="founder-benefits" className="bg-surface relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 layer-lines opacity-50" aria-hidden />
+      <div className="container-wide relative py-24">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="eyebrow"><Crown className="mr-1.5 inline h-3.5 w-3.5" /> Founding creators</span>
+          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
+            <span className="font-display italic">Founding creators keep</span>{" "}
+            <span className="font-bold">higher payouts for life.</span>
+          </h2>
+          <p className="mt-5 text-lg text-ink-soft">
+            Creators accepted into the beta permanently lock in reduced platform fees, founder
+            status, priority feature access and direct influence on Printreon's direction.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
+          <div className="card-soft relative overflow-hidden">
+            <span className="absolute right-4 top-4 rounded-full bg-secondary px-2.5 py-1 font-mono text-[10px] font-bold text-ink-soft">
+              STANDARD
+            </span>
+            <h3 className="text-lg font-semibold text-ink">Standard Creator</h3>
+            <p className="mt-2 text-sm text-ink-soft">After public launch.</p>
+            <ul className="mt-5 space-y-2 text-sm text-ink">
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard platform fee</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard payout %</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Public release access</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard support</li>
+            </ul>
+          </div>
+          <div className="card-soft relative overflow-hidden border-primary/40 bg-primary/5">
+            <span className="absolute right-4 top-4 rounded-full bg-primary px-2.5 py-1 font-mono text-[10px] font-bold text-primary-foreground">
+              FOUNDING
+            </span>
+            <h3 className="text-lg font-semibold text-ink flex items-center gap-2">
+              <Crown className="h-5 w-5 text-primary" /> Founding Creator
+            </h3>
+            <p className="mt-2 text-sm text-ink-soft">Locked in for the lifetime of your account.</p>
+            <ul className="mt-5 space-y-2 text-sm text-ink">
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Reduced platform fee — for life</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Higher payout percentage</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Founder badge on your page</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Priority support</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Early access to new features</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Direct input on roadmap</li>
+            </ul>
+            <button
+              onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-primary mt-7 w-full"
+            >
+              Apply For Founder Access
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ BETA APPLICATION ------------------------------ */
+
+function BetaApplication() {
+  return (
+    <section id="beta-access" className="bg-ink text-background relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 blueprint-grid-dark opacity-40" aria-hidden />
+      <div className="pointer-events-none absolute -top-32 right-1/4 h-96 w-96 rounded-full bg-primary/30 blur-3xl" aria-hidden />
+      <div className="container-wide relative py-24 md:py-32">
+        <div className="grid gap-12 md:grid-cols-12 md:items-start">
+          <div className="md:col-span-5">
+            <span className="eyebrow-dark"><AlertTriangle className="mr-1.5 inline h-3.5 w-3.5" /> Limited spots</span>
+            <h2 className="mt-5 text-4xl md:text-6xl">
+              <span className="font-display italic">Apply For</span>{" "}
+              <span className="font-bold">Early Beta Access</span>
+            </h2>
+            <p className="mt-5 max-w-md text-lg text-background/70">
+              Join the founding creators helping shape Printreon before public launch. Founder
+              pricing is locked in the moment you're accepted.
+            </p>
+            <ul className="mt-8 space-y-3 text-sm text-background/80">
+              <li className="flex items-start gap-2"><Crown className="mt-0.5 h-4 w-4 text-primary" /> Lifetime founder pricing & badge</li>
+              <li className="flex items-start gap-2"><Rocket className="mt-0.5 h-4 w-4 text-primary" /> First wave of invites going out soon</li>
+              <li className="flex items-start gap-2"><ShieldCheck className="mt-0.5 h-4 w-4 text-primary" /> No spam, no marketing list — invite-only</li>
+            </ul>
+          </div>
+          <div className="md:col-span-7">
+            <div className="rounded-3xl border border-background/10 bg-background/[0.03] p-6 md:p-8 backdrop-blur">
+              <WaitlistForm variant="dark" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
