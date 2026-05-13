@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const baseSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -14,12 +15,20 @@ const baseSchema = z.object({
   sells_stls: z.boolean(),
   sells_physical_prints: z.boolean(),
   interested_in_commercial_licensing: z.boolean(),
-  reason_for_joining: z.string().trim().max(1000).optional().or(z.literal("")),
+  biggest_frustration: z.string().trim().max(1000).optional().or(z.literal("")),
+  acknowledge: z.boolean().refine((v) => v, "Please acknowledge the beta is invite-only"),
 });
 
 const audienceOptions = ["<1k", "1k–10k", "10k–50k", "50k–100k", "100k+"] as const;
 
-export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark" }) {
+export function WaitlistForm({
+  variant = "light",
+  compact = false,
+}: {
+  variant?: "light" | "dark";
+  compact?: boolean;
+}) {
+  const navigate = useNavigate();
   const [role, setRole] = useState<"creator" | "supporter">("creator");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -30,9 +39,11 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
   const [sellsStls, setSellsStls] = useState(false);
   const [sellsPrints, setSellsPrints] = useState(false);
   const [commercial, setCommercial] = useState(false);
-  const [reason, setReason] = useState("");
+  const [frustration, setFrustration] = useState("");
+  const [acknowledge, setAcknowledge] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [referredBy, setReferredBy] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
 
   const isDark = variant === "dark";
@@ -41,6 +52,15 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
     try {
       const code = sessionStorage.getItem("printreon_invite");
       if (code) setInviteCode(code);
+      const ref = sessionStorage.getItem("printreon_ref");
+      if (ref) setReferredBy(ref);
+      // Pull ?ref= from URL
+      const url = new URL(window.location.href);
+      const refParam = url.searchParams.get("ref");
+      if (refParam) {
+        sessionStorage.setItem("printreon_ref", refParam);
+        setReferredBy(refParam);
+      }
     } catch {
       /* no-op */
     }
@@ -60,7 +80,8 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
       sells_stls: sellsStls,
       sells_physical_prints: sellsPrints,
       interested_in_commercial_licensing: commercial,
-      reason_for_joining: reason,
+      biggest_frustration: frustration,
+      acknowledge,
     });
     if (!parsed.success) {
       setStatus("error");
@@ -71,64 +92,70 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
 
     const d = parsed.data;
     const hasInvite = !!inviteCode;
+    const isCreator = role === "creator";
     const row = {
       email: d.email.toLowerCase(),
       full_name: d.full_name || null,
-      creator_name: role === "creator" ? d.creator_name || null : null,
-      social_url: role === "creator" ? d.social_url || null : null,
-      current_platform: role === "creator" ? d.current_platform || null : null,
-      audience_size: role === "creator" ? d.audience_size || null : null,
-      sells_stls: role === "creator" ? d.sells_stls : false,
-      sells_physical_prints: role === "creator" ? d.sells_physical_prints : false,
-      interested_in_commercial_licensing:
-        role === "creator" ? d.interested_in_commercial_licensing : false,
-      reason_for_joining: d.reason_for_joining || null,
+      creator_name: isCreator ? d.creator_name || null : null,
+      social_url: isCreator ? d.social_url || null : null,
+      current_platform: isCreator ? d.current_platform || null : null,
+      audience_size: isCreator ? d.audience_size || null : null,
+      sells_stls: isCreator ? d.sells_stls : false,
+      sells_physical_prints: isCreator ? d.sells_physical_prints : false,
+      interested_in_commercial_licensing: isCreator
+        ? d.interested_in_commercial_licensing
+        : false,
+      biggest_frustration: d.biggest_frustration || null,
+      reason_for_joining: d.biggest_frustration || null,
       source: "landing",
       tags: [role],
       invite_code: inviteCode,
+      referred_by: referredBy,
       status: hasInvite ? "invited" : "pending",
       invited_at: hasInvite ? new Date().toISOString() : null,
+      founder_pricing_eligible: true,
     };
 
-    const { error } = await supabase.from("beta_preregistrations").insert(row);
+    const { data, error } = await supabase
+      .from("beta_preregistrations")
+      .insert(row)
+      .select("referral_code, email, status, founder_pricing_eligible")
+      .single();
+
     if (error) {
+      const dup = error.code === "23505";
+      if (dup) {
+        // Already applied — still send to /waitlist with email lookup.
+        try {
+          localStorage.setItem(
+            "printreon_application",
+            JSON.stringify({ email: row.email, returning: true }),
+          );
+        } catch {
+          /* no-op */
+        }
+        navigate({ to: "/waitlist" });
+        return;
+      }
       setStatus("error");
-      setMessage(
-        error.code === "23505"
-          ? "You're already on the list — we'll be in touch."
-          : "Something went wrong. Please try again.",
-      );
-      if (error.code === "23505") setStatus("success");
+      setMessage("Something went wrong. Please try again.");
       return;
     }
-    setStatus("success");
-    setMessage(
-      hasInvite
-        ? "Invite received — we'll email you next steps shortly."
-        : "You're on the list — we'll email you at launch.",
-    );
-  }
 
-  if (status === "success") {
-    return (
-      <div
-        className={`flex items-start gap-3 rounded-2xl border p-5 ${
-          isDark
-            ? "border-background/20 bg-background/5 text-background"
-            : "border-border bg-card text-ink"
-        }`}
-      >
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <Check className="h-5 w-5" />
-        </div>
-        <div>
-          <div className="font-semibold">Thanks for joining!</div>
-          <p className={`mt-1 text-sm ${isDark ? "text-background/70" : "text-ink-soft"}`}>
-            {message}
-          </p>
-        </div>
-      </div>
-    );
+    try {
+      localStorage.setItem(
+        "printreon_application",
+        JSON.stringify({
+          email: data.email,
+          referral_code: data.referral_code,
+          status: data.status,
+          founder_pricing_eligible: data.founder_pricing_eligible,
+        }),
+      );
+    } catch {
+      /* no-op */
+    }
+    navigate({ to: "/waitlist" });
   }
 
   const inputCls = `h-11 w-full rounded-xl border px-4 text-base outline-none transition focus:ring-2 focus:ring-primary/40 ${
@@ -149,6 +176,18 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
           }`}
         >
           Invite code <span className="font-mono font-semibold">{inviteCode}</span> applied.
+        </div>
+      )}
+      {referredBy && !inviteCode && (
+        <div
+          className={`rounded-xl border px-4 py-2 text-sm ${
+            isDark
+              ? "border-background/20 bg-background/10 text-background"
+              : "border-border bg-card text-ink"
+          }`}
+        >
+          Referred by <span className="font-mono font-semibold">{referredBy}</span> — counts toward
+          their priority access.
         </div>
       )}
 
@@ -221,7 +260,7 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
-              <label className={labelCls} htmlFor="pr-social">Main social / store URL</label>
+              <label className={labelCls} htmlFor="pr-social">Website / social link</label>
               <input
                 id="pr-social"
                 type="url"
@@ -275,20 +314,38 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
               ))}
             </div>
 
-            <div className="sm:col-span-2 space-y-1">
-              <label className={labelCls} htmlFor="pr-reason">Why do you want in?</label>
-              <textarea
-                id="pr-reason"
-                rows={3}
-                placeholder="Tell us a bit about what you'd use Printreon for."
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className={`${inputCls} h-auto py-3`}
-              />
-            </div>
+            {!compact && (
+              <div className="sm:col-span-2 space-y-1">
+                <label className={labelCls} htmlFor="pr-frustration">
+                  Biggest frustration with current platforms
+                </label>
+                <textarea
+                  id="pr-frustration"
+                  rows={3}
+                  placeholder="What's broken about how you sell STLs today?"
+                  value={frustration}
+                  onChange={(e) => setFrustration(e.target.value)}
+                  className={`${inputCls} h-auto py-3`}
+                />
+              </div>
+            )}
           </>
         )}
       </div>
+
+      <label
+        className={`flex items-start gap-2 text-xs ${
+          isDark ? "text-background/70" : "text-ink-soft"
+        }`}
+      >
+        <input
+          type="checkbox"
+          checked={acknowledge}
+          onChange={(e) => setAcknowledge(e.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+        />
+        <span>I understand beta access is invite-only and limited.</span>
+      </label>
 
       <button
         type="submit"
@@ -300,7 +357,7 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
         ) : inviteCode ? (
           "Claim my invite"
         ) : (
-          "Request beta access"
+          "Apply For Founder Access"
         )}
       </button>
 
@@ -308,7 +365,7 @@ export function WaitlistForm({ variant = "light" }: { variant?: "light" | "dark"
         <p className="text-sm text-destructive">{message}</p>
       )}
       <p className={`text-xs ${isDark ? "text-background/60" : "text-ink-soft"}`}>
-        No spam. We'll only email you about Printreon.
+        Founding creators lock in higher payouts for life. No spam — we only email you about Printreon.
       </p>
     </form>
   );
