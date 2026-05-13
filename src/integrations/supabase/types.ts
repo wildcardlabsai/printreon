@@ -1657,6 +1657,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_beta_preregistration: {
+        Args: { payload: Json }
+        Returns: {
+          email: string
+          founder_pricing_eligible: boolean
+          referral_code: string
+          status: string
+        }[]
+      }
     }
     Enums: {
       app_role: "member" | "creator" | "admin"
