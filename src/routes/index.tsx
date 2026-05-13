@@ -648,7 +648,7 @@ function ForSupporters() {
             Back the designers behind your favourite prints. Get fresh STL drops every month,
             exclusive tiers, and follow creators for free until you're ready to subscribe.
           </p>
-          <a href="#waitlist" className="btn-electric mt-8 inline-flex">
+          <a href="#beta-access" className="btn-electric mt-8 inline-flex">
             Join as a supporter
             <ArrowUpRight className="ml-1 h-4 w-4" />
           </a>
@@ -739,7 +739,7 @@ function Pricing() {
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Unlimited STL/3MF uploads</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Built-in growth tools</li>
             </ul>
-            <a href="#waitlist" className="btn-primary mt-7 w-full text-center">Join as a creator</a>
+            <a href="#beta-access" className="btn-primary mt-7 w-full text-center">Join as a creator</a>
           </div>
           <div className="card-soft relative overflow-hidden">
             <span className="absolute right-4 top-4 rounded-full bg-electric px-2.5 py-1 font-mono text-[10px] font-bold text-electric-foreground">
@@ -753,7 +753,7 @@ function Pricing() {
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Download free files</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cancel any subscription anytime</li>
             </ul>
-            <a href="#waitlist" className="btn-ghost mt-7 w-full text-center">Join as a supporter</a>
+            <a href="#beta-access" className="btn-ghost mt-7 w-full text-center">Join as a supporter</a>
           </div>
         </div>
       </div>
@@ -784,7 +784,7 @@ function FAQ() {
           </h2>
           <p className="mt-5 text-ink-soft">
             Can't find what you're looking for?{" "}
-            <a href="#waitlist" className="font-semibold text-primary underline underline-offset-4">
+            <a href="#beta-access" className="font-semibold text-primary underline underline-offset-4">
               Drop your email
             </a>{" "}
             and we'll answer it personally.
