@@ -16,6 +16,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as LegalRouteImport } from './routes/legal'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ForCreatorsRouteImport } from './routes/for-creators'
@@ -30,6 +31,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MeIndexRouteImport } from './routes/me.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creator'
 import { Route as MeWishlistRouteImport } from './routes/me.wishlist'
 import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
@@ -57,6 +59,20 @@ import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.a
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSystemHealthRouteImport } from './routes/admin.system-health'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
+import { Route as AdminStlLibraryRouteImport } from './routes/admin.stl-library'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminPreregistrationsRouteImport } from './routes/admin.preregistrations'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
+import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
+import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
+import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -92,6 +108,11 @@ const MeRoute = MeRouteImport.update({
 const LegalRoute = LegalRouteImport.update({
   id: '/legal',
   path: '/legal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -163,6 +184,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const OnboardingCreatorRoute = OnboardingCreatorRouteImport.update({
   id: '/onboarding/creator',
@@ -299,6 +325,76 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSystemHealthRoute = AdminSystemHealthRouteImport.update({
+  id: '/system-health',
+  path: '/system-health',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStlLibraryRoute = AdminStlLibraryRouteImport.update({
+  id: '/stl-library',
+  path: '/stl-library',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPreregistrationsRoute = AdminPreregistrationsRouteImport.update({
+  id: '/preregistrations',
+  path: '/preregistrations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
+  id: '/memberships',
+  path: '/memberships',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInvitesRoute = AdminInvitesRouteImport.update({
+  id: '/invites',
+  path: '/invites',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeatureFlagsRoute = AdminFeatureFlagsRouteImport.update({
+  id: '/feature-flags',
+  path: '/feature-flags',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
+  id: '/creators',
+  path: '/creators',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminActivityLogRoute = AdminActivityLogRouteImport.update({
+  id: '/activity-log',
+  path: '/activity-log',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -309,7 +405,7 @@ const ApiPublicPaymentsWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
@@ -319,6 +415,7 @@ export interface FileRoutesByFullPath {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/join': typeof JoinRoute
   '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
   '/press': typeof PressRoute
@@ -326,6 +423,20 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity-log': typeof AdminActivityLogRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stl-library': typeof AdminStlLibraryRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -353,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -360,7 +472,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
@@ -369,12 +480,27 @@ export interface FileRoutesByTo {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/join': typeof JoinRoute
   '/legal': typeof LegalRouteWithChildren
   '/press': typeof PressRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity-log': typeof AdminActivityLogRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stl-library': typeof AdminStlLibraryRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -402,6 +528,7 @@ export interface FileRoutesByTo {
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
+  '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -410,7 +537,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
@@ -420,6 +547,7 @@ export interface FileRoutesById {
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
+  '/join': typeof JoinRoute
   '/legal': typeof LegalRouteWithChildren
   '/me': typeof MeRouteWithChildren
   '/press': typeof PressRoute
@@ -427,6 +555,20 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity-log': typeof AdminActivityLogRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/invites': typeof AdminInvitesRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stl-library': typeof AdminStlLibraryRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -454,6 +596,7 @@ export interface FileRoutesById {
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
   '/onboarding/creator': typeof OnboardingCreatorRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -473,6 +616,7 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/join'
     | '/legal'
     | '/me'
     | '/press'
@@ -480,6 +624,20 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/admin/activity-log'
+    | '/admin/analytics'
+    | '/admin/announcements'
+    | '/admin/creators'
+    | '/admin/feature-flags'
+    | '/admin/invites'
+    | '/admin/memberships'
+    | '/admin/payments'
+    | '/admin/preregistrations'
+    | '/admin/settings'
+    | '/admin/stl-library'
+    | '/admin/support'
+    | '/admin/system-health'
+    | '/admin/users'
     | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
@@ -507,6 +665,7 @@ export interface FileRouteTypes {
     | '/me/subscriptions'
     | '/me/wishlist'
     | '/onboarding/creator'
+    | '/admin/'
     | '/dashboard/'
     | '/me/'
     | '/api/public/payments/webhook'
@@ -514,7 +673,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
     | '/auth'
     | '/blog'
     | '/changelog'
@@ -523,12 +681,27 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/join'
     | '/legal'
     | '/press'
     | '/pricing'
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/admin/activity-log'
+    | '/admin/analytics'
+    | '/admin/announcements'
+    | '/admin/creators'
+    | '/admin/feature-flags'
+    | '/admin/invites'
+    | '/admin/memberships'
+    | '/admin/payments'
+    | '/admin/preregistrations'
+    | '/admin/settings'
+    | '/admin/stl-library'
+    | '/admin/support'
+    | '/admin/system-health'
+    | '/admin/users'
     | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
@@ -556,6 +729,7 @@ export interface FileRouteTypes {
     | '/me/subscriptions'
     | '/me/wishlist'
     | '/onboarding/creator'
+    | '/admin'
     | '/dashboard'
     | '/me'
     | '/api/public/payments/webhook'
@@ -573,6 +747,7 @@ export interface FileRouteTypes {
     | '/for-creators'
     | '/forgot-password'
     | '/help'
+    | '/join'
     | '/legal'
     | '/me'
     | '/press'
@@ -580,6 +755,20 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/admin/activity-log'
+    | '/admin/analytics'
+    | '/admin/announcements'
+    | '/admin/creators'
+    | '/admin/feature-flags'
+    | '/admin/invites'
+    | '/admin/memberships'
+    | '/admin/payments'
+    | '/admin/preregistrations'
+    | '/admin/settings'
+    | '/admin/stl-library'
+    | '/admin/support'
+    | '/admin/system-health'
+    | '/admin/users'
     | '/blog/$slug'
     | '/c/$slug'
     | '/dashboard/analytics'
@@ -607,6 +796,7 @@ export interface FileRouteTypes {
     | '/me/subscriptions'
     | '/me/wishlist'
     | '/onboarding/creator'
+    | '/admin/'
     | '/dashboard/'
     | '/me/'
     | '/api/public/payments/webhook'
@@ -615,7 +805,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ChangelogRoute: typeof ChangelogRoute
@@ -625,6 +815,7 @@ export interface RootRouteChildren {
   ForCreatorsRoute: typeof ForCreatorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HelpRoute: typeof HelpRoute
+  JoinRoute: typeof JoinRoute
   LegalRoute: typeof LegalRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
   PressRoute: typeof PressRoute
@@ -686,6 +877,13 @@ declare module '@tanstack/react-router' {
       path: '/legal'
       fullPath: '/legal'
       preLoaderRoute: typeof LegalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -785,6 +983,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/onboarding/creator': {
       id: '/onboarding/creator'
@@ -975,6 +1180,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/system-health': {
+      id: '/admin/system-health'
+      path: '/system-health'
+      fullPath: '/admin/system-health'
+      preLoaderRoute: typeof AdminSystemHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stl-library': {
+      id: '/admin/stl-library'
+      path: '/stl-library'
+      fullPath: '/admin/stl-library'
+      preLoaderRoute: typeof AdminStlLibraryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/preregistrations': {
+      id: '/admin/preregistrations'
+      path: '/preregistrations'
+      fullPath: '/admin/preregistrations'
+      preLoaderRoute: typeof AdminPreregistrationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/memberships': {
+      id: '/admin/memberships'
+      path: '/memberships'
+      fullPath: '/admin/memberships'
+      preLoaderRoute: typeof AdminMembershipsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/invites': {
+      id: '/admin/invites'
+      path: '/invites'
+      fullPath: '/admin/invites'
+      preLoaderRoute: typeof AdminInvitesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/feature-flags': {
+      id: '/admin/feature-flags'
+      path: '/feature-flags'
+      fullPath: '/admin/feature-flags'
+      preLoaderRoute: typeof AdminFeatureFlagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/creators': {
+      id: '/admin/creators'
+      path: '/creators'
+      fullPath: '/admin/creators'
+      preLoaderRoute: typeof AdminCreatorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/activity-log': {
+      id: '/admin/activity-log'
+      path: '/activity-log'
+      fullPath: '/admin/activity-log'
+      preLoaderRoute: typeof AdminActivityLogRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -984,6 +1287,44 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminActivityLogRoute: typeof AdminActivityLogRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
+  AdminCreatorsRoute: typeof AdminCreatorsRoute
+  AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
+  AdminInvitesRoute: typeof AdminInvitesRoute
+  AdminMembershipsRoute: typeof AdminMembershipsRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminPreregistrationsRoute: typeof AdminPreregistrationsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStlLibraryRoute: typeof AdminStlLibraryRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminSystemHealthRoute: typeof AdminSystemHealthRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityLogRoute: AdminActivityLogRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
+  AdminCreatorsRoute: AdminCreatorsRoute,
+  AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
+  AdminInvitesRoute: AdminInvitesRoute,
+  AdminMembershipsRoute: AdminMembershipsRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminPreregistrationsRoute: AdminPreregistrationsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStlLibraryRoute: AdminStlLibraryRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminSystemHealthRoute: AdminSystemHealthRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
@@ -1076,7 +1417,7 @@ const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ChangelogRoute: ChangelogRoute,
@@ -1086,6 +1427,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForCreatorsRoute: ForCreatorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HelpRoute: HelpRoute,
+  JoinRoute: JoinRoute,
   LegalRoute: LegalRouteWithChildren,
   MeRoute: MeRouteWithChildren,
   PressRoute: PressRoute,
