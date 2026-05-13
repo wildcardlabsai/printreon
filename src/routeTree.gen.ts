@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -75,6 +76,11 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -423,6 +429,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/waitlist': typeof WaitlistRoute
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
@@ -487,6 +494,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/waitlist': typeof WaitlistRoute
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
@@ -555,6 +563,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/waitlist': typeof WaitlistRoute
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
@@ -624,6 +633,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/waitlist'
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
@@ -688,6 +698,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/waitlist'
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
@@ -755,6 +766,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/waitlist'
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
@@ -823,6 +835,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WaitlistRoute: typeof WaitlistRoute
   CSlugRoute: typeof CSlugRoute
   OnboardingCreatorRoute: typeof OnboardingCreatorRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -830,6 +843,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -1435,6 +1455,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WaitlistRoute: WaitlistRoute,
   CSlugRoute: CSlugRoute,
   OnboardingCreatorRoute: OnboardingCreatorRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

@@ -40,7 +40,7 @@ function WaitlistPage() {
   useEffect(() => {
     if (!app?.referral_code) return;
     (async () => {
-      const { data } = await supabase.rpc("get_beta_referral_stats", { _code: app.referral_code });
+      const { data } = await supabase.rpc("get_beta_referral_stats", { _code: app.referral_code as string });
       const row = Array.isArray(data) ? data[0] : data;
       if (row) setStats({ referral_count: row.referral_count, status: row.status });
     })();
