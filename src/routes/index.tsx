@@ -83,13 +83,11 @@ function Hero() {
             v1.0 — Opening to creators soon
           </span>
 
-          <h1 className="mt-6 text-[44px] leading-[0.98] text-ink md:text-[88px] md:leading-[0.92]">
-            <span className="font-display italic text-primary">Printr</span>
-            <span className="font-display italic">eon turns your</span>
-            <br />
-            <span className="font-bold">3D files into</span>{" "}
+          <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[76px] md:leading-[0.95]">
+            <span className="font-bold">Built for 3D creators.</span>{" "}
+            <span className="font-display italic text-ink-soft">Not generic</span>{" "}
             <span className="relative inline-block">
-              <span className="font-bold">monthly income.</span>
+              <span className="font-display italic text-primary">membership platforms.</span>
               <svg viewBox="0 0 300 14" className="absolute -bottom-2 left-0 h-3 w-full text-primary" preserveAspectRatio="none">
                 <path d="M2 8 Q 75 2, 150 8 T 298 8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
               </svg>
@@ -97,20 +95,37 @@ function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-lg text-ink-soft">
-            The Patreon alternative built for STL, 3MF and printable files —
-            with native uploads, tiered memberships, file protection and growth tools
-            wired in from day one.
+            Run STL memberships, manage subscribers, offer commercial licences and grow recurring
+            income — all on a platform designed specifically for the 3D printing creator economy.
           </p>
 
-          <div id="waitlist" className="mt-8 scroll-mt-24">
-            <WaitlistForm />
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-primary h-12 px-6 text-base"
+            >
+              Apply For Early Beta Access
+            </button>
+            <button
+              onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-ghost h-12 px-6 text-base"
+            >
+              Explore Features
+            </button>
           </div>
+
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Invite-only beta</span>
+            <span className="flex items-center gap-2"><Crown className="h-4 w-4 text-primary" /> Founder pricing locked in for life</span>
+            <span className="flex items-center gap-2"><Box className="h-4 w-4 text-primary" /> Built for 3D creators</span>
+          </div>
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+            <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" /></span>
+            Limited founding creator spots available
+          </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink-soft">
             <SocialProof />
-            <span className="hidden h-4 w-px bg-border md:inline-block" />
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Free to join</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Early creator perks</span>
           </div>
         </div>
 
