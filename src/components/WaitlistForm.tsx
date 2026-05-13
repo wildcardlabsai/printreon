@@ -125,7 +125,7 @@ export function WaitlistForm({
         try {
           localStorage.setItem(
             "printreon_application",
-            JSON.stringify({ email: row.email, returning: true }),
+            JSON.stringify({ email: payload.email, returning: true }),
           );
         } catch {
           /* no-op */
@@ -142,10 +142,10 @@ export function WaitlistForm({
       localStorage.setItem(
         "printreon_application",
         JSON.stringify({
-          email: data.email,
-          referral_code: data.referral_code,
-          status: data.status,
-          founder_pricing_eligible: data.founder_pricing_eligible,
+          email: data?.email ?? payload.email,
+          referral_code: data?.referral_code ?? null,
+          status: data?.status ?? (inviteCode ? "invited" : "pending"),
+          founder_pricing_eligible: data?.founder_pricing_eligible ?? true,
         }),
       );
     } catch {
