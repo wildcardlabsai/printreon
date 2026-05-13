@@ -8,7 +8,7 @@ import {
   Upload, CreditCard, Rocket, Check, Box,
   Mail, MessageSquare, Heart, Tag, Gift, Package, BarChart3,
   Bell, Banknote, ShieldCheck, Users, FileBox, Hammer, Megaphone,
-  ArrowUpRight, Zap,
+  ArrowUpRight, Zap, Crown, AlertTriangle, X,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
