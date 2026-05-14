@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, PARTNER } from "@/lib/site";
-import heroImg from "@/assets/hero.jpg";
+import heroImg from "@/assets/hero-dashboard-preview.jpg";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
   Upload, CreditCard, Rocket, Check, Box,
