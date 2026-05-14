@@ -33,7 +33,7 @@ export function WaitlistForm({
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [creatorName, setCreatorName] = useState("");
-  const [socialUrl, setSocialUrl] = useState("");
+  
   const [currentPlatform, setCurrentPlatform] = useState("");
   const [audienceSize, setAudienceSize] = useState("");
   const [sellsStls, setSellsStls] = useState(false);
