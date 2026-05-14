@@ -95,7 +95,7 @@ export function WaitlistForm({
       email: d.email.toLowerCase(),
       full_name: d.full_name || null,
       creator_name: isCreator ? d.creator_name || null : null,
-      social_url: isCreator ? d.social_url || null : null,
+      
       current_platform: isCreator ? d.current_platform || null : null,
       audience_size: isCreator ? d.audience_size || null : null,
       sells_stls: isCreator ? d.sells_stls : false,
