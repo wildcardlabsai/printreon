@@ -254,17 +254,6 @@ export function WaitlistForm({
                 className={inputCls}
               />
             </div>
-            <div className="sm:col-span-2 space-y-1">
-              <label className={labelCls} htmlFor="pr-social">Website / social link</label>
-              <input
-                id="pr-social"
-                type="url"
-                placeholder="https://instagram.com/yourhandle"
-                value={socialUrl}
-                onChange={(e) => setSocialUrl(e.target.value)}
-                className={inputCls}
-              />
-            </div>
             <div className="space-y-1">
               <label className={labelCls} htmlFor="pr-platform">Currently selling on</label>
               <input
