@@ -9,7 +9,7 @@ const baseSchema = z.object({
   role_interest: z.enum(["creator", "supporter"]),
   full_name: z.string().trim().max(120).optional().or(z.literal("")),
   creator_name: z.string().trim().max(120).optional().or(z.literal("")),
-  social_url: z.string().trim().url("Enter a valid URL").max(500).optional().or(z.literal("")),
+  
   current_platform: z.string().trim().max(120).optional().or(z.literal("")),
   audience_size: z.string().trim().max(40).optional().or(z.literal("")),
   sells_stls: z.boolean(),
