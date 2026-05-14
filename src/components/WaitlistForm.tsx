@@ -74,7 +74,6 @@ export function WaitlistForm({
       role_interest: role,
       full_name: fullName,
       creator_name: creatorName,
-      social_url: socialUrl,
       current_platform: currentPlatform,
       audience_size: audienceSize,
       sells_stls: sellsStls,
