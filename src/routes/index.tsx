@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, PARTNER } from "@/lib/site";
-import heroImg from "@/assets/hero.jpg";
+import heroImg from "@/assets/hero-dashboard-preview.jpg";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
   Upload, CreditCard, Rocket, Check, Box,
@@ -151,10 +151,10 @@ function Hero() {
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-elevated)]">
               <img
                 src={heroImg}
-                alt="3D printer producing a faceted orange model"
+                alt="Printreon creator dashboard preview showing STL files, subscriber count and monthly recurring revenue"
                 className="h-full w-full object-cover"
-                width={1600}
-                height={2000}
+                width={1024}
+                height={1280}
               />
               {/* Layer-line texture on image */}
               <div className="pointer-events-none absolute inset-0 layer-lines mix-blend-multiply" aria-hidden />
