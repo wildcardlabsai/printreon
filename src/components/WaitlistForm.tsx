@@ -9,7 +9,7 @@ const baseSchema = z.object({
   role_interest: z.enum(["creator", "supporter"]),
   full_name: z.string().trim().max(120).optional().or(z.literal("")),
   creator_name: z.string().trim().max(120).optional().or(z.literal("")),
-  social_url: z.string().trim().url("Enter a valid URL").max(500).optional().or(z.literal("")),
+  
   current_platform: z.string().trim().max(120).optional().or(z.literal("")),
   audience_size: z.string().trim().max(40).optional().or(z.literal("")),
   sells_stls: z.boolean(),
@@ -33,7 +33,7 @@ export function WaitlistForm({
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [creatorName, setCreatorName] = useState("");
-  const [socialUrl, setSocialUrl] = useState("");
+  
   const [currentPlatform, setCurrentPlatform] = useState("");
   const [audienceSize, setAudienceSize] = useState("");
   const [sellsStls, setSellsStls] = useState(false);
@@ -74,7 +74,6 @@ export function WaitlistForm({
       role_interest: role,
       full_name: fullName,
       creator_name: creatorName,
-      social_url: socialUrl,
       current_platform: currentPlatform,
       audience_size: audienceSize,
       sells_stls: sellsStls,
@@ -96,7 +95,7 @@ export function WaitlistForm({
       email: d.email.toLowerCase(),
       full_name: d.full_name || null,
       creator_name: isCreator ? d.creator_name || null : null,
-      social_url: isCreator ? d.social_url || null : null,
+      
       current_platform: isCreator ? d.current_platform || null : null,
       audience_size: isCreator ? d.audience_size || null : null,
       sells_stls: isCreator ? d.sells_stls : false,
@@ -252,17 +251,6 @@ export function WaitlistForm({
                 placeholder="e.g. ForgeWorks"
                 value={creatorName}
                 onChange={(e) => setCreatorName(e.target.value)}
-                className={inputCls}
-              />
-            </div>
-            <div className="sm:col-span-2 space-y-1">
-              <label className={labelCls} htmlFor="pr-social">Website / social link</label>
-              <input
-                id="pr-social"
-                type="url"
-                placeholder="https://instagram.com/yourhandle"
-                value={socialUrl}
-                onChange={(e) => setSocialUrl(e.target.value)}
                 className={inputCls}
               />
             </div>
