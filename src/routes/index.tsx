@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, PARTNER } from "@/lib/site";
-import heroImg from "@/assets/hero-dashboard-preview.jpg";
+import heroImg from "@/assets/hero-dashboard-preview.png";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
   Upload, CreditCard, Rocket, Check, Box,
@@ -148,35 +148,14 @@ function Hero() {
             </div>
 
             {/* Foreground hero image */}
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-elevated)]">
+            <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-elevated)]">
               <img
                 src={heroImg}
                 alt="Printreon creator dashboard preview showing STL files, subscriber count and monthly recurring revenue"
                 className="h-full w-full object-cover"
-                width={1024}
-                height={1280}
+                width={1536}
+                height={1024}
               />
-              {/* Layer-line texture on image */}
-              <div className="pointer-events-none absolute inset-0 layer-lines mix-blend-multiply" aria-hidden />
-
-              {/* Top stat strip */}
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/40 bg-white/85 px-3 py-1.5 backdrop-blur">
-                <Zap className="h-3.5 w-3.5 text-primary" />
-                <span className="font-mono text-[10px] uppercase tracking-wider text-ink">Live preview</span>
-              </div>
-
-              {/* Bottom file card overlay */}
-              <div className="absolute inset-x-4 bottom-4 rounded-xl border border-white/40 bg-white/95 p-3 backdrop-blur">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-ink-soft">dragon_v3.stl</div>
-                    <div className="mt-0.5 text-sm font-semibold text-ink">Premium Vault tier</div>
-                  </div>
-                  <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">
-                    GATED
-                  </span>
-                </div>
-              </div>
             </div>
 
             {/* Spinning ornament */}
