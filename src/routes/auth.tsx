@@ -69,7 +69,7 @@ function AuthPage() {
 
   const onGoogle = async () => {
     setLoading(true);
-    const target = wantsCreator ? "/onboarding/creator" : "/me";
+    const target = search.redirect ?? (wantsCreator ? "/onboarding/creator" : "/me");
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: `${window.location.origin}${target}`,
     });
