@@ -304,7 +304,7 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
         }
 
         if (cp) {
-          await seedDemoFiles(cp.id, user.id);
+          await seedDemoFiles(supabaseAdmin, cp.id, user.id);
         }
       }
 
