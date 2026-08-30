@@ -322,6 +322,7 @@ export const simulateSubscribe = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => SimulateInput.parse(d))
   .handler(async ({ data, context }) => {
+    const supabaseAdmin = await devAdmin();
     const { userId } = context;
 
     const { data: tier, error: tierErr } = await supabaseAdmin
