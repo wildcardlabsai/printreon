@@ -196,7 +196,7 @@ function CreatorPage() {
       <div className="container-page -mt-16 pb-20">
         <div className="card-soft flex flex-wrap items-center gap-5">
           {creator.profile_image_url ? (
-            <img src={creator.profile_image_url} alt="" className="h-24 w-24 rounded-full border-4 border-card object-cover" />
+            <img src={creator.profile_image_url} alt={`${creator.display_name} profile photo`} className="h-24 w-24 rounded-full border-4 border-card object-cover" />
           ) : (
             <div className="h-24 w-24 rounded-full border-4 border-card bg-accent text-primary flex items-center justify-center text-3xl font-bold">{creator.display_name[0]}</div>
           )}
@@ -225,7 +225,7 @@ function CreatorPage() {
             <div className="mt-4 space-y-4">
               {posts.map((p) => (
                 <article key={p.id} className="card-soft">
-                  {p.cover_image_url && <img src={p.cover_image_url} alt="" className="mb-4 aspect-video w-full rounded-lg object-cover" />}
+                  {p.cover_image_url && <img src={p.cover_image_url} alt={`Cover image for the post “${p.title}”`} className="mb-4 aspect-video w-full rounded-lg object-cover" />}
                   <h3 className="text-lg font-bold text-ink">{p.title}</h3>
                   <p className="mt-1 text-xs text-ink-soft">{new Date(p.published_at ?? p.created_at).toLocaleDateString()}</p>
                   <p className="mt-3 whitespace-pre-line text-ink-soft">{p.body}</p>
@@ -281,7 +281,7 @@ function CreatorPage() {
               <div key={f.id} className="card-soft">
                 <div className="aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
                   {f.preview_images && Array.isArray(f.preview_images) && f.preview_images[0]
-                    ? <img src={f.preview_images[0]} alt="" className="h-full w-full object-cover" />
+                    ? <img src={f.preview_images[0]} alt={`Preview render of the 3D model “${f.title}”`} className="h-full w-full object-cover" />
                     : "STL preview"}
                 </div>
                 <div className="mt-3 flex items-center justify-between">
