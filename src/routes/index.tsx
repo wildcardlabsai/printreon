@@ -857,9 +857,8 @@ function FounderBenefits() {
       <div className="container-wide relative py-24">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow"><Crown className="mr-1.5 inline h-3.5 w-3.5" /> Founding creators</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Founding creators keep</span>{" "}
-            <span className="font-bold">higher payouts for life.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Founding creators keep higher payouts for life.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Creators accepted into the beta permanently lock in reduced platform fees, founder
