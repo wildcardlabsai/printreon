@@ -13,7 +13,9 @@ const EnvSchema = z.enum(["sandbox", "live"]);
 async function ensureStripePriceForTier(env: StripeEnv, tierId: string): Promise<string> {
   const { data: tier, error } = await supabaseAdmin
     .from("creator_tiers")
-    .select("id, name, description, price, currency, stripe_price_id, creator_id")
+    .select(
+      "id, name, description, price, currency, stripe_price_id, creator_id, billing_interval"
+    )
     .eq("id", tierId)
     .maybeSingle();
   if (error || !tier) throw new Error("Tier not found");
@@ -30,7 +32,7 @@ async function ensureStripePriceForTier(env: StripeEnv, tierId: string): Promise
     product: product.id,
     unit_amount: Math.round(Number(tier.price) * 100),
     currency: (tier.currency ?? "USD").toLowerCase(),
-    recurring: { interval: "month" },
+    recurring: { interval: tier.billing_interval === "year" ? "year" : "month" },
     metadata: { tier_id: tier.id },
   });
 
