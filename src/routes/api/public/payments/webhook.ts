@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { verifyWebhook, type StripeEnv } from "@/lib/stripe.server";
 import { enqueueEmail } from "@/server/email.server";
+import {
+  recordLedgerEvent,
+  resolveSubscription,
+  creatorPlatformFeePct,
+  fromMinor,
+  toIso,
+} from "@/server/ledger.server";
+
 
 async function handleSubscriptionCreated(subscription: any, env: StripeEnv) {
   const meta = subscription.metadata ?? {};
@@ -102,6 +110,183 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
     .eq("environment", env);
 }
 
+/** Successful renewal or first charge: write the earnings ledger row. */
+async function handleInvoicePaid(invoice: any, env: StripeEnv, eventId: string) {
+  const stripeSubId =
+    invoice.subscription ?? invoice.parent?.subscription_details?.subscription ?? null;
+  const sub = await resolveSubscription(stripeSubId, env);
+  const gross = fromMinor(invoice.amount_paid ?? invoice.total);
+  const feePct = await creatorPlatformFeePct(sub?.creator_id);
+  const platformFee = Number(((gross * feePct) / 100).toFixed(2));
+  const line = invoice.lines?.data?.[0];
+
+  await recordLedgerEvent({
+    environment: env,
+    kind: "payment",
+    status: "succeeded",
+    user_id: sub?.user_id ?? null,
+    creator_id: sub?.creator_id ?? null,
+    tier_id: sub?.tier_id ?? null,
+    subscription_id: sub?.id ?? null,
+    stripe_event_id: eventId,
+    stripe_invoice_id: invoice.id ?? null,
+    stripe_charge_id: invoice.charge ?? null,
+    stripe_subscription_id: stripeSubId,
+    currency: invoice.currency ?? "usd",
+    gross_amount: gross,
+    platform_fee: platformFee,
+    period_start: toIso(line?.period?.start),
+    period_end: toIso(line?.period?.end),
+    occurred_at: toIso(invoice.created) ?? new Date().toISOString(),
+  });
+
+  // A successful charge clears any dunning state.
+  if (sub?.id) {
+    await supabaseAdmin
+      .from("subscriptions")
+      .update({ payment_failed_at: null, payment_retry_count: 0, updated_at: new Date().toISOString() })
+      .eq("id", sub.id);
+  }
+
+  if (sub?.creator_id) {
+    const { data: creator } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("user_id, display_name")
+      .eq("id", sub.creator_id)
+      .maybeSingle();
+    if (creator?.user_id) {
+      await supabaseAdmin.from("notifications").insert({
+        user_id: creator.user_id,
+        type: "payment_received",
+        title: "Payment received",
+        body: `${invoice.currency?.toUpperCase() ?? "USD"} ${gross.toFixed(2)} from a supporter renewal.`,
+        link: "/dashboard/payouts",
+      });
+    }
+  }
+}
+
+/** Failed charge: record it, mark the subscription past_due and start dunning. */
+async function handleInvoiceFailed(invoice: any, env: StripeEnv, eventId: string) {
+  const stripeSubId =
+    invoice.subscription ?? invoice.parent?.subscription_details?.subscription ?? null;
+  const sub = await resolveSubscription(stripeSubId, env);
+  const gross = fromMinor(invoice.amount_due ?? invoice.total);
+  const reason =
+    invoice.last_finalization_error?.message ??
+    invoice.charge_failure_message ??
+    "Card was declined";
+
+  await recordLedgerEvent({
+    environment: env,
+    kind: "payment",
+    status: "failed",
+    user_id: sub?.user_id ?? null,
+    creator_id: sub?.creator_id ?? null,
+    tier_id: sub?.tier_id ?? null,
+    subscription_id: sub?.id ?? null,
+    stripe_event_id: eventId,
+    stripe_invoice_id: invoice.id ?? null,
+    stripe_subscription_id: stripeSubId,
+    currency: invoice.currency ?? "usd",
+    gross_amount: gross,
+    failure_reason: reason,
+    occurred_at: toIso(invoice.created) ?? new Date().toISOString(),
+  });
+
+  if (!sub?.id) return;
+
+  const { data: current } = await supabaseAdmin
+    .from("subscriptions")
+    .select("payment_retry_count, payment_failed_at")
+    .eq("id", sub.id)
+    .maybeSingle();
+  const attempt = (current?.payment_retry_count ?? 0) + 1;
+
+  await supabaseAdmin
+    .from("subscriptions")
+    .update({
+      status: "past_due",
+      payment_failed_at: current?.payment_failed_at ?? new Date().toISOString(),
+      payment_retry_count: attempt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", sub.id);
+
+  const { data: profile } = await supabaseAdmin
+    .from("profiles")
+    .select("email, full_name")
+    .eq("user_id", sub.user_id)
+    .maybeSingle();
+
+  if (profile?.email) {
+    await enqueueEmail({
+      to: profile.email,
+      subject: "Your Printreon payment didn't go through",
+      html: `<p>Hi ${profile.full_name ?? "there"},</p>
+<p>We couldn't take your latest membership payment (${reason}). Your access stays
+active while we retry, but it will be paused if payment isn't updated within 7 days.</p>
+<p><a href="https://printreon.com/me/subscriptions">Update your payment method</a></p>
+<p>— The Printreon team</p>`,
+    });
+  }
+
+  await supabaseAdmin.from("notifications").insert({
+    user_id: sub.user_id,
+    type: "payment_failed",
+    title: "Payment failed",
+    body: `${reason}. Update your card to keep your membership.`,
+    link: "/me/subscriptions",
+  });
+}
+
+/** Refund or dispute: write a reversing ledger row. */
+async function handleReversal(
+  charge: any,
+  env: StripeEnv,
+  eventId: string,
+  kind: "refund" | "dispute"
+) {
+  const stripeSubId = charge.subscription ?? charge.invoice_subscription ?? null;
+  const sub = await resolveSubscription(stripeSubId, env);
+  const amount =
+    kind === "refund" ? fromMinor(charge.amount_refunded ?? charge.amount) : fromMinor(charge.amount);
+
+  await recordLedgerEvent({
+    environment: env,
+    kind,
+    status: "reversed",
+    user_id: sub?.user_id ?? null,
+    creator_id: sub?.creator_id ?? null,
+    tier_id: sub?.tier_id ?? null,
+    subscription_id: sub?.id ?? null,
+    stripe_event_id: eventId,
+    stripe_charge_id: charge.id ?? charge.charge ?? null,
+    stripe_subscription_id: stripeSubId,
+    currency: charge.currency ?? "usd",
+    gross_amount: -Math.abs(amount),
+    failure_reason: kind === "dispute" ? (charge.reason ?? "disputed") : null,
+  });
+
+  if (sub?.creator_id) {
+    const { data: creator } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("user_id")
+      .eq("id", sub.creator_id)
+      .maybeSingle();
+    if (creator?.user_id) {
+      await supabaseAdmin.from("notifications").insert({
+        user_id: creator.user_id,
+        type: kind === "refund" ? "payment_refunded" : "payment_disputed",
+        title: kind === "refund" ? "A payment was refunded" : "A payment was disputed",
+        body: `${Math.abs(amount).toFixed(2)} ${(charge.currency ?? "usd").toUpperCase()} has been deducted from your balance.`,
+        link: "/dashboard/payouts",
+      });
+    }
+  }
+}
+
+
 export const Route = createFileRoute("/api/public/payments/webhook")({
   server: {
     handlers: {
@@ -113,6 +298,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
         const env: StripeEnv = rawEnv;
         try {
           const event = await verifyWebhook(request, env);
+          const eventId = (event as any).id ?? null;
           switch (event.type) {
             case "customer.subscription.created":
               await handleSubscriptionCreated(event.data.object, env);
@@ -124,6 +310,20 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
             case "subscription.canceled":
               await handleSubscriptionDeleted(event.data.object, env);
               break;
+            case "invoice.payment_succeeded":
+            case "invoice.paid":
+              await handleInvoicePaid(event.data.object, env, eventId);
+              break;
+            case "invoice.payment_failed":
+              await handleInvoiceFailed(event.data.object, env, eventId);
+              break;
+            case "charge.refunded":
+              await handleReversal(event.data.object, env, eventId, "refund");
+              break;
+            case "charge.dispute.created":
+              await handleReversal(event.data.object, env, eventId, "dispute");
+              break;
+
             case "account.updated": {
               const acct = event.data.object as any;
               const status =

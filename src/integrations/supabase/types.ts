@@ -1210,6 +1210,106 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_events: {
+        Row: {
+          created_at: string
+          creator_id: string | null
+          currency: string
+          environment: string
+          failure_reason: string | null
+          gross_amount: number
+          id: string
+          kind: string
+          metadata: Json
+          net_amount: number
+          occurred_at: string
+          period_end: string | null
+          period_start: string | null
+          platform_fee: number
+          status: string
+          stripe_charge_id: string | null
+          stripe_event_id: string | null
+          stripe_fee: number
+          stripe_invoice_id: string | null
+          stripe_subscription_id: string | null
+          subscription_id: string | null
+          tier_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          creator_id?: string | null
+          currency?: string
+          environment?: string
+          failure_reason?: string | null
+          gross_amount?: number
+          id?: string
+          kind?: string
+          metadata?: Json
+          net_amount?: number
+          occurred_at?: string
+          period_end?: string | null
+          period_start?: string | null
+          platform_fee?: number
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_event_id?: string | null
+          stripe_fee?: number
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_id?: string | null
+          tier_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string | null
+          currency?: string
+          environment?: string
+          failure_reason?: string | null
+          gross_amount?: number
+          id?: string
+          kind?: string
+          metadata?: Json
+          net_amount?: number
+          occurred_at?: string
+          period_end?: string | null
+          period_start?: string | null
+          platform_fee?: number
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_event_id?: string | null
+          stripe_fee?: number
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_id?: string | null
+          tier_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_events_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_announcements: {
         Row: {
           audience: string
@@ -1445,12 +1545,15 @@ export type Database = {
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
+          comped: boolean
           created_at: string
           creator_id: string
           current_period_end: string | null
           current_period_start: string | null
           environment: string
           id: string
+          payment_failed_at: string | null
+          payment_retry_count: number
           status: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -1460,12 +1563,15 @@ export type Database = {
         }
         Insert: {
           cancel_at_period_end?: boolean
+          comped?: boolean
           created_at?: string
           creator_id: string
           current_period_end?: string | null
           current_period_start?: string | null
           environment?: string
           id?: string
+          payment_failed_at?: string | null
+          payment_retry_count?: number
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -1475,12 +1581,15 @@ export type Database = {
         }
         Update: {
           cancel_at_period_end?: boolean
+          comped?: boolean
           created_at?: string
           creator_id?: string
           current_period_end?: string | null
           current_period_start?: string | null
           environment?: string
           id?: string
+          payment_failed_at?: string | null
+          payment_retry_count?: number
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
