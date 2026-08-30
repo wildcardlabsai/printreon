@@ -454,15 +454,13 @@ function EverythingBento() {
     <section className="bg-ink text-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 blueprint-grid-dark opacity-40" aria-hidden />
       <div className="container-wide relative py-24">
-        <div className="grid gap-8 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-7">
-            <span className="eyebrow-dark">// Everything in the box</span>
-            <h2 className="mt-5 text-4xl text-background md:text-6xl">
-              <span className="font-display italic">No plugins.</span>{" "}
-              <span className="font-bold">No duct tape.</span>
-            </h2>
-          </div>
-          <p className="md:col-span-5 text-background/70">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="eyebrow-dark">// Everything in the box</span>
+          <h2 className="mt-5 text-4xl text-background md:text-6xl">
+            <span className="font-display italic">No plugins.</span>{" "}
+            <span className="font-bold">No duct tape.</span>
+          </h2>
+          <p className="mt-5 text-background/70">
             Printreon ships with the full stack a 3D print creator actually
             needs — files, payments, community and growth, all in one place.
           </p>
