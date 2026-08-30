@@ -12,8 +12,56 @@ import { getFileDownloadUrl } from "@/functions/downloads.functions";
 import { creatorUrl, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/c/$slug")({
+  loader: async ({ params }) => {
+    const { data } = await supabase
+      .from("creator_profiles")
+      .select("display_name, short_intro, bio, profile_image_url, banner_image_url")
+      .eq("slug", params.slug)
+      .eq("is_published", true)
+      .maybeSingle();
+    return { profile: data as any | null };
+  },
+  head: ({ params, loaderData }) => {
+    const p = loaderData?.profile;
+    const url = creatorUrl(params.slug);
+    if (!p) {
+      return {
+        meta: [
+          { title: "Creator not found — Printreon" },
+          { name: "description", content: "This Printreon creator page is not available." },
+          { name: "robots", content: "noindex" },
+        ],
+      };
+    }
+    const title = `${p.display_name} — 3D print memberships on Printreon`;
+    const description: string =
+      p.short_intro ??
+      String(p.bio ?? "").replace(/\s+/g, " ").slice(0, 155) ??
+      `Subscribe to ${p.display_name} on Printreon for monthly STL, 3MF and printable file drops.`;
+    const image = p.banner_image_url ?? p.profile_image_url ?? null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(image && image.startsWith("https://")
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: CreatorPage,
 });
+
 
 function CreatorPage() {
   const { slug } = Route.useParams();
