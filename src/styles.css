@@ -71,6 +71,7 @@
   --ink: oklch(0.16 0.015 60);
   --ink-soft: oklch(0.42 0.01 60);
   --surface: oklch(0.965 0.012 75);
+  --sand: oklch(0.925 0.022 72);
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 60);
@@ -123,6 +124,7 @@
   --ink: oklch(0.98 0.003 60);
   --ink-soft: oklch(0.7 0.01 60);
   --surface: oklch(0.17 0.012 60);
+  --sand: oklch(0.215 0.014 60);
   --card: oklch(0.17 0.012 60);
   --card-foreground: oklch(0.98 0.003 60);
   --popover: oklch(0.17 0.012 60);

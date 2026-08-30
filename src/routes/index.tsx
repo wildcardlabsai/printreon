@@ -3,6 +3,9 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, PARTNER } from "@/lib/site";
 import heroImg from "@/assets/hero-dashboard-preview.png";
+import previewCube from "@/assets/demo-preview-cube.jpg";
+import previewBundle from "@/assets/demo-preview-bundle.jpg";
+import previewHero from "@/assets/hero.jpg";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
   Upload, CreditCard, Rocket, Check, Box,
@@ -112,11 +115,11 @@ function Hero() {
             v1.0 — Opening to creators soon
           </span>
 
-          <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[76px] md:leading-[0.95]">
-            <span className="font-bold">Built for 3D creators.</span>{" "}
-            <span className="font-display italic text-ink-soft">Not generic</span>{" "}
+          <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[68px] md:leading-[0.95]">
+            <span className="font-bold">Sell your STLs</span>{" "}
+            <span className="font-display italic text-ink-soft">on a</span>{" "}
             <span className="relative inline-block">
-              <span className="font-display italic text-primary">membership platforms.</span>
+              <span className="font-display italic text-primary">monthly membership.</span>
               <svg viewBox="0 0 300 14" className="absolute -bottom-2 left-0 h-3 w-full text-primary" preserveAspectRatio="none">
                 <path d="M2 8 Q 75 2, 150 8 T 298 8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
               </svg>
@@ -124,11 +127,11 @@ function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-lg text-ink-soft">
-            Run STL memberships, manage subscribers, offer commercial licences and grow recurring
-            income — all on a platform designed specifically for the 3D printing creator economy.
+            Recurring income from your 3D files — tiered access, commercial licences,
+            protected downloads and Stripe payouts, in one place.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <button
               onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
               className="btn-primary h-12 px-6 text-base"
@@ -137,25 +140,17 @@ function Hero() {
             </button>
             <button
               onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-ghost h-12 px-6 text-base"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
             >
-              Explore Features
+              See what's inside <span aria-hidden>↓</span>
             </button>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Invite-only beta</span>
-            <span className="flex items-center gap-2"><Crown className="h-4 w-4 text-primary" /> Founder pricing locked in for life</span>
-            <span className="flex items-center gap-2"><Box className="h-4 w-4 text-primary" /> Built for 3D creators</span>
-          </div>
-          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
-            <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" /></span>
-            Limited founding creator spots available
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft">
+            Invite-only beta <span className="text-primary">·</span> Founder pricing for life{" "}
+            <span className="text-primary">·</span> Built for 3D creators
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink-soft">
-            <SocialProof />
-          </div>
         </div>
 
         {/* RIGHT: stacked product mock + ornaments */}
@@ -220,18 +215,7 @@ function Hero() {
   );
 }
 
-function SocialProof() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex -space-x-2">
-        {["#ea7a2c","#1f1f1f","#a3e635","#525252","#ea7a2c"].map((c,i) => (
-          <div key={i} className="h-7 w-7 rounded-full border-2 border-background" style={{ background: c }} />
-        ))}
-      </div>
-      <span className="text-sm text-ink"><b className="font-semibold">300+ creators</b> already on the list</span>
-    </div>
-  );
-}
+
 
 /* ------------------------------ MARQUEE ------------------------------ */
 
@@ -264,9 +248,8 @@ function BuiltFor() {
       <div className="grid gap-10 md:grid-cols-12 md:items-end">
         <div className="md:col-span-5">
           <span className="eyebrow">// Built for 3D creators</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Everything starts</span>{" "}
-            <span className="font-bold">with the file.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Everything starts with the file.
           </h2>
         </div>
         <p className="md:col-span-6 md:col-start-7 text-lg text-ink-soft">
@@ -282,7 +265,7 @@ function BuiltFor() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-primary">
               <it.icon className="h-6 w-6" />
             </div>
-            <h3 className="mt-6 text-2xl font-display italic text-ink">{it.title}</h3>
+            <h3 className="mt-6 text-xl font-semibold text-ink">{it.title}</h3>
             <p className="mt-3 text-sm text-ink-soft">{it.desc}</p>
             <div className="mt-6 h-px w-full bg-border group-hover:bg-primary transition-colors" />
           </div>
@@ -338,9 +321,8 @@ function HowItWorks() {
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <span className="eyebrow">// Workflow</span>
-            <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-              <span className="font-display italic">Five steps</span>{" "}
-              <span className="font-bold">from blank page to paid.</span>
+            <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+              Five steps from blank page to paid.
             </h2>
           </div>
           <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
@@ -377,9 +359,8 @@ function ProductPeek() {
       <div className="grid gap-12 md:grid-cols-12 md:items-center">
         <div className="md:col-span-5">
           <span className="eyebrow">// Inside the dashboard</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-5xl">
-            <span className="font-display italic">A creator tool that</span>{" "}
-            <span className="font-bold">actually understands files.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            A creator tool that actually understands files.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Drag and drop an STL, set the tier, write the post, hit publish.
@@ -435,26 +416,21 @@ function ProductPeek() {
               </div>
 
               {/* File list */}
-              <div className="mt-5 grid grid-cols-3 gap-3">
+              <div className="mt-5 grid grid-cols-3 grid-rows-2 gap-3">
                 {[
-                  { n: "dragon_v3.stl", t: "Premium" },
-                  { n: "lowpoly_helmet.3mf", t: "Standard" },
-                  { n: "articulated_octopus.zip", t: "Free" },
-                  { n: "tabletop_set.zip", t: "Standard" },
-                  { n: "voxel_planter.stl", t: "Premium" },
-                  { n: "phone_dock.3mf", t: "Free" },
-                ].map((f, i) => (
-                  <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
-                    <div className="aspect-[4/3] bg-gradient-to-br from-accent via-card to-surface relative">
-                      <div className="absolute inset-0 layer-lines opacity-60" />
-                      <div className="absolute inset-0 grid place-items-center">
-                        <Box className="h-8 w-8 text-primary/60" />
-                      </div>
+                  { n: "dragon_v3.stl", t: "Premium", img: previewCube, span: "col-span-2 row-span-2", ratio: "aspect-[16/11]" },
+                  { n: "tabletop_set.zip", t: "Standard", img: previewBundle, ratio: "aspect-[4/3]" },
+                  { n: "phone_dock.3mf", t: "Free", img: previewHero, ratio: "aspect-[4/3]" },
+                ].map((f) => (
+                  <div key={f.n} className={`overflow-hidden rounded-xl border border-border bg-card ${f.span ?? ""}`}>
+                    <div className={`relative ${f.ratio}`}>
+                      <img src={f.img} alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 layer-lines opacity-30" />
                     </div>
-                    <div className="flex items-center justify-between px-3 py-2">
+                    <div className="flex items-center justify-between gap-2 px-3 py-2">
                       <span className="truncate font-mono text-[10px] uppercase tracking-wider text-ink-soft">{f.n}</span>
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ${
-                        f.t === "Free" ? "bg-electric/40 text-ink" :
+                        f.t === "Free" ? "bg-electric text-electric-foreground" :
                         f.t === "Premium" ? "bg-primary text-primary-foreground" :
                         "bg-secondary text-ink"
                       }`}>{f.t}</span>
@@ -462,6 +438,7 @@ function ProductPeek() {
                   </div>
                 ))}
               </div>
+
             </div>
           </div>
         </div>
@@ -477,15 +454,13 @@ function EverythingBento() {
     <section className="bg-ink text-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 blueprint-grid-dark opacity-40" aria-hidden />
       <div className="container-wide relative py-24">
-        <div className="grid gap-8 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-7">
-            <span className="eyebrow-dark">// Everything in the box</span>
-            <h2 className="mt-5 text-4xl text-background md:text-6xl">
-              <span className="font-display italic">No plugins.</span>{" "}
-              <span className="font-bold">No duct tape.</span>
-            </h2>
-          </div>
-          <p className="md:col-span-5 text-background/70">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="eyebrow-dark">// Everything in the box</span>
+          <h2 className="mt-5 text-4xl text-background md:text-6xl">
+            <span className="font-display italic">No plugins.</span>{" "}
+            <span className="font-bold">No duct tape.</span>
+          </h2>
+          <p className="mt-5 text-background/70">
             Printreon ships with the full stack a 3D print creator actually
             needs — files, payments, community and growth, all in one place.
           </p>
@@ -547,7 +522,7 @@ function BentoCard({
       <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${accentBg}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <h3 className="mt-4 text-xl font-display italic text-background">{title}</h3>
+      <h3 className="mt-4 text-lg font-semibold text-background">{title}</h3>
       {children}
       <ArrowUpRight className="absolute right-4 top-4 h-4 w-4 text-background/30 transition-all group-hover:text-background group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
     </div>
@@ -570,10 +545,8 @@ function PaymentsAndPayouts() {
       <div className="grid gap-10 md:grid-cols-12 md:items-end">
         <div className="md:col-span-7">
           <span className="eyebrow">// Payments & payouts</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">From your first $5</span>
-            <br />
-            <span className="font-bold">to your first $5K month.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            From your first $5 to your first $5K month.
           </h2>
         </div>
         <p className="md:col-span-5 text-lg text-ink-soft">
@@ -612,9 +585,8 @@ function CommunityFeatures() {
         <div className="grid gap-10 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
             <span className="eyebrow">// Community</span>
-            <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-              <span className="font-display italic">A community,</span>{" "}
-              <span className="font-bold">not just a paywall.</span>
+            <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+              A community, not just a paywall.
             </h2>
           </div>
           <p className="md:col-span-5 text-lg text-ink-soft">
@@ -646,9 +618,8 @@ function ForSupporters() {
       <div className="container-wide relative grid gap-12 py-24 md:grid-cols-12 md:items-center">
         <div className="md:col-span-6">
           <span className="eyebrow-dark">// For supporters</span>
-          <h2 className="mt-5 text-4xl md:text-6xl text-background">
-            <span className="font-display italic">For the people</span>{" "}
-            <span className="font-bold">who love 3D printing.</span>
+          <h2 className="mt-5 text-4xl font-bold md:text-5xl text-background">
+            For the people who love 3D printing.
           </h2>
           <p className="mt-6 max-w-lg text-background/70 text-lg">
             Back the designers behind your favourite prints. Get fresh STL drops every month,
@@ -663,7 +634,7 @@ function ForSupporters() {
           {["Miniatures", "Cosplay", "Functional", "Toys", "Tools", "Tabletop", "Terrain", "Articulated", "Decor"].map((t, i) => (
             <div
               key={t}
-              className={`rounded-2xl border p-5 text-sm font-display italic ${
+              className={`rounded-2xl border p-5 text-sm font-semibold ${
                 i % 4 === 0 ? "border-primary/40 bg-primary/10 text-background" :
                 i % 4 === 1 ? "border-white/15 bg-white/[0.03] text-background" :
                 i % 4 === 2 ? "border-electric/30 bg-electric/10 text-background" :
@@ -691,20 +662,21 @@ function GrowthTools() {
     "Follow-before-subscribe funnel",
   ];
   return (
-    <section className="container-wide py-24">
-      <div className="grid gap-12 md:grid-cols-12 md:items-center">
-        <div className="md:col-span-5">
-          <span className="eyebrow">// Growth tools</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Stop building</span>{" "}
-            <span className="font-bold">your own funnels.</span>
-          </h2>
-          <p className="mt-5 text-lg text-ink-soft">
-            Printreon ships with the growth loops creators actually need —
-            so you spend your time designing, not stitching six different tools together.
+    <section className="relative overflow-hidden bg-sand">
+      <div className="container-wide py-16">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-xl">
+            <span className="eyebrow">// Growth tools</span>
+            <h2 className="mt-4 text-3xl font-bold text-ink md:text-4xl">
+              Stop building your own funnels.
+            </h2>
+          </div>
+          <p className="max-w-md text-ink-soft">
+            Printreon ships with the growth loops creators actually need — so you
+            spend your time designing, not stitching six tools together.
           </p>
         </div>
-        <ul className="md:col-span-7 grid gap-3 sm:grid-cols-2">
+        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((i, idx) => (
             <li key={i} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
               <span className="mt-0.5 font-mono text-xs text-ink-soft">{String(idx+1).padStart(2,"0")}</span>
@@ -726,9 +698,8 @@ function Pricing() {
       <div className="container-wide relative py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">// Pricing</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Simple,</span>{" "}
-            <span className="font-bold">creator-friendly.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Simple, creator-friendly.
           </h2>
           <p className="mt-4 text-ink-soft">Free to start. No monthly fee. We earn when you do.</p>
         </div>
@@ -755,9 +726,9 @@ function Pricing() {
             <div className="mt-4 font-display text-6xl text-ink">$0<span className="ml-1 align-middle font-sans text-base font-medium text-ink-soft">/month</span></div>
             <p className="mt-2 text-sm text-ink-soft">Free account. Pay only when you subscribe to a creator's tier.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Follow creators for free</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Download free files</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cancel any subscription anytime</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Follow creators for free</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Download free files</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Cancel any subscription anytime</li>
             </ul>
             <a href="#beta-access" className="btn-ghost mt-7 w-full text-center">Join as a supporter</a>
           </div>
@@ -775,10 +746,8 @@ function FAQ() {
       <div className="grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-4">
           <span className="eyebrow">// FAQ</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-5xl">
-            <span className="font-display italic">Questions,</span>
-            <br />
-            <span className="font-bold">answered.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Questions, answered.
           </h2>
           <p className="mt-5 text-ink-soft">
             Can't find what you're looking for?{" "}
@@ -851,9 +820,8 @@ function WhyPrintreonExists() {
       <div className="grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-5">
           <span className="eyebrow">// Why Printreon exists</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Most creator platforms</span>{" "}
-            <span className="font-bold">were never built for 3D creators.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Most creator platforms were never built for 3D creators.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Printreon is purpose-built infrastructure for the 3D creator economy — STL-native from
@@ -889,9 +857,8 @@ function FounderBenefits() {
       <div className="container-wide relative py-24">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow"><Crown className="mr-1.5 inline h-3.5 w-3.5" /> Founding creators</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Founding creators keep</span>{" "}
-            <span className="font-bold">higher payouts for life.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Founding creators keep higher payouts for life.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Creators accepted into the beta permanently lock in reduced platform fees, founder
@@ -907,8 +874,8 @@ function FounderBenefits() {
             <h3 className="text-lg font-semibold text-ink">Standard Creator</h3>
             <p className="mt-2 text-sm text-ink-soft">After public launch.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard platform fee</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard payout %</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard platform fee on every sale</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard payout share, paid monthly</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Public release access</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard support</li>
             </ul>
@@ -922,8 +889,8 @@ function FounderBenefits() {
             </h3>
             <p className="mt-2 text-sm text-ink-soft">Locked in for the lifetime of your account.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Reduced platform fee — for life</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Higher payout percentage</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Reduced platform fee — locked for life</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Higher payout share, paid monthly via Stripe</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Founder badge on your page</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Priority support</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Early access to new features</li>
