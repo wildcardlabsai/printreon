@@ -107,6 +107,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
         metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
         subscription_data: {
           metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
+          ...(Number(tier.trial_days) > 0 && { trial_period_days: Number(tier.trial_days) }),
           ...(useConnect && {
             application_fee_percent: feePct,
             transfer_data: { destination: creatorProfile!.connected_account_id! },
