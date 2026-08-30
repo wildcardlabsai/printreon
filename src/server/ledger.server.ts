@@ -53,15 +53,18 @@ export async function recordLedgerEvent(row: LedgerRow): Promise<void> {
   const platformFee = row.platform_fee ?? 0;
   const net = row.net_amount ?? Number((gross - stripeFee - platformFee).toFixed(2));
 
-  const { error } = await supabaseAdmin.from("payment_events").insert({
+  const payload = {
     ...row,
     currency: row.currency ?? "usd",
     stripe_fee: stripeFee,
     platform_fee: platformFee,
     net_amount: net,
-    metadata: row.metadata ?? {},
+    metadata: (row.metadata ?? {}) as never,
     occurred_at: row.occurred_at ?? new Date().toISOString(),
-  });
+  };
+
+  const { error } = await supabaseAdmin.from("payment_events").insert(payload);
+
 
   // 23505 = duplicate event id; a webhook replay, not an error worth throwing.
   if (error && error.code !== "23505") {
