@@ -127,7 +127,7 @@ function buildDemoZip(): Uint8Array {
   return out;
 }
 
-async function seedDemoFiles(creatorId: string, userId: string) {
+async function seedDemoFiles(supabaseAdmin: AdminClient, creatorId: string, userId: string) {
   // Skip if creator already has any files seeded
   const { data: existing } = await supabaseAdmin
     .from("creator_files")
