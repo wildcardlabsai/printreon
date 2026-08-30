@@ -662,20 +662,21 @@ function GrowthTools() {
     "Follow-before-subscribe funnel",
   ];
   return (
-    <section className="container-wide py-24">
-      <div className="grid gap-12 md:grid-cols-12 md:items-center">
-        <div className="md:col-span-5">
-          <span className="eyebrow">// Growth tools</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Stop building</span>{" "}
-            <span className="font-bold">your own funnels.</span>
-          </h2>
-          <p className="mt-5 text-lg text-ink-soft">
-            Printreon ships with the growth loops creators actually need —
-            so you spend your time designing, not stitching six different tools together.
+    <section className="relative overflow-hidden bg-sand">
+      <div className="container-wide py-16">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-xl">
+            <span className="eyebrow">// Growth tools</span>
+            <h2 className="mt-4 text-3xl font-bold text-ink md:text-4xl">
+              Stop building your own funnels.
+            </h2>
+          </div>
+          <p className="max-w-md text-ink-soft">
+            Printreon ships with the growth loops creators actually need — so you
+            spend your time designing, not stitching six tools together.
           </p>
         </div>
-        <ul className="md:col-span-7 grid gap-3 sm:grid-cols-2">
+        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((i, idx) => (
             <li key={i} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
               <span className="mt-0.5 font-mono text-xs text-ink-soft">{String(idx+1).padStart(2,"0")}</span>
