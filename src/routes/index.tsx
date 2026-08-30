@@ -585,9 +585,8 @@ function CommunityFeatures() {
         <div className="grid gap-10 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
             <span className="eyebrow">// Community</span>
-            <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-              <span className="font-display italic">A community,</span>{" "}
-              <span className="font-bold">not just a paywall.</span>
+            <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+              A community, not just a paywall.
             </h2>
           </div>
           <p className="md:col-span-5 text-lg text-ink-soft">
