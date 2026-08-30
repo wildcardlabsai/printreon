@@ -298,6 +298,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
         const env: StripeEnv = rawEnv;
         try {
           const event = await verifyWebhook(request, env);
+          const eventId = (event as any).id ?? null;
           switch (event.type) {
             case "customer.subscription.created":
               await handleSubscriptionCreated(event.data.object, env);
@@ -309,6 +310,20 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
             case "subscription.canceled":
               await handleSubscriptionDeleted(event.data.object, env);
               break;
+            case "invoice.payment_succeeded":
+            case "invoice.paid":
+              await handleInvoicePaid(event.data.object, env, eventId);
+              break;
+            case "invoice.payment_failed":
+              await handleInvoiceFailed(event.data.object, env, eventId);
+              break;
+            case "charge.refunded":
+              await handleReversal(event.data.object, env, eventId, "refund");
+              break;
+            case "charge.dispute.created":
+              await handleReversal(event.data.object, env, eventId, "dispute");
+              break;
+
             case "account.updated": {
               const acct = event.data.object as any;
               const status =
