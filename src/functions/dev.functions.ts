@@ -221,6 +221,7 @@ async function seedDemoFiles(supabaseAdmin: AdminClient, creatorId: string, user
 
 export const ensureDemoAccounts = createServerFn({ method: "POST" })
   .handler(async () => {
+    const supabaseAdmin = await devAdmin();
     const results: { email: string; password: string; role: string }[] = [];
 
     for (const acc of DEMO_ACCOUNTS) {
