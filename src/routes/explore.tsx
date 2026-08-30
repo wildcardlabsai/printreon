@@ -21,17 +21,41 @@ interface Creator {
 }
 
 function Explore() {
-  const [creators, setCreators] = useState<Creator[] | null>(null);
+  const [allCreators, setAllCreators] = useState<Creator[] | null>(null);
+  const [trending, setTrending] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     supabase.from("creator_profiles")
       .select("id, slug, display_name, short_intro, profile_image_url, banner_image_url")
       .eq("is_published", true)
+      .is("suspended_at", null)
       .order("created_at", { ascending: false })
       .limit(60)
-      .then(({ data }) => setCreators(data ?? []));
+      .then(({ data }) => setAllCreators(data ?? []));
+
+    supabase.from("creator_files")
+      .select("id, title, slug, download_count, preview_images, creator_profiles(display_name, slug)")
+      .eq("is_published", true)
+      .is("takedown_at", null)
+      .order("download_count", { ascending: false })
+      .limit(8)
+      .then(({ data }) => setTrending(data ?? []));
   }, []);
+
+  const q = query.trim().toLowerCase();
+  const creators =
+    allCreators === null
+      ? null
+      : q
+        ? allCreators.filter(
+            (c) =>
+              c.display_name.toLowerCase().includes(q) ||
+              c.slug.toLowerCase().includes(q) ||
+              (c.short_intro ?? "").toLowerCase().includes(q)
+          )
+        : allCreators;
 
   const joinWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
