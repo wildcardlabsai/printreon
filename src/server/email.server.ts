@@ -42,6 +42,11 @@ export async function enqueueEmail(input: EnqueueEmailInput): Promise<void> {
   }
 }
 
+/** Sends an already-queued outbox row (used by admin retry). */
+export async function sendOutboxRow(input: EnqueueEmailInput): Promise<void> {
+  await sendEmailNow(input);
+}
+
 async function sendEmailNow(input: EnqueueEmailInput): Promise<void> {
   const lovableKey = process.env.LOVABLE_API_KEY;
   const resendKey = process.env.RESEND_API_KEY;
