@@ -746,10 +746,8 @@ function FAQ() {
       <div className="grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-4">
           <span className="eyebrow">// FAQ</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-5xl">
-            <span className="font-display italic">Questions,</span>
-            <br />
-            <span className="font-bold">answered.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Questions, answered.
           </h2>
           <p className="mt-5 text-ink-soft">
             Can't find what you're looking for?{" "}
