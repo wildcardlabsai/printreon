@@ -1,15 +1,30 @@
 // Dev-only helpers for testing the full buyer/creator/admin flow without
-// going through real Stripe checkout or manual signups. These should NOT
-// be used in production — every handler checks NODE_ENV / a dev guard.
+// going through real Stripe checkout or manual signups. Every handler calls
+// assertDevHost() so these endpoints are inert on the live domain.
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isLiveHost } from "@/lib/dev-mode";
 // Bundled demo thumbnail bytes (Vite turns these into ArrayBuffer at build time).
 import demoCubeThumb from "@/assets/demo-preview-cube.jpg?arraybuffer";
 import demoBundleThumb from "@/assets/demo-preview-bundle.jpg?arraybuffer";
 
+type AdminClient = Awaited<
+  typeof import("@/integrations/supabase/client.server")
+>["supabaseAdmin"];
+
+/** Loads the service-role client, refusing to run on the published domain. */
+async function devAdmin(): Promise<AdminClient> {
+  const req = getRequest();
+  const host = req.headers.get("x-forwarded-host") ?? new URL(req.url).host;
+  if (isLiveHost(host)) throw new Error("Dev tools are disabled on the live site");
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
 const DEMO_PASSWORD = "DemoPass123!";
+
 
 const DEMO_ACCOUNTS = [
   { email: "buyer@demo.printreon.test", role: "member" as const, fullName: "Demo Buyer" },
