@@ -265,6 +265,28 @@ function CreatorPage() {
                 >
                   Subscribe
                 </button>
+                {devTools && (
+                  <button
+                    className="btn-ghost mt-2 w-full text-xs"
+                    disabled={simulatingTier !== null}
+                    onClick={async () => {
+                      if (!user) { toast.error("Sign in first"); navigate({ to: "/auth" }); return; }
+                      setSimulatingTier(t.id);
+                      try {
+                        await simulate({ data: { tierId: t.id } });
+                        toast.success("Simulated subscription active");
+                        navigate({ to: "/me/subscriptions" });
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : "Simulation failed");
+                      } finally {
+                        setSimulatingTier(null);
+                      }
+                    }}
+                  >
+                    {simulatingTier === t.id ? "Working…" : "⚡ Simulate subscribe (test)"}
+                  </button>
+                )}
+
               </div>
             ))}
           </div>
