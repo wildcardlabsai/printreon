@@ -16,6 +16,8 @@ function TiersPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("5");
   const [benefits, setBenefits] = useState("");
+  const [interval, setInterval] = useState("month");
+  const [trialDays, setTrialDays] = useState("0");
 
   const refresh = async () => {
     if (!creator) return;
@@ -31,12 +33,14 @@ function TiersPage() {
       name,
       price: Number(price),
       currency: "USD",
+      billing_interval: interval,
+      trial_days: Number(trialDays) || 0,
       benefits: benefits.split("\n").map((s) => s.trim()).filter(Boolean),
       sort_order: tiers.length,
     });
     if (error) return toast.error(error.message);
     toast.success("Tier created");
-    setName(""); setPrice("5"); setBenefits("");
+    setName(""); setPrice("5"); setBenefits(""); setInterval("month"); setTrialDays("0");
     refresh();
   };
 
@@ -60,7 +64,14 @@ function TiersPage() {
         <p className="mt-1 text-sm text-ink-soft">Subscribers picking a higher-priced tier automatically unlock everything below.</p>
         <div className="mt-4 space-y-3">
           <Field label="Name"><input value={name} onChange={(e) => setName(e.target.value)} className={inp} placeholder="Standard Files" /></Field>
-          <Field label="Monthly price (USD)"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+          <Field label="Price (USD)"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+          <Field label="Billing period">
+            <select value={interval} onChange={(e) => setInterval(e.target.value)} className={inp}>
+              <option value="month">Monthly</option>
+              <option value="year">Annual</option>
+            </select>
+          </Field>
+          <Field label="Free trial (days, 0 = none)"><input type="number" min="0" max="90" value={trialDays} onChange={(e) => setTrialDays(e.target.value)} className={inp} /></Field>
           <Field label="Benefits (one per line)"><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={5} className={inp} /></Field>
           <button onClick={create} className="btn-primary w-full"><Plus className="mr-2 h-4 w-4" />Create tier</button>
         </div>
@@ -91,13 +102,25 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
   const [price, setPrice] = useState(String(tier.price));
   const [benefits, setBenefits] = useState((tier.benefits ?? []).join("\n"));
   const [active, setActive] = useState(tier.is_active);
+  const [interval, setInterval] = useState(tier.billing_interval ?? "month");
+  const [trialDays, setTrialDays] = useState(String(tier.trial_days ?? 0));
 
   return (
     <div className="card-soft">
       <div className="grid gap-3 md:grid-cols-2">
         <Field label="Name"><input value={name} onChange={(e) => setName(e.target.value)} className={inp} /></Field>
         <Field label="Price"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+        <Field label="Billing period">
+          <select value={interval} onChange={(e) => setInterval(e.target.value)} className={inp} disabled={!!tier.stripe_price_id}>
+            <option value="month">Monthly</option>
+            <option value="year">Annual</option>
+          </select>
+        </Field>
+        <Field label="Free trial (days)"><input type="number" min="0" max="90" value={trialDays} onChange={(e) => setTrialDays(e.target.value)} className={inp} /></Field>
       </div>
+      {tier.stripe_price_id && (
+        <p className="mt-1 text-xs text-ink-soft">Billing period is locked once a Stripe price exists — create a new tier to change it.</p>
+      )}
       <Field label="Benefits"><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={4} className={inp} /></Field>
       <label className="mt-3 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} /> Active and visible on profile
@@ -108,6 +131,8 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
             onUpdate(tier, {
               name,
               price: Number(price),
+              billing_interval: interval,
+              trial_days: Number(trialDays) || 0,
               benefits: benefits.split("\n").map((s: string) => s.trim()).filter(Boolean),
               is_active: active,
             })

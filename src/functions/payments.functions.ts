@@ -13,7 +13,9 @@ const EnvSchema = z.enum(["sandbox", "live"]);
 async function ensureStripePriceForTier(env: StripeEnv, tierId: string): Promise<string> {
   const { data: tier, error } = await supabaseAdmin
     .from("creator_tiers")
-    .select("id, name, description, price, currency, stripe_price_id, creator_id")
+    .select(
+      "id, name, description, price, currency, stripe_price_id, creator_id, billing_interval"
+    )
     .eq("id", tierId)
     .maybeSingle();
   if (error || !tier) throw new Error("Tier not found");
@@ -30,7 +32,7 @@ async function ensureStripePriceForTier(env: StripeEnv, tierId: string): Promise
     product: product.id,
     unit_amount: Math.round(Number(tier.price) * 100),
     currency: (tier.currency ?? "USD").toLowerCase(),
-    recurring: { interval: "month" },
+    recurring: { interval: tier.billing_interval === "year" ? "year" : "month" },
     metadata: { tier_id: tier.id },
   });
 
@@ -70,7 +72,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
 
     const { data: tier } = await supabaseAdmin
       .from("creator_tiers")
-      .select("id, creator_id")
+      .select("id, creator_id, trial_days")
       .eq("id", data.tierId)
       .maybeSingle();
     if (!tier) throw new Error("Tier not found");
@@ -105,6 +107,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
         metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
         subscription_data: {
           metadata: { userId, tierId: data.tierId, creatorId: tier.creator_id },
+          ...(Number(tier.trial_days) > 0 && { trial_period_days: Number(tier.trial_days) }),
           ...(useConnect && {
             application_fee_percent: feePct,
             transfer_data: { destination: creatorProfile!.connected_account_id! },

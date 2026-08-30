@@ -50,8 +50,13 @@ export type Database = {
           creator_id: string | null
           file_id: string | null
           id: string
+          parent_id: string | null
+          parent_type: string | null
           reason: string
           reported_by: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
           status: string
         }
         Insert: {
@@ -59,8 +64,13 @@ export type Database = {
           creator_id?: string | null
           file_id?: string | null
           id?: string
+          parent_id?: string | null
+          parent_type?: string | null
           reason: string
           reported_by?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           status?: string
         }
         Update: {
@@ -68,8 +78,13 @@ export type Database = {
           creator_id?: string | null
           file_id?: string | null
           id?: string
+          parent_id?: string | null
+          parent_type?: string | null
           reason?: string
           reported_by?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           status?: string
         }
         Relationships: [
@@ -519,6 +534,8 @@ export type Database = {
           status: string
           supports_required: boolean | null
           tags: string[] | null
+          takedown_at: string | null
+          takedown_reason: string | null
           tier_required_id: string | null
           title: string
           updated_at: string
@@ -548,6 +565,8 @@ export type Database = {
           status?: string
           supports_required?: boolean | null
           tags?: string[] | null
+          takedown_at?: string | null
+          takedown_reason?: string | null
           tier_required_id?: string | null
           title: string
           updated_at?: string
@@ -577,6 +596,8 @@ export type Database = {
           status?: string
           supports_required?: boolean | null
           tags?: string[] | null
+          takedown_at?: string | null
+          takedown_reason?: string | null
           tier_required_id?: string | null
           title?: string
           updated_at?: string
@@ -678,6 +699,8 @@ export type Database = {
           profile_image_url: string | null
           short_intro: string | null
           slug: string
+          suspended_at: string | null
+          suspension_reason: string | null
           tiktok_url: string | null
           updated_at: string
           user_id: string
@@ -702,6 +725,8 @@ export type Database = {
           profile_image_url?: string | null
           short_intro?: string | null
           slug: string
+          suspended_at?: string | null
+          suspension_reason?: string | null
           tiktok_url?: string | null
           updated_at?: string
           user_id: string
@@ -726,6 +751,8 @@ export type Database = {
           profile_image_url?: string | null
           short_intro?: string | null
           slug?: string
+          suspended_at?: string | null
+          suspension_reason?: string | null
           tiktok_url?: string | null
           updated_at?: string
           user_id?: string
@@ -737,6 +764,7 @@ export type Database = {
       creator_tiers: {
         Row: {
           benefits: Json
+          billing_interval: string
           created_at: string
           creator_id: string
           currency: string
@@ -747,9 +775,11 @@ export type Database = {
           price: number
           sort_order: number
           stripe_price_id: string | null
+          trial_days: number
         }
         Insert: {
           benefits?: Json
+          billing_interval?: string
           created_at?: string
           creator_id: string
           currency?: string
@@ -760,9 +790,11 @@ export type Database = {
           price: number
           sort_order?: number
           stripe_price_id?: string | null
+          trial_days?: number
         }
         Update: {
           benefits?: Json
+          billing_interval?: string
           created_at?: string
           creator_id?: string
           currency?: string
@@ -773,6 +805,7 @@ export type Database = {
           price?: number
           sort_order?: number
           stripe_price_id?: string | null
+          trial_days?: number
         }
         Relationships: [
           {

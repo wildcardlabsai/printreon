@@ -21,17 +21,41 @@ interface Creator {
 }
 
 function Explore() {
-  const [creators, setCreators] = useState<Creator[] | null>(null);
+  const [allCreators, setAllCreators] = useState<Creator[] | null>(null);
+  const [trending, setTrending] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     supabase.from("creator_profiles")
       .select("id, slug, display_name, short_intro, profile_image_url, banner_image_url")
       .eq("is_published", true)
+      .is("suspended_at", null)
       .order("created_at", { ascending: false })
       .limit(60)
-      .then(({ data }) => setCreators(data ?? []));
+      .then(({ data }) => setAllCreators(data ?? []));
+
+    supabase.from("creator_files")
+      .select("id, title, slug, download_count, preview_images, creator_profiles(display_name, slug)")
+      .eq("is_published", true)
+      .is("takedown_at", null)
+      .order("download_count", { ascending: false })
+      .limit(8)
+      .then(({ data }) => setTrending(data ?? []));
   }, []);
+
+  const q = query.trim().toLowerCase();
+  const creators =
+    allCreators === null
+      ? null
+      : q
+        ? allCreators.filter(
+            (c) =>
+              c.display_name.toLowerCase().includes(q) ||
+              c.slug.toLowerCase().includes(q) ||
+              (c.short_intro ?? "").toLowerCase().includes(q)
+          )
+        : allCreators;
 
   const joinWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +70,48 @@ function Explore() {
       <section className="container-page py-14">
         <h1 className="text-4xl font-bold text-ink md:text-5xl">Explore creators</h1>
         <p className="mt-3 max-w-xl text-ink-soft">Discover 3D printing designers selling STL, 3MF and printable files through monthly memberships.</p>
+
+        <div className="mt-6 max-w-md">
+          <label htmlFor="creator-search" className="sr-only">Search creators</label>
+          <input
+            id="creator-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search creators, niches, keywords…"
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+        </div>
+
+        {trending.length > 0 && !q && (
+          <div className="mt-10">
+            <h2 className="text-xl font-bold text-ink">Trending files</h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {trending.map((f: any) => (
+                <Link
+                  key={f.id}
+                  to="/c/$slug"
+                  params={{ slug: f.creator_profiles?.slug ?? "" }}
+                  className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
+                >
+                  <div className="aspect-[4/3] bg-secondary">
+                    {Array.isArray(f.preview_images) && f.preview_images[0] && (
+                      <img src={f.preview_images[0]} alt={`${f.title} preview render`} className="h-full w-full object-cover" loading="lazy" />
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-semibold text-ink line-clamp-1">{f.title}</h3>
+                    <p className="text-xs text-ink-soft">
+                      {f.creator_profiles?.display_name} · {f.download_count} downloads
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+
 
         {creators === null ? (
           <div className="mt-10 grid gap-5 md:grid-cols-3">

@@ -37,6 +37,7 @@ import { Route as OnboardingCreatorRouteImport } from './routes/onboarding.creat
 import { Route as MeWishlistRouteImport } from './routes/me.wishlist'
 import { Route as MeSubscriptionsRouteImport } from './routes/me.subscriptions'
 import { Route as MeSettingsRouteImport } from './routes/me.settings'
+import { Route as MeReceiptsRouteImport } from './routes/me.receipts'
 import { Route as MePrintLogRouteImport } from './routes/me.print-log'
 import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
 import { Route as MeMessagesRouteImport } from './routes/me.messages'
@@ -65,16 +66,20 @@ import { Route as AdminSystemHealthRouteImport } from './routes/admin.system-hea
 import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminStlLibraryRouteImport } from './routes/admin.stl-library'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPreregistrationsRouteImport } from './routes/admin.preregistrations'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
 import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron/publish-scheduled'
 import { Route as ApiPublicCronExpireSubscriptionsRouteImport } from './routes/api/public/cron/expire-subscriptions'
 
 const WaitlistRoute = WaitlistRouteImport.update({
@@ -217,6 +222,11 @@ const MeSettingsRoute = MeSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => MeRoute,
 } as any)
+const MeReceiptsRoute = MeReceiptsRouteImport.update({
+  id: '/receipts',
+  path: '/receipts',
+  getParentRoute: () => MeRoute,
+} as any)
 const MePrintLogRoute = MePrintLogRouteImport.update({
   id: '/print-log',
   path: '/print-log',
@@ -357,6 +367,16 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPreregistrationsRoute = AdminPreregistrationsRouteImport.update({
   id: '/preregistrations',
   path: '/preregistrations',
@@ -380,6 +400,11 @@ const AdminInvitesRoute = AdminInvitesRouteImport.update({
 const AdminFeatureFlagsRoute = AdminFeatureFlagsRouteImport.update({
   id: '/feature-flags',
   path: '/feature-flags',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/emails',
+  path: '/emails',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
@@ -406,6 +431,12 @@ const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
     path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronPublishScheduledRoute =
+  ApiPublicCronPublishScheduledRouteImport.update({
+    id: '/api/public/cron/publish-scheduled',
+    path: '/api/public/cron/publish-scheduled',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronExpireSubscriptionsRoute =
@@ -441,11 +472,14 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -474,6 +508,7 @@ export interface FileRoutesByFullPath {
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
+  '/me/receipts': typeof MeReceiptsRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
@@ -482,6 +517,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -507,11 +543,14 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -540,6 +579,7 @@ export interface FileRoutesByTo {
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
+  '/me/receipts': typeof MeReceiptsRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
@@ -548,6 +588,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -577,11 +618,14 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -610,6 +654,7 @@ export interface FileRoutesById {
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
+  '/me/receipts': typeof MeReceiptsRoute
   '/me/settings': typeof MeSettingsRoute
   '/me/subscriptions': typeof MeSubscriptionsRoute
   '/me/wishlist': typeof MeWishlistRoute
@@ -618,6 +663,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -648,11 +694,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -681,6 +730,7 @@ export interface FileRouteTypes {
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
+    | '/me/receipts'
     | '/me/settings'
     | '/me/subscriptions'
     | '/me/wishlist'
@@ -689,6 +739,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/me/'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -714,11 +765,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -747,6 +801,7 @@ export interface FileRouteTypes {
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
+    | '/me/receipts'
     | '/me/settings'
     | '/me/subscriptions'
     | '/me/wishlist'
@@ -755,6 +810,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/me'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -783,11 +839,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -816,6 +875,7 @@ export interface FileRouteTypes {
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
+    | '/me/receipts'
     | '/me/settings'
     | '/me/subscriptions'
     | '/me/wishlist'
@@ -824,6 +884,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/me/'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -852,6 +913,7 @@ export interface RootRouteChildren {
   CSlugRoute: typeof CSlugRoute
   OnboardingCreatorRoute: typeof OnboardingCreatorRoute
   ApiPublicCronExpireSubscriptionsRoute: typeof ApiPublicCronExpireSubscriptionsRoute
+  ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -1053,6 +1115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeSettingsRouteImport
       parentRoute: typeof MeRoute
     }
+    '/me/receipts': {
+      id: '/me/receipts'
+      path: '/receipts'
+      fullPath: '/me/receipts'
+      preLoaderRoute: typeof MeReceiptsRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/me/print-log': {
       id: '/me/print-log'
       path: '/print-log'
@@ -1249,6 +1318,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/preregistrations': {
       id: '/admin/preregistrations'
       path: '/preregistrations'
@@ -1282,6 +1365,13 @@ declare module '@tanstack/react-router' {
       path: '/feature-flags'
       fullPath: '/admin/feature-flags'
       preLoaderRoute: typeof AdminFeatureFlagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/creators': {
@@ -1319,6 +1409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/publish-scheduled': {
+      id: '/api/public/cron/publish-scheduled'
+      path: '/api/public/cron/publish-scheduled'
+      fullPath: '/api/public/cron/publish-scheduled'
+      preLoaderRoute: typeof ApiPublicCronPublishScheduledRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/expire-subscriptions': {
       id: '/api/public/cron/expire-subscriptions'
       path: '/api/public/cron/expire-subscriptions'
@@ -1334,11 +1431,14 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
   AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminPreregistrationsRoute: typeof AdminPreregistrationsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStlLibraryRoute: typeof AdminStlLibraryRoute
   AdminSupportRoute: typeof AdminSupportRoute
@@ -1352,11 +1452,14 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
   AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminPreregistrationsRoute: AdminPreregistrationsRoute,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStlLibraryRoute: AdminStlLibraryRoute,
   AdminSupportRoute: AdminSupportRoute,
@@ -1434,6 +1537,7 @@ interface MeRouteChildren {
   MeMessagesRoute: typeof MeMessagesRoute
   MeNotificationsRoute: typeof MeNotificationsRoute
   MePrintLogRoute: typeof MePrintLogRoute
+  MeReceiptsRoute: typeof MeReceiptsRoute
   MeSettingsRoute: typeof MeSettingsRoute
   MeSubscriptionsRoute: typeof MeSubscriptionsRoute
   MeWishlistRoute: typeof MeWishlistRoute
@@ -1447,6 +1551,7 @@ const MeRouteChildren: MeRouteChildren = {
   MeMessagesRoute: MeMessagesRoute,
   MeNotificationsRoute: MeNotificationsRoute,
   MePrintLogRoute: MePrintLogRoute,
+  MeReceiptsRoute: MeReceiptsRoute,
   MeSettingsRoute: MeSettingsRoute,
   MeSubscriptionsRoute: MeSubscriptionsRoute,
   MeWishlistRoute: MeWishlistRoute,
@@ -1480,6 +1585,7 @@ const rootRouteChildren: RootRouteChildren = {
   CSlugRoute: CSlugRoute,
   OnboardingCreatorRoute: OnboardingCreatorRoute,
   ApiPublicCronExpireSubscriptionsRoute: ApiPublicCronExpireSubscriptionsRoute,
+  ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

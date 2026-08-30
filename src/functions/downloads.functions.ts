@@ -11,21 +11,44 @@ export const getFileDownloadUrl = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const userId = context.userId;
 
+    // Rate limit: max 60 downloads per rolling hour per user.
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count: recentCount } = await supabaseAdmin
+      .from("downloads")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .gte("downloaded_at", hourAgo);
+    if ((recentCount ?? 0) >= 60) {
+      throw new Error("Download limit reached (60 per hour). Try again shortly.");
+    }
+
     const { data: file, error: fileErr } = await supabaseAdmin
       .from("creator_files")
-      .select("id, creator_id, file_url, is_free, is_published, tier_required_id, title")
+      .select(
+        "id, creator_id, file_url, is_free, is_published, tier_required_id, title, takedown_at"
+      )
       .eq("id", data.fileId)
       .maybeSingle();
     if (fileErr || !file) throw new Error("File not found");
     if (!file.file_url) throw new Error("This file has not been uploaded yet");
+    if (file.takedown_at) throw new Error("This file is unavailable (takedown notice)");
 
     // Check if user is the creator
     const { data: creatorOwn } = await supabaseAdmin
       .from("creator_profiles")
-      .select("id")
+      .select("id, suspended_at")
       .eq("id", file.creator_id)
       .eq("user_id", userId)
       .maybeSingle();
+
+    const { data: creatorState } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("suspended_at")
+      .eq("id", file.creator_id)
+      .maybeSingle();
+    if (creatorState?.suspended_at && !creatorOwn) {
+      throw new Error("This creator's page is currently suspended");
+    }
 
     let allowed = !!creatorOwn;
 
