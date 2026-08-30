@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const baseSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -282,19 +283,21 @@ export function WaitlistForm({
 
             <div className="sm:col-span-2 grid gap-2 pt-1">
               {[
-                { v: sellsStls, set: setSellsStls, label: "I sell STL files" },
-                { v: sellsPrints, set: setSellsPrints, label: "I sell physical prints" },
-                { v: commercial, set: setCommercial, label: "Interested in commercial licensing" },
+                { id: "pr-sells-stls", v: sellsStls, set: setSellsStls, label: "I sell STL files" },
+                { id: "pr-sells-prints", v: sellsPrints, set: setSellsPrints, label: "I sell physical prints" },
+                { id: "pr-commercial", v: commercial, set: setCommercial, label: "Interested in commercial licensing" },
               ].map((opt) => (
-                <label key={opt.label} className={`flex items-center gap-2 text-sm ${isDark ? "text-background/80" : "text-ink"}`}>
-                  <input
-                    type="checkbox"
+                <div key={opt.id} className="flex items-center gap-2">
+                  <Checkbox
+                    id={opt.id}
                     checked={opt.v}
-                    onChange={(e) => opt.set(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-primary"
+                    onCheckedChange={(checked) => opt.set(checked === true)}
+                    className={isDark ? "border-background/40 data-[state=checked]:border-primary" : undefined}
                   />
-                  {opt.label}
-                </label>
+                  <label htmlFor={opt.id} className={`text-sm ${isDark ? "text-background/80" : "text-ink"}`}>
+                    {opt.label}
+                  </label>
+                </div>
               ))}
             </div>
 
@@ -317,19 +320,20 @@ export function WaitlistForm({
         )}
       </div>
 
-      <label
-        className={`flex items-start gap-2 text-xs ${
-          isDark ? "text-background/70" : "text-ink-soft"
-        }`}
-      >
-        <input
-          type="checkbox"
+      <div className="flex items-start gap-2">
+        <Checkbox
+          id="pr-acknowledge"
           checked={acknowledge}
-          onChange={(e) => setAcknowledge(e.target.checked)}
-          className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+          onCheckedChange={(checked) => setAcknowledge(checked === true)}
+          className={`mt-0.5 ${isDark ? "border-background/40 data-[state=checked]:border-primary" : ""}`}
         />
-        <span>I understand beta access is invite-only and limited.</span>
-      </label>
+        <label
+          htmlFor="pr-acknowledge"
+          className={`text-xs ${isDark ? "text-background/70" : "text-ink-soft"}`}
+        >
+          I understand beta access is invite-only and limited.
+        </label>
+      </div>
 
       <button
         type="submit"

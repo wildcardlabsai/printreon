@@ -5,16 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
-import { useServerFn } from "@tanstack/react-start";
-import { ensureDemoAccounts } from "@/server/dev.functions";
-import { Zap } from "lucide-react";
-
-const DEMO_PASSWORD = "DemoPass123!";
-const DEMO_ACCOUNTS = [
-  { label: "Buyer", email: "buyer@demo.printreon.test", redirect: "/me" },
-  { label: "Creator", email: "creator@demo.printreon.test", redirect: "/dashboard" },
-  { label: "Admin", email: "admin@demo.printreon.test", redirect: "/admin" },
-] as const;
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup"]).optional(),
@@ -82,58 +72,10 @@ function AuthPage() {
     navigate({ to: target });
   };
 
-  const ensureDemos = useServerFn(ensureDemoAccounts);
-  const onQuickLogin = async (acc: typeof DEMO_ACCOUNTS[number]) => {
-    setLoading(true);
-    try {
-      let { error } = await supabase.auth.signInWithPassword({
-        email: acc.email,
-        password: DEMO_PASSWORD,
-      });
-      if (error) {
-        toast.message("Setting up demo accounts…");
-        await ensureDemos({ data: undefined as any });
-        ({ error } = await supabase.auth.signInWithPassword({
-          email: acc.email,
-          password: DEMO_PASSWORD,
-        }));
-        if (error) throw error;
-      }
-      toast.success(`Signed in as ${acc.label}`);
-      navigate({ to: acc.redirect });
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Quick login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-6 flex justify-center"><Logo /></div>
-        {typeof window !== "undefined" && !/(^|\.)printreon\.com$/i.test(window.location.hostname) && (
-          <div className="card-soft mb-4 border border-amber-300 bg-amber-50/60">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-700">
-              <Zap className="h-3.5 w-3.5" /> Dev quick login
-            </div>
-            <p className="mt-1 text-xs text-amber-900/80">
-              Test accounts. Click to sign in instantly. Password: <code className="font-mono">{DEMO_PASSWORD}</code>
-            </p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.email}
-                  onClick={() => onQuickLogin(acc)}
-                  disabled={loading}
-                  className="rounded-lg border border-amber-300 bg-white px-2 py-2 text-xs font-semibold text-amber-900 hover:bg-amber-100 disabled:opacity-50"
-                >
-                  {acc.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="card-soft">
           <h1 className="text-2xl font-bold text-ink">

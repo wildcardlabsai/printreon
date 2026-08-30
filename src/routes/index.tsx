@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
-import { SITE_URL, PARTNER } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, PARTNER } from "@/lib/site";
 import heroImg from "@/assets/hero-dashboard-preview.png";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
@@ -11,18 +11,47 @@ import {
   ArrowUpRight, Zap, Crown, AlertTriangle, X,
 } from "lucide-react";
 
+const FAQ_ITEMS = [
+  { q: "Can I upload STL files?", a: "Yes. STL is a first-class file type along with 3MF, OBJ and ZIP archives." },
+  { q: "Can I offer free files?", a: "Yes — mark any file free, no paid tier required. It's the best lead magnet for turning browsers into subscribers." },
+  { q: "Can I create multiple tiers?", a: "Absolutely. Build Supporter, Standard, Premium Vault and Commercial Licence tiers." },
+  { q: "Can I use it instead of Patreon?", a: "That's exactly what it's for. Patreon was never built for STL files. Printreon is." },
+  { q: "How do payouts work?", a: "Subscriptions process through Stripe. Payouts route via our connected-account system." },
+  { q: "Can subscribers cancel anytime?", a: "Yes. Members manage everything through the secure Stripe customer portal." },
+] as const;
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Printreon | Membership Platform Built for 3D Creators" },
-      { name: "description", content: "Invite-only beta. Run STL memberships, manage subscribers and offer commercial licences on a platform built for the 3D printing creator economy. Founding creators lock in higher payouts for life." },
-      { property: "og:title", content: "Printreon — Memberships built for 3D creators" },
-      { property: "og:description", content: "Apply for early beta access. Founding creators lock in higher payouts for life." },
+      { title: "Printreon | STL Membership Platform for 3D Print Creators" },
+      { name: "description", content: `${SITE_DESCRIPTION} Invite-only beta now open.` },
+      { property: "og:title", content: "Printreon — STL Memberships for 3D Print Creators" },
+      { property: "og:description", content: `${SITE_DESCRIPTION} Founding creators lock in higher payouts for life.` },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Printreon — Memberships built for 3D creators" },
-      { name: "twitter:description", content: "Invite-only beta for founding 3D creators." },
+      { name: "twitter:title", content: "Printreon — STL Memberships for 3D Print Creators" },
+      { name: "twitter:description", content: "Sell STL, 3MF and printable files through monthly memberships. Invite-only beta for founding 3D print creators." },
+      {
+        "script:ld+json": {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: SITE_NAME,
+          url: SITE_URL,
+          description: SITE_DESCRIPTION,
+        },
+      },
+      {
+        "script:ld+json": {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
+            "@type": "Question",
+            name: q,
+            acceptedAnswer: { "@type": "Answer", text: a },
+          })),
+        },
+      },
     ],
     links: [{ rel: "canonical", href: SITE_URL }],
   }),
@@ -236,10 +265,8 @@ function BuiltFor() {
         <div className="md:col-span-5">
           <span className="eyebrow">// Built for 3D creators</span>
           <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Made for</span>{" "}
-            <span className="font-bold">makers,</span>{" "}
-            <span className="font-display italic">not generic</span>{" "}
-            <span className="font-bold">content creators.</span>
+            <span className="font-display italic">Everything starts</span>{" "}
+            <span className="font-bold">with the file.</span>
           </h2>
         </div>
         <p className="md:col-span-6 md:col-start-7 text-lg text-ink-soft">
@@ -479,7 +506,7 @@ function EverythingBento() {
           </BentoCard>
 
           <BentoCard icon={Banknote} title="Stripe payouts">
-            <p className="mt-2 text-sm text-background/70">Money lands in your bank, not ours.</p>
+            <p className="mt-2 text-sm text-background/70">Straight to your bank account. No middleman.</p>
           </BentoCard>
 
           <BentoCard icon={Users} title="Community">
@@ -674,7 +701,7 @@ function GrowthTools() {
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Printreon ships with the growth loops creators actually need —
-            so you spend your time designing, not duct-taping marketing tools together.
+            so you spend your time designing, not stitching six different tools together.
           </p>
         </div>
         <ul className="md:col-span-7 grid gap-3 sm:grid-cols-2">
@@ -743,14 +770,6 @@ function Pricing() {
 /* ------------------------------ FAQ ------------------------------ */
 
 function FAQ() {
-  const qs = [
-    ["Can I upload STL files?", "Yes. STL is a first-class file type along with 3MF, OBJ and ZIP archives."],
-    ["Can I offer free files?", "Yes — mark any file free with account. The best lead magnet for new subscribers."],
-    ["Can I create multiple tiers?", "Absolutely. Build Supporter, Standard, Premium Vault and Commercial Licence tiers."],
-    ["Can I use it instead of Patreon?", "That's exactly what it's for. Patreon was never built for STL files. Printreon is."],
-    ["How do payouts work?", "Subscriptions process through Stripe. Payouts route via our connected-account system."],
-    ["Can subscribers cancel anytime?", "Yes. Members manage everything through the secure Stripe customer portal."],
-  ];
   return (
     <section className="container-wide py-24">
       <div className="grid gap-10 md:grid-cols-12 md:items-start">
@@ -770,7 +789,7 @@ function FAQ() {
           </p>
         </div>
         <div className="md:col-span-8 grid gap-3">
-          {qs.map(([q, a]) => (
+          {FAQ_ITEMS.map(({ q, a }) => (
             <details key={q} className="group rounded-xl border border-border bg-card p-5 open:bg-surface">
               <summary className="flex cursor-pointer list-none items-center justify-between text-base font-semibold text-ink">
                 {q}
@@ -852,7 +871,7 @@ function WhyPrintreonExists() {
           <li className="mt-2 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
             <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
             <span className="text-sm font-semibold text-ink">
-              Printreon: purpose-built infrastructure for the 3D creator economy.
+              Printreon was built for this. Nobody else was.
             </span>
           </li>
         </ul>
@@ -934,9 +953,9 @@ function BetaApplication() {
         <div className="grid gap-12 md:grid-cols-12 md:items-start">
           <div className="md:col-span-5">
             <span className="eyebrow-dark"><AlertTriangle className="mr-1.5 inline h-3.5 w-3.5" /> Limited spots</span>
-            <h2 className="mt-5 text-4xl md:text-6xl">
-              <span className="font-display italic">Apply For</span>{" "}
-              <span className="font-bold">Early Beta Access</span>
+            <h2 className="mt-5 text-4xl text-background md:text-6xl">
+              <span className="font-display italic">Ready to</span>{" "}
+              <span className="font-bold">join the beta?</span>
             </h2>
             <p className="mt-5 max-w-md text-lg text-background/70">
               Join the founding creators helping shape Printreon before public launch. Founder

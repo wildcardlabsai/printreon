@@ -1,20 +1,36 @@
-import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Menu } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-function scrollTo(id: string) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+const NAV_LINKS = [
+  { id: "features", label: "Features" },
+  { id: "founder-benefits", label: "Founder Benefits" },
+  { id: "beta-access", label: "Beta Access" },
+] as const;
 
 export function SiteHeader() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const scrollTo = (id: string) => {
+    setMenuOpen(false);
+    if (pathname !== "/") {
+      navigate({ to: "/", hash: id });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-3">
-            <Logo />
-          </Link>
+          <Logo />
           <span className="hidden items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary sm:inline-flex font-mono">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
@@ -24,22 +40,55 @@ export function SiteHeader() {
           </span>
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
-          <button onClick={() => scrollTo("features")} className="hover:text-ink transition">
-            Features
-          </button>
-          <button onClick={() => scrollTo("founder-benefits")} className="hover:text-ink transition">
-            Founder Benefits
-          </button>
-          <button onClick={() => scrollTo("beta-access")} className="hover:text-ink transition">
-            Beta Access
-          </button>
+          {NAV_LINKS.map((link) => (
+            <button key={link.id} onClick={() => scrollTo(link.id)} className="hover:text-ink transition">
+              {link.label}
+            </button>
+          ))}
         </nav>
-        <button
-          onClick={() => scrollTo("beta-access")}
-          className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
-        >
-          Apply For Beta
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => scrollTo("beta-access")}
+            className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
+          >
+            Apply For Beta
+          </button>
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-ink md:hidden"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <SheetContent side="right" className="flex w-4/5 flex-col gap-1 sm:max-w-xs">
+              <SheetHeader>
+                <SheetTitle className="sr-only">Menu</SheetTitle>
+                <Logo />
+              </SheetHeader>
+              <nav className="mt-6 flex flex-col gap-1 text-base font-medium text-ink">
+                {NAV_LINKS.map((link) => (
+                  <button
+                    key={link.id}
+                    onClick={() => scrollTo(link.id)}
+                    className="rounded-lg px-3 py-3 text-left hover:bg-secondary"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+              <SheetClose asChild>
+                <button
+                  onClick={() => scrollTo("beta-access")}
+                  className="btn-primary mt-4 h-11 w-full text-sm"
+                >
+                  Apply For Beta
+                </button>
+              </SheetClose>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
