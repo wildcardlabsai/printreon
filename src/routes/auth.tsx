@@ -1,10 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
+import { devToolsEnabled } from "@/lib/dev-mode";
+import { ensureDemoAccounts } from "@/functions/dev.functions";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup"]).optional(),
@@ -128,7 +131,70 @@ function AuthPage() {
             )}
           </p>
         </div>
+
+        <DevQuickLogin />
       </div>
+
     </div>
   );
 }
+
+/**
+ * Test-only panel: seeds/repairs the three demo accounts and signs straight in.
+ * Hidden on the live domain, and the underlying server fn refuses to run there.
+ */
+function DevQuickLogin() {
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const seed = useServerFn(ensureDemoAccounts);
+
+  useEffect(() => setVisible(devToolsEnabled()), []);
+  if (!visible) return null;
+
+  const login = async (account: (typeof DEMO_LOGINS)[number]) => {
+    setBusy(account.email);
+    try {
+      await seed({});
+      const { error } = await supabase.auth.signInWithPassword({
+        email: account.email,
+        password: "DemoPass123!",
+      });
+      if (error) throw error;
+      toast.success(`Signed in as ${account.label}`);
+      navigate({ to: account.to });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Quick login failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div className="card-soft mt-6 border-dashed">
+      <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+        Testing shortcuts (preview only)
+      </p>
+      <div className="mt-3 grid gap-2">
+        {DEMO_LOGINS.map((a) => (
+          <button
+            key={a.email}
+            onClick={() => login(a)}
+            disabled={busy !== null}
+            className="btn-ghost w-full justify-between text-sm"
+          >
+            <span>{busy === a.email ? "Signing in…" : `Log in as ${a.label}`}</span>
+            <span className="text-xs text-ink-soft">{a.email}</span>
+          </button>
+        ))}
+      </div>
+      <p className="mt-3 text-xs text-ink-soft">Password for all demo accounts: DemoPass123!</p>
+    </div>
+  );
+}
+
+const DEMO_LOGINS = [
+  { label: "Supporter", email: "buyer@demo.printreon.test", to: "/me" as const },
+  { label: "Creator", email: "creator@demo.printreon.test", to: "/dashboard" as const },
+  { label: "Admin", email: "admin@demo.printreon.test", to: "/admin" as const },
+];

@@ -1,15 +1,30 @@
 // Dev-only helpers for testing the full buyer/creator/admin flow without
-// going through real Stripe checkout or manual signups. These should NOT
-// be used in production — every handler checks NODE_ENV / a dev guard.
+// going through real Stripe checkout or manual signups. Every handler calls
+// assertDevHost() so these endpoints are inert on the live domain.
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isLiveHost } from "@/lib/dev-mode";
 // Bundled demo thumbnail bytes (Vite turns these into ArrayBuffer at build time).
 import demoCubeThumb from "@/assets/demo-preview-cube.jpg?arraybuffer";
 import demoBundleThumb from "@/assets/demo-preview-bundle.jpg?arraybuffer";
 
+type AdminClient = Awaited<
+  typeof import("@/integrations/supabase/client.server")
+>["supabaseAdmin"];
+
+/** Loads the service-role client, refusing to run on the published domain. */
+async function devAdmin(): Promise<AdminClient> {
+  const req = getRequest();
+  const host = req.headers.get("x-forwarded-host") ?? new URL(req.url).host;
+  if (isLiveHost(host)) throw new Error("Dev tools are disabled on the live site");
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
 const DEMO_PASSWORD = "DemoPass123!";
+
 
 const DEMO_ACCOUNTS = [
   { email: "buyer@demo.printreon.test", role: "member" as const, fullName: "Demo Buyer" },
@@ -112,7 +127,7 @@ function buildDemoZip(): Uint8Array {
   return out;
 }
 
-async function seedDemoFiles(creatorId: string, userId: string) {
+async function seedDemoFiles(supabaseAdmin: AdminClient, creatorId: string, userId: string) {
   // Skip if creator already has any files seeded
   const { data: existing } = await supabaseAdmin
     .from("creator_files")
@@ -206,6 +221,7 @@ async function seedDemoFiles(creatorId: string, userId: string) {
 
 export const ensureDemoAccounts = createServerFn({ method: "POST" })
   .handler(async () => {
+    const supabaseAdmin = await devAdmin();
     const results: { email: string; password: string; role: string }[] = [];
 
     for (const acc of DEMO_ACCOUNTS) {
@@ -288,7 +304,7 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" })
         }
 
         if (cp) {
-          await seedDemoFiles(cp.id, user.id);
+          await seedDemoFiles(supabaseAdmin, cp.id, user.id);
         }
       }
 
@@ -306,6 +322,7 @@ export const simulateSubscribe = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => SimulateInput.parse(d))
   .handler(async ({ data, context }) => {
+    const supabaseAdmin = await devAdmin();
     const { userId } = context;
 
     const { data: tier, error: tierErr } = await supabaseAdmin

@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/functions/downloads.functions";
 import { creatorUrl } from "@/lib/site";
+import { devToolsEnabled } from "@/lib/dev-mode";
+import { simulateSubscribe } from "@/functions/dev.functions";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
@@ -75,6 +77,12 @@ function CreatorPage() {
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [notFoundFlag, setNotFoundFlag] = useState(false);
   const [checkoutTierId, setCheckoutTierId] = useState<string | null>(null);
+  const [simulatingTier, setSimulatingTier] = useState<string | null>(null);
+  const [devTools, setDevTools] = useState(false);
+  const simulate = useServerFn(simulateSubscribe);
+  useEffect(() => setDevTools(devToolsEnabled()), []);
+
+
 
   useEffect(() => {
     (async () => {
@@ -265,6 +273,28 @@ function CreatorPage() {
                 >
                   Subscribe
                 </button>
+                {devTools && (
+                  <button
+                    className="btn-ghost mt-2 w-full text-xs"
+                    disabled={simulatingTier !== null}
+                    onClick={async () => {
+                      if (!user) { toast.error("Sign in first"); navigate({ to: "/auth" }); return; }
+                      setSimulatingTier(t.id);
+                      try {
+                        await simulate({ data: { tierId: t.id } });
+                        toast.success("Simulated subscription active");
+                        navigate({ to: "/me/subscriptions" });
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : "Simulation failed");
+                      } finally {
+                        setSimulatingTier(null);
+                      }
+                    }}
+                  >
+                    {simulatingTier === t.id ? "Working…" : "⚡ Simulate subscribe (test)"}
+                  </button>
+                )}
+
               </div>
             ))}
           </div>

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
+import { useAuth } from "@/lib/auth-context";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const NAV_LINKS = [
@@ -15,6 +16,7 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const scrollTo = (id: string) => {
     setMenuOpen(false);
@@ -45,14 +47,29 @@ export function SiteHeader() {
               {link.label}
             </button>
           ))}
+          <Link to="/explore" className="hover:text-ink transition">Explore</Link>
+          <Link to="/pricing" className="hover:text-ink transition">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => scrollTo("beta-access")}
-            className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
-          >
-            Apply For Beta
-          </button>
+          {user ? (
+            <Link to="/me" className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap">
+              My account
+            </Link>
+          ) : (
+            <>
+              <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
+                Sign in
+              </Link>
+              <button
+                onClick={() => scrollTo("beta-access")}
+                className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
+              >
+                Apply For Beta
+              </button>
+            </>
+          )}
+
+
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <button
               type="button"
