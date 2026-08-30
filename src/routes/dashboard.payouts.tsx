@@ -7,7 +7,7 @@ import {
   startConnectOnboarding,
   refreshConnectStatus,
   openExpressDashboard,
-} from "@/server/connect.functions";
+} from "@/functions/connect.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { Banknote, Info, CheckCircle2, ExternalLink, RefreshCw, AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";

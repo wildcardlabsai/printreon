@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
-import { getFileDownloadUrl } from "@/server/downloads.functions";
+import { getFileDownloadUrl } from "@/functions/downloads.functions";
 import { Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 

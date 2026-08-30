@@ -8,7 +8,7 @@ import { STLViewerModal } from "@/components/STLViewer";
 import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { getFileDownloadUrl } from "@/server/downloads.functions";
+import { getFileDownloadUrl } from "@/functions/downloads.functions";
 import { creatorUrl, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/c/$slug")({

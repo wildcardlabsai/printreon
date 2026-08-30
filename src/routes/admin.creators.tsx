@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, EmptyState, StatusBadge } from "@/components/admin/AdminUI";
 import { useServerFn } from "@tanstack/react-start";
-import { adminSetPublished } from "@/server/admin.functions";
+import { adminSetPublished } from "@/functions/admin.functions";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 

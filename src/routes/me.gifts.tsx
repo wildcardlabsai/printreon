@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
-import { createGift, redeemGift } from "@/server/gifts.functions";
+import { createGift, redeemGift } from "@/functions/gifts.functions";
 import { toast } from "sonner";
 import { Gift, Copy } from "lucide-react";
 
