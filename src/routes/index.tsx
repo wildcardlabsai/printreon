@@ -245,9 +245,8 @@ function BuiltFor() {
       <div className="grid gap-10 md:grid-cols-12 md:items-end">
         <div className="md:col-span-5">
           <span className="eyebrow">// Built for 3D creators</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Everything starts</span>{" "}
-            <span className="font-bold">with the file.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Everything starts with the file.
           </h2>
         </div>
         <p className="md:col-span-6 md:col-start-7 text-lg text-ink-soft">
