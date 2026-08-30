@@ -318,9 +318,8 @@ function HowItWorks() {
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <span className="eyebrow">// Workflow</span>
-            <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-              <span className="font-display italic">Five steps</span>{" "}
-              <span className="font-bold">from blank page to paid.</span>
+            <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+              Five steps from blank page to paid.
             </h2>
           </div>
           <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
