@@ -16,6 +16,8 @@ function TiersPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("5");
   const [benefits, setBenefits] = useState("");
+  const [interval, setInterval] = useState("month");
+  const [trialDays, setTrialDays] = useState("0");
 
   const refresh = async () => {
     if (!creator) return;
