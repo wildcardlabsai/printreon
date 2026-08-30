@@ -32,7 +32,31 @@ export const Route = createFileRoute("/api/public/cron/expire-subscriptions")({
           return Response.json({ ok: false, error: error.message }, { status: 500 });
         }
 
-        return Response.json({ ok: true, expired: data?.length ?? 0 });
+        // Dunning: revoke memberships stuck in past_due for more than 7 days.
+        const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const { data: dunned } = await supabaseAdmin
+          .from("subscriptions")
+          .update({ status: "canceled", updated_at: now })
+          .eq("status", "past_due")
+          .lt("payment_failed_at", cutoff)
+          .select("id, user_id");
+
+        for (const row of dunned ?? []) {
+          await supabaseAdmin.from("notifications").insert({
+            user_id: row.user_id,
+            type: "subscription_revoked",
+            title: "Membership paused",
+            body: "We couldn't collect payment after several attempts, so access has been paused.",
+            link: "/me/subscriptions",
+          });
+        }
+
+        return Response.json({
+          ok: true,
+          expired: data?.length ?? 0,
+          dunning_canceled: dunned?.length ?? 0,
+        });
+
       },
     },
   },
