@@ -356,9 +356,8 @@ function ProductPeek() {
       <div className="grid gap-12 md:grid-cols-12 md:items-center">
         <div className="md:col-span-5">
           <span className="eyebrow">// Inside the dashboard</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-5xl">
-            <span className="font-display italic">A creator tool that</span>{" "}
-            <span className="font-bold">actually understands files.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            A creator tool that actually understands files.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Drag and drop an STL, set the tier, write the post, hit publish.
