@@ -890,8 +890,8 @@ function FounderBenefits() {
             </h3>
             <p className="mt-2 text-sm text-ink-soft">Locked in for the lifetime of your account.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Reduced platform fee — for life</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Higher payout percentage</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Reduced platform fee — locked for life</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Higher payout share, paid monthly via Stripe</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Founder badge on your page</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Priority support</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Early access to new features</li>
