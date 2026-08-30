@@ -71,6 +71,7 @@ import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
 import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -388,6 +389,11 @@ const AdminFeatureFlagsRoute = AdminFeatureFlagsRouteImport.update({
   path: '/feature-flags',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/emails',
+  path: '/emails',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   id: '/creators',
   path: '/creators',
@@ -447,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
@@ -514,6 +521,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
@@ -585,6 +593,7 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
@@ -657,6 +666,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
@@ -724,6 +734,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
@@ -794,6 +805,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/creators'
+    | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/invites'
     | '/admin/memberships'
@@ -1303,6 +1315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFeatureFlagsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/creators': {
       id: '/admin/creators'
       path: '/creators'
@@ -1353,6 +1372,7 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
   AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
@@ -1372,6 +1392,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
   AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
