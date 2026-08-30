@@ -112,11 +112,11 @@ function Hero() {
             v1.0 — Opening to creators soon
           </span>
 
-          <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[76px] md:leading-[0.95]">
-            <span className="font-bold">Built for 3D creators.</span>{" "}
-            <span className="font-display italic text-ink-soft">Not generic</span>{" "}
+          <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[68px] md:leading-[0.95]">
+            <span className="font-bold">Sell your STLs</span>{" "}
+            <span className="font-display italic text-ink-soft">on a</span>{" "}
             <span className="relative inline-block">
-              <span className="font-display italic text-primary">membership platforms.</span>
+              <span className="font-display italic text-primary">monthly membership.</span>
               <svg viewBox="0 0 300 14" className="absolute -bottom-2 left-0 h-3 w-full text-primary" preserveAspectRatio="none">
                 <path d="M2 8 Q 75 2, 150 8 T 298 8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
               </svg>
@@ -124,11 +124,11 @@ function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-lg text-ink-soft">
-            Run STL memberships, manage subscribers, offer commercial licences and grow recurring
-            income — all on a platform designed specifically for the 3D printing creator economy.
+            Recurring income from your 3D files — tiered access, commercial licences,
+            protected downloads and Stripe payouts, in one place.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <button
               onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
               className="btn-primary h-12 px-6 text-base"
@@ -137,25 +137,17 @@ function Hero() {
             </button>
             <button
               onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-ghost h-12 px-6 text-base"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
             >
-              Explore Features
+              See what's inside <span aria-hidden>↓</span>
             </button>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Invite-only beta</span>
-            <span className="flex items-center gap-2"><Crown className="h-4 w-4 text-primary" /> Founder pricing locked in for life</span>
-            <span className="flex items-center gap-2"><Box className="h-4 w-4 text-primary" /> Built for 3D creators</span>
-          </div>
-          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
-            <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" /></span>
-            Limited founding creator spots available
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft">
+            Invite-only beta <span className="text-primary">·</span> Founder pricing for life{" "}
+            <span className="text-primary">·</span> Built for 3D creators
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink-soft">
-            <SocialProof />
-          </div>
         </div>
 
         {/* RIGHT: stacked product mock + ornaments */}
