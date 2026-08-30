@@ -212,18 +212,7 @@ function Hero() {
   );
 }
 
-function SocialProof() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex -space-x-2">
-        {["#ea7a2c","#1f1f1f","#a3e635","#525252","#ea7a2c"].map((c,i) => (
-          <div key={i} className="h-7 w-7 rounded-full border-2 border-background" style={{ background: c }} />
-        ))}
-      </div>
-      <span className="text-sm text-ink"><b className="font-semibold">300+ creators</b> already on the list</span>
-    </div>
-  );
-}
+
 
 /* ------------------------------ MARQUEE ------------------------------ */
 
