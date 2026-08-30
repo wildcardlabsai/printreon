@@ -9,7 +9,7 @@ import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/functions/downloads.functions";
-import { creatorUrl, SITE_URL } from "@/lib/site";
+import { creatorUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
