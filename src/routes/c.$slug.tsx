@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/functions/downloads.functions";
 import { creatorUrl } from "@/lib/site";
+import { devToolsEnabled } from "@/lib/dev-mode";
+import { simulateSubscribe } from "@/functions/dev.functions";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
