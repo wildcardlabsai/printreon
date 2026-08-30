@@ -26,6 +26,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "Bvnkl9gPD89vFSOS4wdEKzskJYi0EpzNSVGOp59MUTs" },
       { title: "Printreon — Memberships for 3D Print Creators" },
       { name: "description", content: "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators. Partnered with MakerMind App." },
       { property: "og:title", content: "Printreon — Memberships for 3D Print Creators" },
