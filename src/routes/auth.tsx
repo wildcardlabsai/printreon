@@ -128,7 +128,10 @@ function AuthPage() {
             )}
           </p>
         </div>
+
+        <DevQuickLogin />
       </div>
+
     </div>
   );
 }
