@@ -618,9 +618,8 @@ function ForSupporters() {
       <div className="container-wide relative grid gap-12 py-24 md:grid-cols-12 md:items-center">
         <div className="md:col-span-6">
           <span className="eyebrow-dark">// For supporters</span>
-          <h2 className="mt-5 text-4xl md:text-6xl text-background">
-            <span className="font-display italic">For the people</span>{" "}
-            <span className="font-bold">who love 3D printing.</span>
+          <h2 className="mt-5 text-4xl font-bold md:text-5xl text-background">
+            For the people who love 3D printing.
           </h2>
           <p className="mt-6 max-w-lg text-background/70 text-lg">
             Back the designers behind your favourite prints. Get fresh STL drops every month,
