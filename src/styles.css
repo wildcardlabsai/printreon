@@ -124,6 +124,7 @@
   --ink: oklch(0.98 0.003 60);
   --ink-soft: oklch(0.7 0.01 60);
   --surface: oklch(0.17 0.012 60);
+  --sand: oklch(0.215 0.014 60);
   --card: oklch(0.17 0.012 60);
   --card-foreground: oklch(0.98 0.003 60);
   --popover: oklch(0.17 0.012 60);
