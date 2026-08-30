@@ -522,7 +522,7 @@ function BentoCard({
       <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${accentBg}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <h3 className="mt-4 text-xl font-display italic text-background">{title}</h3>
+      <h3 className="mt-4 text-lg font-semibold text-background">{title}</h3>
       {children}
       <ArrowUpRight className="absolute right-4 top-4 h-4 w-4 text-background/30 transition-all group-hover:text-background group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
     </div>
