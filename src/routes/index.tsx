@@ -726,9 +726,9 @@ function Pricing() {
             <div className="mt-4 font-display text-6xl text-ink">$0<span className="ml-1 align-middle font-sans text-base font-medium text-ink-soft">/month</span></div>
             <p className="mt-2 text-sm text-ink-soft">Free account. Pay only when you subscribe to a creator's tier.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Follow creators for free</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Download free files</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cancel any subscription anytime</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Follow creators for free</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Download free files</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-electric" /> Cancel any subscription anytime</li>
             </ul>
             <a href="#beta-access" className="btn-ghost mt-7 w-full text-center">Join as a supporter</a>
           </div>
