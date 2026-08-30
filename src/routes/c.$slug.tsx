@@ -9,11 +9,59 @@ import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl } from "@/functions/downloads.functions";
-import { creatorUrl, SITE_URL } from "@/lib/site";
+import { creatorUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/c/$slug")({
+  loader: async ({ params }) => {
+    const { data } = await supabase
+      .from("creator_profiles")
+      .select("display_name, short_intro, bio, profile_image_url, banner_image_url")
+      .eq("slug", params.slug)
+      .eq("is_published", true)
+      .maybeSingle();
+    return { profile: data as any | null };
+  },
+  head: ({ params, loaderData }) => {
+    const p = loaderData?.profile;
+    const url = creatorUrl(params.slug);
+    if (!p) {
+      return {
+        meta: [
+          { title: "Creator not found — Printreon" },
+          { name: "description", content: "This Printreon creator page is not available." },
+          { name: "robots", content: "noindex" },
+        ],
+      };
+    }
+    const title = `${p.display_name} — 3D print memberships on Printreon`;
+    const description: string =
+      p.short_intro ??
+      String(p.bio ?? "").replace(/\s+/g, " ").slice(0, 155) ??
+      `Subscribe to ${p.display_name} on Printreon for monthly STL, 3MF and printable file drops.`;
+    const image = p.banner_image_url ?? p.profile_image_url ?? null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(image && image.startsWith("https://")
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: CreatorPage,
 });
+
 
 function CreatorPage() {
   const { slug } = Route.useParams();
@@ -148,7 +196,7 @@ function CreatorPage() {
       <div className="container-page -mt-16 pb-20">
         <div className="card-soft flex flex-wrap items-center gap-5">
           {creator.profile_image_url ? (
-            <img src={creator.profile_image_url} alt="" className="h-24 w-24 rounded-full border-4 border-card object-cover" />
+            <img src={creator.profile_image_url} alt={`${creator.display_name} profile photo`} className="h-24 w-24 rounded-full border-4 border-card object-cover" />
           ) : (
             <div className="h-24 w-24 rounded-full border-4 border-card bg-accent text-primary flex items-center justify-center text-3xl font-bold">{creator.display_name[0]}</div>
           )}
@@ -177,7 +225,7 @@ function CreatorPage() {
             <div className="mt-4 space-y-4">
               {posts.map((p) => (
                 <article key={p.id} className="card-soft">
-                  {p.cover_image_url && <img src={p.cover_image_url} alt="" className="mb-4 aspect-video w-full rounded-lg object-cover" />}
+                  {p.cover_image_url && <img src={p.cover_image_url} alt={`Cover image for the post “${p.title}”`} className="mb-4 aspect-video w-full rounded-lg object-cover" />}
                   <h3 className="text-lg font-bold text-ink">{p.title}</h3>
                   <p className="mt-1 text-xs text-ink-soft">{new Date(p.published_at ?? p.created_at).toLocaleDateString()}</p>
                   <p className="mt-3 whitespace-pre-line text-ink-soft">{p.body}</p>
@@ -233,7 +281,7 @@ function CreatorPage() {
               <div key={f.id} className="card-soft">
                 <div className="aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
                   {f.preview_images && Array.isArray(f.preview_images) && f.preview_images[0]
-                    ? <img src={f.preview_images[0]} alt="" className="h-full w-full object-cover" />
+                    ? <img src={f.preview_images[0]} alt={`Preview render of the 3D model “${f.title}”`} className="h-full w-full object-cover" />
                     : "STL preview"}
                 </div>
                 <div className="mt-3 flex items-center justify-between">
