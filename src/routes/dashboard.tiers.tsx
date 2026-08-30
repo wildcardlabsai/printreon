@@ -64,7 +64,14 @@ function TiersPage() {
         <p className="mt-1 text-sm text-ink-soft">Subscribers picking a higher-priced tier automatically unlock everything below.</p>
         <div className="mt-4 space-y-3">
           <Field label="Name"><input value={name} onChange={(e) => setName(e.target.value)} className={inp} placeholder="Standard Files" /></Field>
-          <Field label="Monthly price (USD)"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+          <Field label="Price (USD)"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+          <Field label="Billing period">
+            <select value={interval} onChange={(e) => setInterval(e.target.value)} className={inp}>
+              <option value="month">Monthly</option>
+              <option value="year">Annual</option>
+            </select>
+          </Field>
+          <Field label="Free trial (days, 0 = none)"><input type="number" min="0" max="90" value={trialDays} onChange={(e) => setTrialDays(e.target.value)} className={inp} /></Field>
           <Field label="Benefits (one per line)"><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={5} className={inp} /></Field>
           <button onClick={create} className="btn-primary w-full"><Plus className="mr-2 h-4 w-4" />Create tier</button>
         </div>
