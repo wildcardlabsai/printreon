@@ -65,6 +65,7 @@ import { Route as AdminSystemHealthRouteImport } from './routes/admin.system-hea
 import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminStlLibraryRouteImport } from './routes/admin.stl-library'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPreregistrationsRouteImport } from './routes/admin.preregistrations'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -359,6 +360,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -460,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -528,6 +535,7 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -600,6 +608,7 @@ export interface FileRoutesById {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -673,6 +682,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/preregistrations'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -741,6 +751,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/preregistrations'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -812,6 +823,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/preregistrations'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -1273,6 +1285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reports': {
       id: '/admin/reports'
       path: '/reports'
@@ -1379,6 +1398,7 @@ interface AdminRouteChildren {
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminPreregistrationsRoute: typeof AdminPreregistrationsRoute
   AdminReportsRoute: typeof AdminReportsRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStlLibraryRoute: typeof AdminStlLibraryRoute
   AdminSupportRoute: typeof AdminSupportRoute
@@ -1399,6 +1419,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminPreregistrationsRoute: AdminPreregistrationsRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStlLibraryRoute: AdminStlLibraryRoute,
   AdminSupportRoute: AdminSupportRoute,
