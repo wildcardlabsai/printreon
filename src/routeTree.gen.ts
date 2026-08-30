@@ -78,6 +78,7 @@ import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcem
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron/publish-scheduled'
 import { Route as ApiPublicCronExpireSubscriptionsRouteImport } from './routes/api/public/cron/expire-subscriptions'
 
 const WaitlistRoute = WaitlistRouteImport.update({
@@ -426,6 +427,12 @@ const ApiPublicPaymentsWebhookRoute =
     path: '/api/public/payments/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronPublishScheduledRoute =
+  ApiPublicCronPublishScheduledRouteImport.update({
+    id: '/api/public/cron/publish-scheduled',
+    path: '/api/public/cron/publish-scheduled',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronExpireSubscriptionsRoute =
   ApiPublicCronExpireSubscriptionsRouteImport.update({
     id: '/api/public/cron/expire-subscriptions',
@@ -503,6 +510,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -572,6 +580,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/me': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -645,6 +654,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/me/': typeof MeIndexRoute
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
+  '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -719,6 +729,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/me/'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -788,6 +799,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/me'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -860,6 +872,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/me/'
     | '/api/public/cron/expire-subscriptions'
+    | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -888,6 +901,7 @@ export interface RootRouteChildren {
   CSlugRoute: typeof CSlugRoute
   OnboardingCreatorRoute: typeof OnboardingCreatorRoute
   ApiPublicCronExpireSubscriptionsRoute: typeof ApiPublicCronExpireSubscriptionsRoute
+  ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -1376,6 +1390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/publish-scheduled': {
+      id: '/api/public/cron/publish-scheduled'
+      path: '/api/public/cron/publish-scheduled'
+      fullPath: '/api/public/cron/publish-scheduled'
+      preLoaderRoute: typeof ApiPublicCronPublishScheduledRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/expire-subscriptions': {
       id: '/api/public/cron/expire-subscriptions'
       path: '/api/public/cron/expire-subscriptions'
@@ -1543,6 +1564,7 @@ const rootRouteChildren: RootRouteChildren = {
   CSlugRoute: CSlugRoute,
   OnboardingCreatorRoute: OnboardingCreatorRoute,
   ApiPublicCronExpireSubscriptionsRoute: ApiPublicCronExpireSubscriptionsRoute,
+  ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
