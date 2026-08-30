@@ -75,6 +75,12 @@ function CreatorPage() {
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [notFoundFlag, setNotFoundFlag] = useState(false);
   const [checkoutTierId, setCheckoutTierId] = useState<string | null>(null);
+  const [simulatingTier, setSimulatingTier] = useState<string | null>(null);
+  const [devTools, setDevTools] = useState(false);
+  const simulate = useServerFn(simulateSubscribe);
+  useEffect(() => setDevTools(devToolsEnabled()), []);
+
+
 
   useEffect(() => {
     (async () => {
