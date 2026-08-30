@@ -49,15 +49,24 @@ export function SiteHeader() {
           <Link to="/pricing" className="hover:text-ink transition">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
-            Sign in
-          </Link>
-          <button
-            onClick={() => scrollTo("beta-access")}
-            className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
-          >
-            Apply For Beta
-          </button>
+          {user ? (
+            <Link to="/me" className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap">
+              My account
+            </Link>
+          ) : (
+            <>
+              <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
+                Sign in
+              </Link>
+              <button
+                onClick={() => scrollTo("beta-access")}
+                className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
+              >
+                Apply For Beta
+              </button>
+            </>
+          )}
+
 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <button
