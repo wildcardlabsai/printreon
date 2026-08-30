@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
+import { useAuth } from "@/lib/auth-context";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const NAV_LINKS = [
