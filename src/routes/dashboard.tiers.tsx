@@ -102,13 +102,25 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
   const [price, setPrice] = useState(String(tier.price));
   const [benefits, setBenefits] = useState((tier.benefits ?? []).join("\n"));
   const [active, setActive] = useState(tier.is_active);
+  const [interval, setInterval] = useState(tier.billing_interval ?? "month");
+  const [trialDays, setTrialDays] = useState(String(tier.trial_days ?? 0));
 
   return (
     <div className="card-soft">
       <div className="grid gap-3 md:grid-cols-2">
         <Field label="Name"><input value={name} onChange={(e) => setName(e.target.value)} className={inp} /></Field>
         <Field label="Price"><input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className={inp} /></Field>
+        <Field label="Billing period">
+          <select value={interval} onChange={(e) => setInterval(e.target.value)} className={inp} disabled={!!tier.stripe_price_id}>
+            <option value="month">Monthly</option>
+            <option value="year">Annual</option>
+          </select>
+        </Field>
+        <Field label="Free trial (days)"><input type="number" min="0" max="90" value={trialDays} onChange={(e) => setTrialDays(e.target.value)} className={inp} /></Field>
       </div>
+      {tier.stripe_price_id && (
+        <p className="mt-1 text-xs text-ink-soft">Billing period is locked once a Stripe price exists — create a new tier to change it.</p>
+      )}
       <Field label="Benefits"><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={4} className={inp} /></Field>
       <label className="mt-3 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} /> Active and visible on profile
@@ -119,6 +131,8 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
             onUpdate(tier, {
               name,
               price: Number(price),
+              billing_interval: interval,
+              trial_days: Number(trialDays) || 0,
               benefits: benefits.split("\n").map((s: string) => s.trim()).filter(Boolean),
               is_active: active,
             })
