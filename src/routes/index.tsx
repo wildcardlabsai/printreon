@@ -698,9 +698,8 @@ function Pricing() {
       <div className="container-wide relative py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">// Pricing</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Simple,</span>{" "}
-            <span className="font-bold">creator-friendly.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Simple, creator-friendly.
           </h2>
           <p className="mt-4 text-ink-soft">Free to start. No monthly fee. We earn when you do.</p>
         </div>
