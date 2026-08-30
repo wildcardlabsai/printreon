@@ -76,7 +76,7 @@ function Explore() {
                 <div className="p-5">
                   <div className="flex items-center gap-3">
                     {c.profile_image_url ? (
-                      <img src={c.profile_image_url} alt="" className="h-12 w-12 rounded-full object-cover" />
+                      <img src={c.profile_image_url} alt={`${c.display_name} profile photo`} className="h-12 w-12 rounded-full object-cover" />
                     ) : (
                       <div className="h-12 w-12 rounded-full bg-accent text-primary flex items-center justify-center font-bold">{c.display_name[0]}</div>
                     )}
