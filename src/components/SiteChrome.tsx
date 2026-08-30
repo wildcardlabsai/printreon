@@ -15,6 +15,7 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const scrollTo = (id: string) => {
     setMenuOpen(false);
