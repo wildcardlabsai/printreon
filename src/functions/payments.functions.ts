@@ -72,7 +72,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
 
     const { data: tier } = await supabaseAdmin
       .from("creator_tiers")
-      .select("id, creator_id")
+      .select("id, creator_id, trial_days")
       .eq("id", data.tierId)
       .maybeSingle();
     if (!tier) throw new Error("Tier not found");
