@@ -634,7 +634,7 @@ function ForSupporters() {
           {["Miniatures", "Cosplay", "Functional", "Toys", "Tools", "Tabletop", "Terrain", "Articulated", "Decor"].map((t, i) => (
             <div
               key={t}
-              className={`rounded-2xl border p-5 text-sm font-display italic ${
+              className={`rounded-2xl border p-5 text-sm font-semibold ${
                 i % 4 === 0 ? "border-primary/40 bg-primary/10 text-background" :
                 i % 4 === 1 ? "border-white/15 bg-white/[0.03] text-background" :
                 i % 4 === 2 ? "border-electric/30 bg-electric/10 text-background" :
