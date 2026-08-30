@@ -262,7 +262,7 @@ function BuiltFor() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-primary">
               <it.icon className="h-6 w-6" />
             </div>
-            <h3 className="mt-6 text-2xl font-display italic text-ink">{it.title}</h3>
+            <h3 className="mt-6 text-xl font-semibold text-ink">{it.title}</h3>
             <p className="mt-3 text-sm text-ink-soft">{it.desc}</p>
             <div className="mt-6 h-px w-full bg-border group-hover:bg-primary transition-colors" />
           </div>
