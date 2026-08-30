@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { useServerFn } from "@tanstack/react-start";
-import { createTierCheckoutSession } from "@/server/payments.functions";
+import { createTierCheckoutSession } from "@/functions/payments.functions";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 

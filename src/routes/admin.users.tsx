@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, EmptyState, exportCsv } from "@/components/admin/AdminUI";
 import { Search } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { adminGrantRole } from "@/server/admin.functions";
+import { adminGrantRole } from "@/functions/admin.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/users")({ component: Users });

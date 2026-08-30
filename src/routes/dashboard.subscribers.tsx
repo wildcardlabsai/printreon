@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
-import { listSubscribersForOwnCreator } from "@/server/admin.functions";
+import { listSubscribersForOwnCreator } from "@/functions/admin.functions";
 import { Users, Mail, Search } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 
