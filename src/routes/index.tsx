@@ -820,9 +820,8 @@ function WhyPrintreonExists() {
       <div className="grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-5">
           <span className="eyebrow">// Why Printreon exists</span>
-          <h2 className="mt-5 text-4xl text-ink md:text-6xl">
-            <span className="font-display italic">Most creator platforms</span>{" "}
-            <span className="font-bold">were never built for 3D creators.</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            Most creator platforms were never built for 3D creators.
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
             Printreon is purpose-built infrastructure for the 3D creator economy — STL-native from
