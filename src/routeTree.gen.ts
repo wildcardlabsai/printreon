@@ -65,6 +65,7 @@ import { Route as AdminSystemHealthRouteImport } from './routes/admin.system-hea
 import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminStlLibraryRouteImport } from './routes/admin.stl-library'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPreregistrationsRouteImport } from './routes/admin.preregistrations'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
@@ -357,6 +358,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPreregistrationsRoute = AdminPreregistrationsRouteImport.update({
   id: '/preregistrations',
   path: '/preregistrations',
@@ -446,6 +452,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -512,6 +519,7 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -582,6 +590,7 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/preregistrations': typeof AdminPreregistrationsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/stl-library': typeof AdminStlLibraryRoute
   '/admin/support': typeof AdminSupportRoute
@@ -653,6 +662,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -719,6 +729,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -788,6 +799,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/payments'
     | '/admin/preregistrations'
+    | '/admin/reports'
     | '/admin/settings'
     | '/admin/stl-library'
     | '/admin/support'
@@ -1249,6 +1261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/preregistrations': {
       id: '/admin/preregistrations'
       path: '/preregistrations'
@@ -1339,6 +1358,7 @@ interface AdminRouteChildren {
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminPreregistrationsRoute: typeof AdminPreregistrationsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStlLibraryRoute: typeof AdminStlLibraryRoute
   AdminSupportRoute: typeof AdminSupportRoute
@@ -1357,6 +1377,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminPreregistrationsRoute: AdminPreregistrationsRoute,
+  AdminReportsRoute: AdminReportsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStlLibraryRoute: AdminStlLibraryRoute,
   AdminSupportRoute: AdminSupportRoute,
