@@ -413,26 +413,21 @@ function ProductPeek() {
               </div>
 
               {/* File list */}
-              <div className="mt-5 grid grid-cols-3 gap-3">
+              <div className="mt-5 grid grid-cols-3 grid-rows-2 gap-3">
                 {[
-                  { n: "dragon_v3.stl", t: "Premium" },
-                  { n: "lowpoly_helmet.3mf", t: "Standard" },
-                  { n: "articulated_octopus.zip", t: "Free" },
-                  { n: "tabletop_set.zip", t: "Standard" },
-                  { n: "voxel_planter.stl", t: "Premium" },
-                  { n: "phone_dock.3mf", t: "Free" },
-                ].map((f, i) => (
-                  <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
-                    <div className="aspect-[4/3] bg-gradient-to-br from-accent via-card to-surface relative">
-                      <div className="absolute inset-0 layer-lines opacity-60" />
-                      <div className="absolute inset-0 grid place-items-center">
-                        <Box className="h-8 w-8 text-primary/60" />
-                      </div>
+                  { n: "dragon_v3.stl", t: "Premium", img: previewCube, span: "col-span-2 row-span-2", ratio: "aspect-[16/11]" },
+                  { n: "tabletop_set.zip", t: "Standard", img: previewBundle, ratio: "aspect-[4/3]" },
+                  { n: "phone_dock.3mf", t: "Free", img: previewHero, ratio: "aspect-[4/3]" },
+                ].map((f) => (
+                  <div key={f.n} className={`overflow-hidden rounded-xl border border-border bg-card ${f.span ?? ""}`}>
+                    <div className={`relative ${f.ratio}`}>
+                      <img src={f.img} alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 layer-lines opacity-30" />
                     </div>
-                    <div className="flex items-center justify-between px-3 py-2">
+                    <div className="flex items-center justify-between gap-2 px-3 py-2">
                       <span className="truncate font-mono text-[10px] uppercase tracking-wider text-ink-soft">{f.n}</span>
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ${
-                        f.t === "Free" ? "bg-electric/40 text-ink" :
+                        f.t === "Free" ? "bg-electric text-electric-foreground" :
                         f.t === "Premium" ? "bg-primary text-primary-foreground" :
                         "bg-secondary text-ink"
                       }`}>{f.t}</span>
@@ -440,6 +435,7 @@ function ProductPeek() {
                   </div>
                 ))}
               </div>
+
             </div>
           </div>
         </div>
