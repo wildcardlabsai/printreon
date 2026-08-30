@@ -3,6 +3,9 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, PARTNER } from "@/lib/site";
 import heroImg from "@/assets/hero-dashboard-preview.png";
+import previewCube from "@/assets/demo-preview-cube.jpg";
+import previewBundle from "@/assets/demo-preview-bundle.jpg";
+import previewHero from "@/assets/hero.jpg";
 import {
   Layers, Lock, Sparkles, Share2, Wallet,
   Upload, CreditCard, Rocket, Check, Box,
