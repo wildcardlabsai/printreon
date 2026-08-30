@@ -875,8 +875,8 @@ function FounderBenefits() {
             <h3 className="text-lg font-semibold text-ink">Standard Creator</h3>
             <p className="mt-2 text-sm text-ink-soft">After public launch.</p>
             <ul className="mt-5 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard platform fee</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard payout %</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard platform fee on every sale</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard payout share, paid monthly</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Public release access</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-ink-soft" /> Standard support</li>
             </ul>
