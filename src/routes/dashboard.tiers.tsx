@@ -33,12 +33,14 @@ function TiersPage() {
       name,
       price: Number(price),
       currency: "USD",
+      billing_interval: interval,
+      trial_days: Number(trialDays) || 0,
       benefits: benefits.split("\n").map((s) => s.trim()).filter(Boolean),
       sort_order: tiers.length,
     });
     if (error) return toast.error(error.message);
     toast.success("Tier created");
-    setName(""); setPrice("5"); setBenefits("");
+    setName(""); setPrice("5"); setBenefits(""); setInterval("month"); setTrialDays("0");
     refresh();
   };
 
