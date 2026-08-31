@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut, MessageSquare } from "lucide-react";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
@@ -223,6 +224,7 @@ export function SiteFooter() {
             .
           </p>
         </div>
+        <NewsletterSignup source="footer" className="max-w-sm" />
         <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
           <li><Link to="/changelog" className="hover:text-ink">Changelog</Link></li>
           <li><Link to="/roadmap" className="hover:text-ink">Roadmap</Link></li>
