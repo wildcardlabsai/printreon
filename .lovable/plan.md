@@ -4,25 +4,27 @@ Two separate systems, no clash:
 
 | | Mailboxes (you read/reply) | App emails (Printreon sends) |
 |---|---|---|
-| Provider | Zoho Mail | Lovable built-in email |
+| Provider | Namecheap Private Email | Lovable built-in email |
 | Address | info@printreon.com, invites@printreon.com | e.g. Printreon <hello@printreon.com> |
 | Lives on | printreon.com (root) | notify.printreon.com (subdomain) |
-| DNS at Namecheap | MX + SPF + DKIM records you add | one set of NS records for the subdomain only |
+| DNS at Namecheap | MX + SPF + DKIM, auto-configured | one set of NS records for the subdomain only |
 
-Both can safely coexist because they use different names. Zoho owns the root domain's mail; Lovable owns only the `notify.` subdomain. Nothing Zoho needs gets overwritten.
+Both can safely coexist because they use different names. Private Email owns the root domain's mail; Lovable owns only the `notify.` subdomain. Nothing gets overwritten.
 
-`info@` and `invites@` both work fine — Zoho's free plan covers multiple mailboxes and aliases on one domain.
+Private Email is the simplest route here since the domain is already at Namecheap — they set the mail DNS up for you automatically, so there's no manual record entry like Zoho needed.
 
-## Part 1 — Zoho mailboxes (you do this, ~20 minutes)
+## Part 1 — Namecheap Private Email (you do this, ~10 minutes)
 
-1. Sign up at zoho.com/mail, choose the free "Forever Free" plan, enter `printreon.com`.
-2. Zoho asks you to verify ownership — it gives you a TXT (or CNAME) record. Add it in Namecheap under Domain List > printreon.com > Advanced DNS.
-3. Create the mailboxes: `info@printreon.com` and `invites@printreon.com`.
-4. Add Zoho's MX records in Namecheap Advanced DNS (Zoho shows the exact hosts and priorities). Delete any Namecheap "Email Forwarding" / parking MX records first, or mail will bounce.
-5. Add Zoho's SPF (TXT) and DKIM (TXT) records.
-6. Wait for propagation (usually under an hour), then send yourself a test message.
+1. In Namecheap: Domain List > printreon.com > **Private Email** tab (or Apps > Private Email), and buy a plan. The Starter plan (~£10/yr) includes one mailbox; you can add a second mailbox for a small extra, or use aliases for free.
+2. During setup Namecheap asks which domain to use — pick `printreon.com`. It offers to **auto-configure the DNS records** (MX, SPF, DKIM, autodiscover). Accept that; it writes them into Advanced DNS for you.
+3. Create the mailbox `info@printreon.com`.
+4. For `invites@printreon.com`: either add a second mailbox, or add it as a **free alias** on the info@ mailbox if you're happy for both to land in one inbox. Aliases are under Private Email > Manage > Aliases.
+5. Wait for propagation (usually well under an hour), then send yourself a test message. Webmail is at privateemail.com.
 
-Optional: in Zoho you can forward `info@` to your Gmail and set Gmail up to send-as `info@printreon.com`, so you never have to open a second inbox.
+Cheaper alternative if you don't need a real mailbox: Namecheap includes **free email forwarding** on domains registered with them (Advanced DNS > Mail Settings > Email Forwarding). That forwards info@ and invites@ straight to your Gmail — you can receive, but replying from that address needs extra Gmail SMTP setup. Private Email is the cleaner option if you want to reply as info@printreon.com.
+
+One thing to watch: if you turn on Namecheap Email Forwarding *and* Private Email, the MX records conflict. Pick one.
+
 
 ## Part 2 — App sending (I do this)
 
