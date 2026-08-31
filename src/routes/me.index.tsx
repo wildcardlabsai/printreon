@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Compass, Download, Heart, Sparkles, Palette, ArrowRight } from "lucide-react";
+import { Compass, Download, Heart, Sparkles, Palette, ArrowRight, Library } from "lucide-react";
 
 export const Route = createFileRoute("/me/")({
   component: MemberOverview,
@@ -50,6 +50,23 @@ function MemberOverview() {
           </span>
         </Link>
       )}
+      <Link
+        to="/me/library"
+        className="card-soft mt-6 flex items-center justify-between gap-4 hover:border-primary"
+      >
+        <div className="flex items-start gap-3">
+          <Library className="mt-0.5 h-6 w-6 text-primary" />
+          <div>
+            <h3 className="text-base font-bold text-ink">Your creator library</h3>
+            <p className="mt-1 text-sm text-ink-soft">
+              Every file from the creators you support — preview in 3D and download in one place.
+            </p>
+          </div>
+        </div>
+        <span className="inline-flex items-center text-sm font-semibold text-primary">
+          Browse files <ArrowRight className="ml-1 h-4 w-4" />
+        </span>
+      </Link>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Link to="/explore" className="card-soft block hover:border-primary">
           <Compass className="h-6 w-6 text-primary" />
