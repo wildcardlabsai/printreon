@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl, getFilePreviewUrl } from "@/functions/downloads.functions";
 import { canPreview } from "@/lib/mesh-preview";
-import { STLViewerModal } from "@/components/STLViewer";
+import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { EmptyState } from "@/components/EmptyState";
 import { Library, Download, Loader2, Box, Lock, ArrowRight } from "lucide-react";
@@ -26,7 +26,7 @@ function LibraryPage() {
   const previewFn = useServerFn(getFilePreviewUrl);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [previewBusyId, setPreviewBusyId] = useState<string | null>(null);
-  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null } | null>(null);
+  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -45,7 +45,7 @@ function LibraryPage() {
       const ids = list.map((s: any) => s.creator_id);
       const { data: f } = await supabase
         .from("creator_files")
-        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, creator_id, created_at, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
+        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, material, layer_height_mm, infill_percent, print_time_minutes, recommended_printer, supports_required, creator_id, created_at, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
         .in("creator_id", ids)
         .eq("is_published", true)
         .is("takedown_at", null)
@@ -90,7 +90,7 @@ function LibraryPage() {
     setPreviewBusyId(f.id);
     try {
       const { url, fileType } = await previewFn({ data: { fileId: f.id } });
-      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type ?? null });
+      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type ?? null, settings: f });
     } catch (e: any) { toast.error(e?.message ?? "Preview unavailable"); }
     finally { setPreviewBusyId(null); }
   };
@@ -177,6 +177,8 @@ function LibraryPage() {
                   {f.file_type && <span className="rounded-full bg-secondary px-2 py-0.5">{f.file_type.toUpperCase()}</span>}
                   {f.dim_x != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.dim_x} × {f.dim_y} × {f.dim_z} mm</span>}
                 </div>
+                <PrintSettingsChips settings={f} className="mt-1.5" />
+
                 <div className="mt-4 flex gap-2">
                   {ok ? (
                     <button onClick={() => download(f)} disabled={busyId === f.id} className="btn-primary h-9 flex-1 text-sm">
@@ -201,7 +203,7 @@ function LibraryPage() {
       )}
 
       {preview && (
-        <STLViewerModal open url={preview.url} title={preview.title} fileType={preview.fileType} onClose={() => setPreview(null)} />
+        <STLViewerModal open url={preview.url} title={preview.title} fileType={preview.fileType} settings={preview.settings} onClose={() => setPreview(null)} />
       )}
     </div>
   );
