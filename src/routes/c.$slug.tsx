@@ -103,7 +103,21 @@ function CreatorPage() {
         setFollowing(!!fol);
         const { data: wl } = await supabase.from("wishlist").select("file_id").eq("user_id", user.id);
         setWishlist(new Set((wl ?? []).map((w) => w.file_id)));
+        const { data: subs } = await supabase
+          .from("subscriptions")
+          .select("id, creator_tiers(price)")
+          .eq("user_id", user.id)
+          .eq("creator_id", cp.id)
+          .eq("status", "active");
+        setSubTierPrice(
+          (subs ?? []).length === 0
+            ? null
+            : Math.max(...(subs ?? []).map((s: any) => Number(s.creator_tiers?.price ?? 0)))
+        );
+      } else {
+        setSubTierPrice(null);
       }
+
     })();
   }, [slug, user]);
 
