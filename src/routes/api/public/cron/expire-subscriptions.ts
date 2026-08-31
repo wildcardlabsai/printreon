@@ -11,11 +11,14 @@ export const Route = createFileRoute("/api/public/cron/expire-subscriptions")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env["CRON_SECRET"];
         const provided = request.headers.get("x-cron-secret") ?? "";
-        if (!secret || provided.length !== secret.length || provided !== secret) {
+        const accepted = [process.env["CRON_SECRET"], process.env["CRON_JOB_TOKEN"]].filter(
+          (s): s is string => Boolean(s)
+        );
+        if (!accepted.some((s) => s.length === provided.length && s === provided)) {
           return new Response("Unauthorized", { status: 401 });
         }
+
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const now = new Date().toISOString();
