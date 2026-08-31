@@ -516,6 +516,9 @@ export type Database = {
           created_at: string
           creator_id: string
           description: string | null
+          dim_x: number | null
+          dim_y: number | null
+          dim_z: number | null
           download_count: number
           file_size: number | null
           file_type: string | null
@@ -538,6 +541,7 @@ export type Database = {
           takedown_reason: string | null
           tier_required_id: string | null
           title: string
+          triangle_count: number | null
           updated_at: string
           version: number
         }
@@ -547,6 +551,9 @@ export type Database = {
           created_at?: string
           creator_id: string
           description?: string | null
+          dim_x?: number | null
+          dim_y?: number | null
+          dim_z?: number | null
           download_count?: number
           file_size?: number | null
           file_type?: string | null
@@ -569,6 +576,7 @@ export type Database = {
           takedown_reason?: string | null
           tier_required_id?: string | null
           title: string
+          triangle_count?: number | null
           updated_at?: string
           version?: number
         }
@@ -578,6 +586,9 @@ export type Database = {
           created_at?: string
           creator_id?: string
           description?: string | null
+          dim_x?: number | null
+          dim_y?: number | null
+          dim_z?: number | null
           download_count?: number
           file_size?: number | null
           file_type?: string | null
@@ -600,6 +611,7 @@ export type Database = {
           takedown_reason?: string | null
           tier_required_id?: string | null
           title?: string
+          triangle_count?: number | null
           updated_at?: string
           version?: number
         }

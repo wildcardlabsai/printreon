@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
-import { getFileDownloadUrl } from "@/functions/downloads.functions";
-import { Download, Loader2 } from "lucide-react";
+import { getFileDownloadUrl, getFilePreviewUrl } from "@/functions/downloads.functions";
+import { canPreview } from "@/lib/mesh-preview";
+import { STLViewerModal } from "@/components/STLViewer";
+import { Download, Loader2, Box } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/downloads")({
@@ -16,6 +18,18 @@ function DownloadsPage() {
   const [items, setItems] = useState<any[] | null>(null);
   const downloadFn = useServerFn(getFileDownloadUrl);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const previewFn = useServerFn(getFilePreviewUrl);
+  const [previewBusyId, setPreviewBusyId] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null } | null>(null);
+
+  const openPreview = async (f: any) => {
+    setPreviewBusyId(f.id);
+    try {
+      const { url, fileType } = await previewFn({ data: { fileId: f.id } });
+      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type ?? null });
+    } catch (e: any) { toast.error(e?.message ?? "Preview unavailable"); }
+    finally { setPreviewBusyId(null); }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -84,7 +98,12 @@ function DownloadsPage() {
                 ) : "—"}
               </td>
               <td className="px-4 py-3 text-ink-soft">{new Date(d.downloaded_at).toLocaleString()}</td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-4 py-3 text-right whitespace-nowrap">
+                {canPreview(d.creator_files?.file_type) && (
+                  <button disabled={previewBusyId === d.file_id} onClick={() => openPreview(d.creator_files)} className="btn-ghost mr-1 h-8 px-3 text-xs" title="3D preview">
+                    {previewBusyId === d.file_id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Box className="h-3 w-3" />}
+                  </button>
+                )}
                 <button disabled={busyId === d.file_id} onClick={() => redownload(d.file_id)} className="btn-ghost h-8 px-3 text-xs">
                   {busyId === d.file_id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
                 </button>
@@ -94,6 +113,9 @@ function DownloadsPage() {
           })}
         </tbody>
       </table>
+      {preview && (
+        <STLViewerModal open url={preview.url} title={preview.title} fileType={preview.fileType} onClose={() => setPreview(null)} />
+      )}
     </div>
   );
 }

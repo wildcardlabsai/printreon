@@ -6,8 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
-import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2 } from "lucide-react";
+import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
+import { STLViewerModal } from "@/components/STLViewer";
+import { getFilePreviewUrl } from "@/functions/downloads.functions";
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
@@ -48,6 +51,59 @@ function FilesPage() {
 
   useEffect(() => { refresh(); }, [creator]);
 
+  // 3D preview
+  const previewFn = useServerFn(getFilePreviewUrl);
+  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null } | null>(null);
+  const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
+  const openPreview = async (f: any) => {
+    setPreviewLoadingId(f.id);
+    try {
+      const { url, fileType } = await previewFn({ data: { fileId: f.id } });
+      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Preview unavailable");
+    } finally {
+      setPreviewLoadingId(null);
+    }
+  };
+
+  // Generate/refresh thumbnails for an already-uploaded file
+  const [thumbBusyId, setThumbBusyId] = useState<string | null>(null);
+  const regenerateThumbs = async (f: any) => {
+    if (!user || !creator) return;
+    setThumbBusyId(f.id);
+    try {
+      const { data: signed, error } = await supabase.storage.from("files").createSignedUrl(f.file_url, 300);
+      if (error || !signed) throw new Error("Could not read the stored file");
+      const blob = await fetch(signed.signedUrl).then((r) => r.blob());
+      if (blob.size > MAX_PREVIEW_BYTES) throw new Error("File is too large to render previews");
+      const asFile = new File([blob], `${f.slug}.${f.file_type ?? "stl"}`);
+      const { blobs, stats } = await renderThumbnails(asFile, 3);
+      const urls: string[] = [];
+      for (let i = 0; i < blobs.length; i++) {
+        const thumbPath = `${user.id}/${creator.id}/${f.id}-${i}.webp`;
+        const { error: upErr } = await supabase.storage
+          .from("previews")
+          .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
+        if (upErr) continue;
+        urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl + `?v=${Date.now()}`);
+      }
+      await supabase.from("creator_files").update({
+        preview_images: urls,
+        dim_x: stats.dimX,
+        dim_y: stats.dimY,
+        dim_z: stats.dimZ,
+        triangle_count: stats.triangleCount,
+      }).eq("id", f.id);
+      toast.success("Previews generated");
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not generate previews");
+    } finally {
+      setThumbBusyId(null);
+    }
+  };
+
   const upload = async () => {
     if (!user || !creator || !pickedFile || !title) return;
     setBusy(true);
@@ -61,7 +117,7 @@ function FilesPage() {
       });
       if (upErr) throw upErr;
       setProgress("Saving…");
-      const { error: insErr } = await supabase.from("creator_files").insert({
+      const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
         creator_id: creator.id,
         title,
         slug: slugify(title) + "-" + Math.random().toString(36).slice(2, 6),
@@ -73,8 +129,35 @@ function FilesPage() {
         file_url: path,
         file_type: ext,
         file_size: pickedFile.size,
-      });
+      }).select("id").single();
       if (insErr) throw insErr;
+
+      // Auto-generate thumbnails + mesh metadata in the browser (best effort).
+      if (inserted && canPreview(pickedFile.name) && pickedFile.size <= MAX_PREVIEW_BYTES) {
+        try {
+          setProgress("Rendering previews…");
+          const { blobs, stats } = await renderThumbnails(pickedFile, 3);
+          const urls: string[] = [];
+          for (let i = 0; i < blobs.length; i++) {
+            const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
+            const { error: thumbErr } = await supabase.storage
+              .from("previews")
+              .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
+            if (thumbErr) continue;
+            urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+          }
+          await supabase.from("creator_files").update({
+            preview_images: urls,
+            dim_x: stats.dimX,
+            dim_y: stats.dimY,
+            dim_z: stats.dimZ,
+            triangle_count: stats.triangleCount,
+          }).eq("id", inserted.id);
+        } catch {
+          // previews are optional — the upload itself succeeded
+        }
+      }
+
       toast.success("File uploaded — review and publish below");
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -211,9 +294,21 @@ function FilesPage() {
                   </div>
                   <div className="mt-1 text-xs text-ink-soft">
                     {f.category} · {f.file_type?.toUpperCase() ?? "—"} · {f.file_size ? (f.file_size / 1024 / 1024).toFixed(2) + " MB" : "no file"} · {f.download_count} downloads
+                    {f.dim_x != null && <> · {f.dim_x} × {f.dim_y} × {f.dim_z} mm</>}
+                    {f.triangle_count != null && <> · {Number(f.triangle_count).toLocaleString()} tris</>}
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  {f.file_url && canPreview(f.file_type ?? f.file_url) && (
+                    <>
+                      <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost h-9 px-3" title="3D preview">
+                        {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
+                      </button>
+                      <button onClick={() => regenerateThumbs(f)} disabled={thumbBusyId === f.id} className="btn-ghost h-9 px-3" title={thumb ? "Regenerate thumbnails" : "Generate thumbnails"}>
+                        {thumbBusyId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+                      </button>
+                    </>
+                  )}
                   <button onClick={() => togglePublish(f)} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
@@ -227,6 +322,15 @@ function FilesPage() {
           </ul>
         )}
       </div>
+      {preview && (
+        <STLViewerModal
+          open
+          url={preview.url}
+          title={preview.title}
+          fileType={preview.fileType}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </div>
   );
 }
