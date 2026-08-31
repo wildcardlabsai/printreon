@@ -219,6 +219,20 @@ function CreatorPage() {
     }
   };
 
+  // A file is unlocked when it is marked free, when the viewer owns the page,
+  // or when the viewer's active tier is worth at least the required tier.
+  const isOwner = !!user && creator?.user_id === user.id;
+  const unlocked = (f: any) => {
+    if (isOwner || f.is_free) return true;
+    if (subTierPrice === null) return false;
+    if (!f.tier_required_id) return true;
+    const required = Number(tiers.find((t) => t.id === f.tier_required_id)?.price ?? 0);
+    return subTierPrice >= required;
+  };
+
+  const scrollToTiers = () => document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
