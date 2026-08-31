@@ -21,6 +21,7 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ForCreatorsRouteImport } from './routes/for-creators'
+import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -75,9 +76,11 @@ import { Route as AdminPreregistrationsRouteImport } from './routes/admin.prereg
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
+import { Route as AdminFeedbackRouteImport } from './routes/admin.feedback'
 import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
+import { Route as AdminChangelogRouteImport } from './routes/admin.changelog'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
@@ -143,6 +146,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const ForCreatorsRoute = ForCreatorsRouteImport.update({
   id: '/for-creators',
   path: '/for-creators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -415,6 +423,11 @@ const AdminInvitesRoute = AdminInvitesRouteImport.update({
   path: '/invites',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFeedbackRoute = AdminFeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFeatureFlagsRoute = AdminFeatureFlagsRouteImport.update({
   id: '/feature-flags',
   path: '/feature-flags',
@@ -428,6 +441,11 @@ const AdminEmailsRoute = AdminEmailsRouteImport.update({
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   id: '/creators',
   path: '/creators',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminChangelogRoute = AdminChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
@@ -474,6 +492,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/feedback': typeof FeedbackRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
@@ -489,9 +508,11 @@ export interface FileRoutesByFullPath {
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/changelog': typeof AdminChangelogRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -549,6 +570,7 @@ export interface FileRoutesByTo {
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
+  '/feedback': typeof FeedbackRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
@@ -563,9 +585,11 @@ export interface FileRoutesByTo {
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/changelog': typeof AdminChangelogRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -626,6 +650,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/feedback': typeof FeedbackRoute
   '/for-creators': typeof ForCreatorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
@@ -641,9 +666,11 @@ export interface FileRoutesById {
   '/admin/activity-log': typeof AdminActivityLogRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/changelog': typeof AdminChangelogRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/feedback': typeof AdminFeedbackRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -705,6 +732,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/explore'
+    | '/feedback'
     | '/for-creators'
     | '/forgot-password'
     | '/help'
@@ -720,9 +748,11 @@ export interface FileRouteTypes {
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
+    | '/admin/changelog'
     | '/admin/creators'
     | '/admin/emails'
     | '/admin/feature-flags'
+    | '/admin/feedback'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -780,6 +810,7 @@ export interface FileRouteTypes {
     | '/changelog'
     | '/contact'
     | '/explore'
+    | '/feedback'
     | '/for-creators'
     | '/forgot-password'
     | '/help'
@@ -794,9 +825,11 @@ export interface FileRouteTypes {
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
+    | '/admin/changelog'
     | '/admin/creators'
     | '/admin/emails'
     | '/admin/feature-flags'
+    | '/admin/feedback'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -856,6 +889,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/explore'
+    | '/feedback'
     | '/for-creators'
     | '/forgot-password'
     | '/help'
@@ -871,9 +905,11 @@ export interface FileRouteTypes {
     | '/admin/activity-log'
     | '/admin/analytics'
     | '/admin/announcements'
+    | '/admin/changelog'
     | '/admin/creators'
     | '/admin/emails'
     | '/admin/feature-flags'
+    | '/admin/feedback'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -934,6 +970,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  FeedbackRoute: typeof FeedbackRoute
   ForCreatorsRoute: typeof ForCreatorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HelpRoute: typeof HelpRoute
@@ -1037,6 +1074,13 @@ declare module '@tanstack/react-router' {
       path: '/for-creators'
       fullPath: '/for-creators'
       preLoaderRoute: typeof ForCreatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -1417,6 +1461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInvitesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/feedback': {
+      id: '/admin/feedback'
+      path: '/feedback'
+      fullPath: '/admin/feedback'
+      preLoaderRoute: typeof AdminFeedbackRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/feature-flags': {
       id: '/admin/feature-flags'
       path: '/feature-flags'
@@ -1436,6 +1487,13 @@ declare module '@tanstack/react-router' {
       path: '/creators'
       fullPath: '/admin/creators'
       preLoaderRoute: typeof AdminCreatorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/changelog': {
+      id: '/admin/changelog'
+      path: '/changelog'
+      fullPath: '/admin/changelog'
+      preLoaderRoute: typeof AdminChangelogRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/announcements': {
@@ -1487,9 +1545,11 @@ interface AdminRouteChildren {
   AdminActivityLogRoute: typeof AdminActivityLogRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
+  AdminChangelogRoute: typeof AdminChangelogRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
+  AdminFeedbackRoute: typeof AdminFeedbackRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
@@ -1508,9 +1568,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityLogRoute: AdminActivityLogRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
+  AdminChangelogRoute: AdminChangelogRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
+  AdminFeedbackRoute: AdminFeedbackRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
@@ -1633,6 +1695,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  FeedbackRoute: FeedbackRoute,
   ForCreatorsRoute: ForCreatorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HelpRoute: HelpRoute,

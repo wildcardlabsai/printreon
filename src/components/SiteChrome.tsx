@@ -203,6 +203,9 @@ export function SiteFooter() {
           </p>
         </div>
         <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+          <li><Link to="/changelog" className="hover:text-ink">Changelog</Link></li>
+          <li><Link to="/roadmap" className="hover:text-ink">Roadmap</Link></li>
+          <li><Link to="/feedback" className="hover:text-ink">Feedback</Link></li>
           <li><Link to="/contact" className="hover:text-ink">Contact</Link></li>
           <li><Link to="/legal/terms" className="hover:text-ink">Terms</Link></li>
           <li><Link to="/legal/privacy" className="hover:text-ink">Privacy</Link></li>
