@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote, MessageSquare, Newspaper, Package, Tag, ScrollText } from "lucide-react";
+import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote, MessageSquare, Newspaper, Package, Tag, ScrollText, Wallet } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
