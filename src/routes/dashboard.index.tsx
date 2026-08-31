@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { Plus, Upload, Megaphone, Layers, Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { creatorUrl } from "@/lib/site";
+import { creatorEarningsSummary, type EarningsSummary } from "@/functions/earnings.functions";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
@@ -13,6 +15,15 @@ export const Route = createFileRoute("/dashboard/")({
 function Overview() {
   const { creator } = useCreatorProfile();
   const [stats, setStats] = useState({ subs: 0, files: 0, downloads: 0, mrr: 0, followers: 0 });
+  const [earnings, setEarnings] = useState<EarningsSummary | null>(null);
+  const loadEarnings = useServerFn(creatorEarningsSummary);
+
+  useEffect(() => {
+    loadEarnings({ data: undefined })
+      .then(setEarnings)
+      .catch(() => setEarnings(null));
+  }, [loadEarnings]);
+
 
   useEffect(() => {
     if (!creator) return;
