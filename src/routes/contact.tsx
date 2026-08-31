@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { submitContactMessage } from "@/functions/inbox.functions";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
@@ -12,14 +13,20 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { user } = useAuth();
+  const sendContact = useServerFn(submitContactMessage);
   const [form, setForm] = useState({ email: user?.email ?? "", subject: "", body: "", category: "general" });
   const [sending, setSending] = useState(false);
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    const { error } = await supabase.from("support_tickets").insert({ ...form, user_id: user?.id ?? null });
+    try {
+      await sendContact({ data: { ...form, userId: user?.id ?? null } });
+    } catch (e: any) {
+      setSending(false);
+      toast.error(e?.message ?? "Could not send your message — please try again.");
+      return;
+    }
     setSending(false);
-    if (error) { toast.error(error.message); return; }
     toast.success("Message sent — we'll be in touch.");
     setForm({ ...form, subject: "", body: "" });
   };

@@ -138,6 +138,8 @@ export function WaitlistForm({
       return;
     }
 
+    notifyBeta({ data: { email: payload.email } }).catch(() => {});
+
     try {
       localStorage.setItem(
         "printreon_application",
