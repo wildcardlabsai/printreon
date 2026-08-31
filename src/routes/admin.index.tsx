@@ -23,7 +23,7 @@ function Overview() {
         supabase.from("invite_codes").select("*", { count: "exact", head: true }).eq("status", "used"),
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("creator_profiles").select("*", { count: "exact", head: true }).eq("is_published", true),
-        supabase.from("creator_files").select("*", { count: "exact", head: true }),
+        supabase.from("creator_files").select("id", { count: "exact", head: true }),
         supabase.from("subscriptions").select("creator_tiers(price)").eq("status", "active"),
         supabase.from("support_tickets").select("*", { count: "exact", head: true }).eq("status", "open"),
         supabase.from("admin_activity_log").select("*").order("created_at", { ascending: false }).limit(15),

@@ -29,7 +29,7 @@ function Overview() {
     if (!creator) return;
     (async () => {
       const [{ count: filesCount }, { data: subsRows }, { count: dlCount }, { count: folCount }] = await Promise.all([
-        supabase.from("creator_files").select("*", { count: "exact", head: true }).eq("creator_id", creator.id),
+        supabase.from("creator_files").select("id", { count: "exact", head: true }).eq("creator_id", creator.id),
         supabase.from("subscriptions").select("tier_id, status, creator_tiers(price)").eq("creator_id", creator.id).eq("status", "active"),
         supabase.from("downloads").select("*", { count: "exact", head: true }).eq("creator_id", creator.id),
         supabase.from("followers").select("*", { count: "exact", head: true }).eq("creator_id", creator.id),
