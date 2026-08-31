@@ -68,6 +68,7 @@ function FilesPage() {
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
+  const deleteFileFn = useServerFn(deleteCreatorFile);
   const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
   const openPreview = async (f: any) => {
