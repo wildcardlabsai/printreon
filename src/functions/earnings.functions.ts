@@ -194,7 +194,10 @@ export const creatorEarningsTransactions = createServerFn({ method: "POST" })
     const userIds = Array.from(new Set(list.map((r) => r.user_id).filter(Boolean)));
     const names = new Map<string, string>();
     if (userIds.length) {
-      const { data: profiles } = await context.supabase
+      // Profiles are owner/admin readable only, so resolve supporter names
+      // server-side after the creator ownership check above.
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: profiles } = await supabaseAdmin
         .from("profiles")
         .select("user_id, full_name, email")
         .in("user_id", userIds);

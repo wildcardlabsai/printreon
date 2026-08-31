@@ -59,12 +59,12 @@ export function SiteHeader() {
 
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
+          <Link to="/explore" className="font-semibold text-ink hover:text-primary transition">Explore creators</Link>
           {NAV_LINKS.map((link) => (
             <button key={link.id} onClick={() => scrollTo(link.id)} className="hover:text-ink transition">
               {link.label}
             </button>
           ))}
-          <Link to="/explore" className="hover:text-ink transition">Explore</Link>
           <Link to="/pricing" className="hover:text-ink transition">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">

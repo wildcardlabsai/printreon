@@ -17,11 +17,13 @@ function Join() {
 
   useEffect(() => { (async () => {
     if (!invite) return setStatus("invalid");
-    const { data } = await supabase.from("invite_codes").select("*").eq("code", invite).maybeSingle();
-    if (!data) { setStatus("invalid"); setMsg("Invite code not found."); return; }
-    if (data.status !== "active") { setStatus("invalid"); setMsg(`This invite is ${data.status}.`); return; }
-    if (data.expires_at && new Date(data.expires_at) < new Date()) { setStatus("invalid"); setMsg("This invite has expired."); return; }
-    if (data.uses >= data.max_uses) { setStatus("invalid"); setMsg("This invite has been used."); return; }
+    const { data, error } = await supabase.rpc("check_invite_code", { p_code: invite });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row?.valid) {
+      setStatus("invalid");
+      setMsg(row?.reason ?? "This invite link isn't valid.");
+      return;
+    }
     sessionStorage.setItem("printreon_invite", invite);
     setStatus("valid");
     setTimeout(() => navigate({ to: "/auth" }), 1500);

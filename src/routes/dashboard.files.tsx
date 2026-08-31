@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 
-import { getFilePreviewUrl } from "@/functions/downloads.functions";
+import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
@@ -51,7 +51,13 @@ function FilesPage() {
   const refresh = async () => {
     if (!creator) return;
     const [{ data: f }, { data: t }] = await Promise.all([
-      supabase.from("creator_files").select("*").eq("creator_id", creator.id).order("created_at", { ascending: false }),
+      supabase
+        .from("creator_files")
+        .select(
+          "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count"
+        )
+        .eq("creator_id", creator.id)
+        .order("created_at", { ascending: false }),
       supabase.from("creator_tiers").select("*").eq("creator_id", creator.id).order("price"),
     ]);
     setFiles(f ?? []);
@@ -62,6 +68,7 @@ function FilesPage() {
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
+  const deleteFileFn = useServerFn(deleteCreatorFile);
   const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
   const openPreview = async (f: any) => {
@@ -83,9 +90,9 @@ function FilesPage() {
     if (!user || !creator) return;
     setThumbBusyId(f.id);
     try {
-      const { data: signed, error } = await supabase.storage.from("files").createSignedUrl(f.file_url, 300);
-      if (error || !signed) throw new Error("Could not read the stored file");
-      const blob = await fetch(signed.signedUrl).then((r) => r.blob());
+      const { url } = await previewFn({ data: { fileId: f.id } });
+      if (!url) throw new Error("Could not read the stored file");
+      const blob = await fetch(url).then((r) => r.blob());
       if (blob.size > MAX_PREVIEW_BYTES) throw new Error("File is too large to render previews");
       const asFile = new File([blob], `${f.slug}.${f.file_type ?? "stl"}`);
       const { blobs, stats } = await renderThumbnails(asFile, 3);
@@ -203,10 +210,12 @@ function FilesPage() {
 
   const remove = async (f: any) => {
     if (!confirm(`Delete "${f.title}"? This is permanent.`)) return;
-    if (f.file_url) await supabase.storage.from("files").remove([f.file_url]);
-    const { error } = await supabase.from("creator_files").delete().eq("id", f.id);
-    if (error) return toast.error(error.message);
-    toast.success("Deleted");
+    try {
+      await deleteFileFn({ data: { fileId: f.id } });
+      toast.success("Deleted");
+    } catch (e: any) {
+      return toast.error(e?.message ?? "Could not delete this file");
+    }
     await refresh();
   };
 
@@ -347,7 +356,7 @@ function FilesPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {f.file_url && canPreview(f.file_type ?? f.file_url) && (
+                  {f.file_type && canPreview(f.file_type) && (
                     <>
                       <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost h-9 px-3" title="3D preview">
                         {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}

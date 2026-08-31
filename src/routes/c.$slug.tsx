@@ -94,7 +94,7 @@ function CreatorPage() {
       setCreator(cp);
       const [{ data: t }, { data: f }, { data: p }] = await Promise.all([
         supabase.from("creator_tiers").select("*").eq("creator_id", cp.id).eq("is_active", true).order("price"),
-        supabase.from("creator_files").select("*").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
+        supabase.from("creator_files").select("id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, status, version, dim_x, dim_y, dim_z, triangle_count").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
         supabase.from("creator_posts").select("*").eq("creator_id", cp.id).eq("status", "published").order("published_at", { ascending: false }).limit(10),
       ]);
       setTiers(t ?? []);
