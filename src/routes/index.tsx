@@ -112,7 +112,7 @@ function Hero() {
         <div className="md:col-span-7 reveal">
           <span className="eyebrow">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            v1.0 — Opening to creators soon
+            The beta is live — Printreon is open
           </span>
 
           <h1 className="mt-6 text-[40px] leading-[1] text-ink md:text-[68px] md:leading-[0.95]">
@@ -127,29 +127,31 @@ function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-lg text-ink-soft">
-            Recurring income from your 3D files — tiered access, commercial licences,
-            protected downloads and Stripe payouts, in one place.
+            Printreon is live. Supporters can create a free account and browse creators today —
+            and creators can apply to open their own page with tiered access, commercial licences,
+            protected downloads and Stripe payouts.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-12 px-6 text-base">
+              Create your free account
+            </Link>
+            <Link to="/explore" className="btn-ghost h-12 px-6 text-base">
+              Browse creators
+            </Link>
             <button
               onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-primary h-12 px-6 text-base"
-            >
-              Apply For Early Beta Access
-            </button>
-            <button
-              onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
             >
-              See what's inside <span aria-hidden>↓</span>
+              Apply to be a creator <span aria-hidden>↓</span>
             </button>
           </div>
 
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft">
-            Invite-only beta <span className="text-primary">·</span> Founder pricing for life{" "}
-            <span className="text-primary">·</span> Built for 3D creators
+            Beta live <span className="text-primary">·</span> Free to join as a supporter{" "}
+            <span className="text-primary">·</span> Creator applications open
           </p>
+
 
         </div>
 
