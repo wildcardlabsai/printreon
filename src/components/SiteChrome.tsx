@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut } from "lucide-react";
+import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut, MessageSquare } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
@@ -91,6 +91,9 @@ export function SiteHeader() {
                     <Link to="/admin"><Shield className="mr-2 h-4 w-4" /> Admin</Link>
                   </DropdownMenuItem>
                 )}
+                <DropdownMenuItem asChild>
+                  <Link to="/feedback"><MessageSquare className="mr-2 h-4 w-4" /> Send feedback</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Sign out
@@ -159,6 +162,11 @@ export function SiteHeader() {
                       </Link>
                     </SheetClose>
                   )}
+                  <SheetClose asChild>
+                    <Link to="/feedback" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                      <MessageSquare className="h-4 w-4" /> Send feedback
+                    </Link>
+                  </SheetClose>
                   <button
                     onClick={handleSignOut}
                     className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-destructive hover:bg-destructive/10"
@@ -203,6 +211,9 @@ export function SiteFooter() {
           </p>
         </div>
         <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+          <li><Link to="/changelog" className="hover:text-ink">Changelog</Link></li>
+          <li><Link to="/roadmap" className="hover:text-ink">Roadmap</Link></li>
+          <li><Link to="/feedback" className="hover:text-ink">Feedback</Link></li>
           <li><Link to="/contact" className="hover:text-ink">Contact</Link></li>
           <li><Link to="/legal/terms" className="hover:text-ink">Terms</Link></li>
           <li><Link to="/legal/privacy" className="hover:text-ink">Privacy</Link></li>

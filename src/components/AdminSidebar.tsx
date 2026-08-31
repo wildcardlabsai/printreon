@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, BarChart3, ClipboardList, Mail, Users, Star, CreditCard, FileBox,
   DollarSign, LifeBuoy, Megaphone, Flag, Activity, HeartPulse, Settings, Shield, LogOut, Menu, X,
+  ScrollText, MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -21,6 +22,8 @@ const items = [
   { to: "/admin/emails", label: "Emails", icon: Mail },
   { to: "/admin/support", label: "Support", icon: LifeBuoy },
   { to: "/admin/announcements", label: "Announcements", icon: Megaphone },
+  { to: "/admin/changelog", label: "Changelog", icon: ScrollText },
+  { to: "/admin/feedback", label: "Feedback", icon: MessageSquare },
   { to: "/admin/feature-flags", label: "Feature Flags", icon: Flag },
   { to: "/admin/activity-log", label: "Activity Log", icon: Activity },
   { to: "/admin/system-health", label: "System Health", icon: HeartPulse },

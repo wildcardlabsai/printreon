@@ -383,6 +383,39 @@ export type Database = {
           },
         ]
       }
+      changelog_entries: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          id: string
+          is_published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          is_published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          is_published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       collection_files: {
         Row: {
           collection_id: string
@@ -1035,6 +1068,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      feedback: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string | null
+          page_url: string | null
+          status: string
+          type: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name?: string | null
+          page_url?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string | null
+          page_url?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       file_versions: {
         Row: {
@@ -1835,6 +1910,7 @@ export type Database = {
           status: string
         }[]
       }
+      submit_feedback: { Args: { payload: Json }; Returns: string }
     }
     Enums: {
       app_role: "member" | "creator" | "admin"
