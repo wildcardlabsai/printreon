@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 
-import { getFilePreviewUrl } from "@/functions/downloads.functions";
+import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
