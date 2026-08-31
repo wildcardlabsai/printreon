@@ -15,6 +15,15 @@ export const Route = createFileRoute("/dashboard/")({
 function Overview() {
   const { creator } = useCreatorProfile();
   const [stats, setStats] = useState({ subs: 0, files: 0, downloads: 0, mrr: 0, followers: 0 });
+  const [earnings, setEarnings] = useState<EarningsSummary | null>(null);
+  const loadEarnings = useServerFn(creatorEarningsSummary);
+
+  useEffect(() => {
+    loadEarnings({ data: undefined })
+      .then(setEarnings)
+      .catch(() => setEarnings(null));
+  }, [loadEarnings]);
+
 
   useEffect(() => {
     if (!creator) return;
