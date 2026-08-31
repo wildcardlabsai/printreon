@@ -369,6 +369,7 @@ function CreatorPage() {
         <STLViewerModal
           url={previewUrl}
           title={previewTitle}
+          fileType={previewType}
           open={!!previewUrl}
           onClose={() => setPreviewUrl(null)}
         />
