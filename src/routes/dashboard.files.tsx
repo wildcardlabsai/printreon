@@ -8,6 +8,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
 import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
+import { STLViewerModal } from "@/components/STLViewer";
+import { getFilePreviewUrl } from "@/functions/downloads.functions";
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
