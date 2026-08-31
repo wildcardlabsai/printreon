@@ -322,10 +322,13 @@ function CreatorPage() {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             {files.map((f) => (
               <div key={f.id} className="card-soft">
-                <div className="aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
+                <div className="relative aspect-video overflow-hidden rounded-lg bg-secondary flex items-center justify-center text-ink-soft text-xs">
                   {f.preview_images && Array.isArray(f.preview_images) && f.preview_images[0]
-                    ? <img src={f.preview_images[0]} alt={`Preview render of the 3D model “${f.title}”`} className="h-full w-full object-cover" />
-                    : "STL preview"}
+                    ? <img src={f.preview_images[0]} alt={`Preview render of the 3D model “${f.title}”`} loading="lazy" className="h-full w-full object-cover" />
+                    : <Box className="h-8 w-8 opacity-40" />}
+                  {canPreview(f.file_type) && (
+                    <span className="absolute right-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-bold text-ink">3D</span>
+                  )}
                 </div>
                 <div className="mt-3 flex items-center justify-between">
                   <h3 className="font-semibold text-ink">{f.title}</h3>
@@ -340,13 +343,14 @@ function CreatorPage() {
                   {f.material && <span className="rounded-full bg-secondary px-2 py-0.5">{f.material}</span>}
                   {f.print_time_minutes && <span className="rounded-full bg-secondary px-2 py-0.5">{Math.round(f.print_time_minutes/60)}h print</span>}
                   {f.supports_required != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.supports_required ? "Supports" : "No supports"}</span>}
+                  {f.dim_x != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.dim_x} × {f.dim_y} × {f.dim_z} mm</span>}
                 </div>
                 <div className="mt-4 flex gap-2">
                   <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
                     {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
                     Download
                   </button>
-                  {(f.file_type?.toLowerCase() === "stl" || f.file_url?.toLowerCase().endsWith(".stl")) && (
+                  {canPreview(f.file_type) && (
                     <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost" title="3D preview">
                       {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
                     </button>
