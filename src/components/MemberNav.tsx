@@ -1,12 +1,14 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Heart, Download, Compass, Settings, Sparkles, Bookmark, Bell, MessageSquare, Camera, Gift, Receipt } from "lucide-react";
+import { Heart, Download, Compass, Settings, Sparkles, Bookmark, Bell, MessageSquare, Camera, Gift, Receipt, ScrollText } from "lucide-react";
 
 const items = [
   { to: "/me", label: "Overview", icon: Sparkles },
   { to: "/me/subscriptions", label: "Subscriptions", icon: Heart },
   { to: "/me/downloads", label: "Downloads", icon: Download },
+  { to: "/me/licences", label: "Licences", icon: ScrollText },
   { to: "/me/receipts", label: "Receipts", icon: Receipt },
   { to: "/me/wishlist", label: "Wishlist", icon: Bookmark },
+
   { to: "/me/messages", label: "Messages", icon: MessageSquare },
   { to: "/me/notifications", label: "Notifications", icon: Bell },
   { to: "/me/print-log", label: "Print log", icon: Camera },
