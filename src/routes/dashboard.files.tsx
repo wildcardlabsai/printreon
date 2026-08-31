@@ -51,7 +51,13 @@ function FilesPage() {
   const refresh = async () => {
     if (!creator) return;
     const [{ data: f }, { data: t }] = await Promise.all([
-      supabase.from("creator_files").select("*").eq("creator_id", creator.id).order("created_at", { ascending: false }),
+      supabase
+        .from("creator_files")
+        .select(
+          "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count"
+        )
+        .eq("creator_id", creator.id)
+        .order("created_at", { ascending: false }),
       supabase.from("creator_tiers").select("*").eq("creator_id", creator.id).order("price"),
     ]);
     setFiles(f ?? []);
