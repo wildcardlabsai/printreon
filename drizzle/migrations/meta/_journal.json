@@ -43,6 +43,13 @@
       "when": 1788192787596,
       "tag": "0005_enable_cron_scheduling",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788192900513,
+      "tag": "0006_admin_cron_jobs_view_fn",
+      "breakpoints": true
     }
   ]
 }
