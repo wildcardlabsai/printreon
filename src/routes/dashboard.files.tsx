@@ -86,7 +86,7 @@ function FilesPage() {
           const { blobs, stats } = await renderThumbnails(pickedFile, 3);
           const urls: string[] = [];
           for (let i = 0; i < blobs.length; i++) {
-            const thumbPath = `${creator.id}/${inserted.id}-${i}.webp`;
+            const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
             const { error: thumbErr } = await supabase.storage
               .from("previews")
               .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
