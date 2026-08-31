@@ -294,9 +294,21 @@ function FilesPage() {
                   </div>
                   <div className="mt-1 text-xs text-ink-soft">
                     {f.category} · {f.file_type?.toUpperCase() ?? "—"} · {f.file_size ? (f.file_size / 1024 / 1024).toFixed(2) + " MB" : "no file"} · {f.download_count} downloads
+                    {f.dim_x != null && <> · {f.dim_x} × {f.dim_y} × {f.dim_z} mm</>}
+                    {f.triangle_count != null && <> · {Number(f.triangle_count).toLocaleString()} tris</>}
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  {f.file_url && canPreview(f.file_type ?? f.file_url) && (
+                    <>
+                      <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost h-9 px-3" title="3D preview">
+                        {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
+                      </button>
+                      <button onClick={() => regenerateThumbs(f)} disabled={thumbBusyId === f.id} className="btn-ghost h-9 px-3" title={thumb ? "Regenerate thumbnails" : "Generate thumbnails"}>
+                        {thumbBusyId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+                      </button>
+                    </>
+                  )}
                   <button onClick={() => togglePublish(f)} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
@@ -310,6 +322,15 @@ function FilesPage() {
           </ul>
         )}
       </div>
+      {preview && (
+        <STLViewerModal
+          open
+          url={preview.url}
+          title={preview.title}
+          fileType={preview.fileType}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </div>
   );
 }
