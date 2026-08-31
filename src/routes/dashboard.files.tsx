@@ -61,7 +61,7 @@ function FilesPage() {
       });
       if (upErr) throw upErr;
       setProgress("Saving…");
-      const { error: insErr } = await supabase.from("creator_files").insert({
+      const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
         creator_id: creator.id,
         title,
         slug: slugify(title) + "-" + Math.random().toString(36).slice(2, 6),
@@ -73,8 +73,35 @@ function FilesPage() {
         file_url: path,
         file_type: ext,
         file_size: pickedFile.size,
-      });
+      }).select("id").single();
       if (insErr) throw insErr;
+
+      // Auto-generate thumbnails + mesh metadata in the browser (best effort).
+      if (inserted && canPreview(pickedFile.name) && pickedFile.size <= MAX_PREVIEW_BYTES) {
+        try {
+          setProgress("Rendering previews…");
+          const { blobs, stats } = await renderThumbnails(pickedFile, 3);
+          const urls: string[] = [];
+          for (let i = 0; i < blobs.length; i++) {
+            const thumbPath = `${creator.id}/${inserted.id}-${i}.webp`;
+            const { error: thumbErr } = await supabase.storage
+              .from("previews")
+              .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
+            if (thumbErr) continue;
+            urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+          }
+          await supabase.from("creator_files").update({
+            preview_images: urls,
+            dim_x: stats.dimX,
+            dim_y: stats.dimY,
+            dim_z: stats.dimZ,
+            triangle_count: stats.triangleCount,
+          }).eq("id", inserted.id);
+        } catch {
+          // previews are optional — the upload itself succeeded
+        }
+      }
+
       toast.success("File uploaded — review and publish below");
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       if (inputRef.current) inputRef.current.value = "";
