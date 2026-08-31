@@ -60,8 +60,24 @@ function Overview() {
 
   const publicUrl = creatorUrl(creator.slug);
 
+  const payoutStatus = (creator as any).payout_status ?? "not_setup";
+
   return (
     <div>
+      {payoutStatus !== "active" && (
+        <Link
+          to="/dashboard/payouts"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 transition-colors hover:border-primary"
+        >
+          <div>
+            <div className="text-sm font-bold text-ink">Finish payout setup to get paid</div>
+            <div className="text-xs text-ink-soft">
+              Subscribers can't be charged until your Stripe payout account is verified.
+            </div>
+          </div>
+          <span className="text-sm font-semibold text-primary">Set up payouts →</span>
+        </Link>
+      )}
       <div className="grid gap-4 md:grid-cols-4">
         <Stat label="Monthly recurring" value={`$${stats.mrr.toFixed(2)}`} />
         <Stat label="Active subscribers" value={stats.subs} />
