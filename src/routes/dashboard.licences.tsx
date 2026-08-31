@@ -48,7 +48,7 @@ function LicencesPage() {
       .catch(() => setIssued([]));
   }, [creator]);
 
-  const save = async (tier: any, patch: Record<string, unknown>) => {
+  const save = async (tier: any, patch: any) => {
     const { error } = await supabase.from("creator_tiers").update(patch).eq("id", tier.id);
     if (error) return toast.error(error.message);
     toast.success("Licence settings saved");
@@ -161,7 +161,7 @@ function LicencesPage() {
   );
 }
 
-function LicenceEditor({ tier, onSave }: { tier: any; onSave: (t: any, p: Record<string, unknown>) => void }) {
+function LicenceEditor({ tier, onSave }: { tier: any; onSave: (t: any, p: any) => void }) {
   const [on, setOn] = useState(!!tier.commercial_licence);
   const [summary, setSummary] = useState(tier.commercial_licence_summary ?? "");
   const [terms, setTerms] = useState(tier.commercial_licence_terms ?? "");

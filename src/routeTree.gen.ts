@@ -55,6 +55,7 @@ import { Route as DashboardPromosRouteImport } from './routes/dashboard.promos'
 import { Route as DashboardPostsRouteImport } from './routes/dashboard.posts'
 import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
 import { Route as DashboardMessagesRouteImport } from './routes/dashboard.messages'
+import { Route as DashboardLicencesRouteImport } from './routes/dashboard.licences'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
 import { Route as DashboardBundlesRouteImport } from './routes/dashboard.bundles'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
@@ -312,6 +313,11 @@ const DashboardMessagesRoute = DashboardMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardLicencesRoute = DashboardLicencesRouteImport.update({
+  id: '/licences',
+  path: '/licences',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
   id: '/files',
   path: '/files',
@@ -491,6 +497,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -562,6 +569,7 @@ export interface FileRoutesByTo {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -637,6 +645,7 @@ export interface FileRoutesById {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -713,6 +722,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -784,6 +794,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -858,6 +869,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -1241,6 +1253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMessagesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/licences': {
+      id: '/dashboard/licences'
+      path: '/licences'
+      fullPath: '/dashboard/licences'
+      preLoaderRoute: typeof DashboardLicencesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/files': {
       id: '/dashboard/files'
       path: '/files'
@@ -1485,6 +1504,7 @@ interface DashboardRouteChildren {
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
   DashboardBundlesRoute: typeof DashboardBundlesRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardLicencesRoute: typeof DashboardLicencesRoute
   DashboardMessagesRoute: typeof DashboardMessagesRoute
   DashboardPayoutsRoute: typeof DashboardPayoutsRoute
   DashboardPostsRoute: typeof DashboardPostsRoute
@@ -1500,6 +1520,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
   DashboardBundlesRoute: DashboardBundlesRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardLicencesRoute: DashboardLicencesRoute,
   DashboardMessagesRoute: DashboardMessagesRoute,
   DashboardPayoutsRoute: DashboardPayoutsRoute,
   DashboardPostsRoute: DashboardPostsRoute,
