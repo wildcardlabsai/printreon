@@ -181,3 +181,34 @@ export const getFileDownloadUrl = createServerFn({ method: "POST" })
 
     return { url: signed.signedUrl };
   });
+
+/**
+ * Creator-only hard delete: removes the stored object and the row.
+ * The storage path never leaves the server.
+ */
+export const deleteCreatorFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => Input.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: file } = await supabaseAdmin
+      .from("creator_files")
+      .select("id, creator_id, file_url")
+      .eq("id", data.fileId)
+      .maybeSingle();
+    if (!file) throw new Error("File not found");
+
+    const { data: owned } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("id")
+      .eq("id", file.creator_id)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!owned) throw new Error("You do not have permission to delete this file");
+
+    if (file.file_url) {
+      await supabaseAdmin.storage.from("files").remove([file.file_url]);
+    }
+    const { error } = await supabaseAdmin.from("creator_files").delete().eq("id", file.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
