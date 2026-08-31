@@ -765,6 +765,11 @@ export type Database = {
         Row: {
           benefits: Json
           billing_interval: string
+          commercial_attribution_required: boolean
+          commercial_licence: boolean
+          commercial_licence_summary: string | null
+          commercial_licence_terms: string | null
+          commercial_units_limit: number | null
           created_at: string
           creator_id: string
           currency: string
@@ -780,6 +785,11 @@ export type Database = {
         Insert: {
           benefits?: Json
           billing_interval?: string
+          commercial_attribution_required?: boolean
+          commercial_licence?: boolean
+          commercial_licence_summary?: string | null
+          commercial_licence_terms?: string | null
+          commercial_units_limit?: number | null
           created_at?: string
           creator_id: string
           currency?: string
@@ -795,6 +805,11 @@ export type Database = {
         Update: {
           benefits?: Json
           billing_interval?: string
+          commercial_attribution_required?: boolean
+          commercial_licence?: boolean
+          commercial_licence_summary?: string | null
+          commercial_licence_terms?: string | null
+          commercial_units_limit?: number | null
           created_at?: string
           creator_id?: string
           currency?: string
