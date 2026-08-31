@@ -311,7 +311,7 @@ function CreatorPage() {
             {tiers.map((t) => (
               <div key={t.id} className="card-soft flex flex-col">
                 <h3 className="text-lg font-bold text-ink">{t.name}</h3>
-                <div className="mt-2 text-3xl font-bold text-ink">${Number(t.price).toFixed(0)}<span className="text-base font-medium text-ink-soft">/{t.billing_interval === "year" ? "yr" : "mo"}</span></div>
+                <div className="mt-2 text-3xl font-bold text-ink">{({ GBP: "£", EUR: "€", USD: "$" } as Record<string, string>)[String(t.currency ?? "USD").toUpperCase()] ?? "$"}{Number(t.price).toFixed(0)}<span className="text-base font-medium text-ink-soft">/{t.billing_interval === "year" ? "yr" : "mo"}</span></div>
                 {t.commercial_licence && (
                   <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
                     Commercial licence included
