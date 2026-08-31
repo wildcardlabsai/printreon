@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote, MessageSquare, Newspaper, Package, Tag } from "lucide-react";
+import { LayoutDashboard, FileBox, Layers, Users, Megaphone, Settings, BarChart3, Banknote, MessageSquare, Newspaper, Package, Tag, ScrollText } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -8,7 +8,9 @@ const items = [
   { to: "/dashboard/bundles", label: "Bundles", icon: Package },
   { to: "/dashboard/promos", label: "Promo codes", icon: Tag },
   { to: "/dashboard/tiers", label: "Tiers", icon: Layers },
+  { to: "/dashboard/licences", label: "Licences", icon: ScrollText },
   { to: "/dashboard/subscribers", label: "Subscribers", icon: Users },
+
   { to: "/dashboard/messages", label: "Messages", icon: MessageSquare },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/dashboard/announcements", label: "Announcements", icon: Megaphone },
