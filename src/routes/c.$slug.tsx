@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag, Box } from "lucide-react";
-import { STLViewerModal } from "@/components/STLViewer";
+import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
@@ -113,6 +113,7 @@ function CreatorPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>("");
   const [previewType, setPreviewType] = useState<string | null>(null);
+  const [previewSettings, setPreviewSettings] = useState<any>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
 
   const openPreview = async (file: any) => {
@@ -123,6 +124,7 @@ function CreatorPage() {
       setPreviewUrl(url);
       setPreviewTitle(file.title);
       setPreviewType(fileType ?? file.file_type ?? null);
+      setPreviewSettings(file);
     } catch (e: any) {
       toast.error(e?.message ?? "Preview unavailable");
     } finally {
@@ -340,11 +342,9 @@ function CreatorPage() {
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink-soft">
-                  {f.material && <span className="rounded-full bg-secondary px-2 py-0.5">{f.material}</span>}
-                  {f.print_time_minutes && <span className="rounded-full bg-secondary px-2 py-0.5">{Math.round(f.print_time_minutes/60)}h print</span>}
-                  {f.supports_required != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.supports_required ? "Supports" : "No supports"}</span>}
                   {f.dim_x != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.dim_x} × {f.dim_y} × {f.dim_z} mm</span>}
                 </div>
+                <PrintSettingsChips settings={f} className="mt-2" />
                 <div className="mt-4 flex gap-2">
                   <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
                     {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
@@ -370,6 +370,7 @@ function CreatorPage() {
           url={previewUrl}
           title={previewTitle}
           fileType={previewType}
+          settings={previewSettings}
           open={!!previewUrl}
           onClose={() => setPreviewUrl(null)}
         />

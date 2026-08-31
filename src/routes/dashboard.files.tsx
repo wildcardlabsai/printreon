@@ -6,10 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
-import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon } from "lucide-react";
+import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders } from "lucide-react";
 import { toast } from "sonner";
 import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
-import { STLViewerModal } from "@/components/STLViewer";
+import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
+
 import { getFilePreviewUrl } from "@/functions/downloads.functions";
 
 export const Route = createFileRoute("/dashboard/files")({
@@ -38,6 +39,14 @@ function FilesPage() {
   const [isFree, setIsFree] = useState(false);
   const [tierRequired, setTierRequired] = useState<string>("");
   const [pickedFile, setPickedFile] = useState<File | null>(null);
+  const [material, setMaterial] = useState("");
+  const [layerHeight, setLayerHeight] = useState("");
+  const [infill, setInfill] = useState("");
+  const [printTime, setPrintTime] = useState("");
+  const [printer, setPrinter] = useState("");
+  const [supports, setSupports] = useState<"" | "yes" | "no">("");
+  const [settingsOpenId, setSettingsOpenId] = useState<string | null>(null);
+
 
   const refresh = async () => {
     if (!creator) return;
@@ -53,14 +62,15 @@ function FilesPage() {
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
-  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null } | null>(null);
+  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
   const openPreview = async (f: any) => {
     setPreviewLoadingId(f.id);
     try {
       const { url, fileType } = await previewFn({ data: { fileId: f.id } });
-      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type });
+      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type, settings: f });
     } catch (e: any) {
+
       toast.error(e?.message ?? "Preview unavailable");
     } finally {
       setPreviewLoadingId(null);
@@ -129,6 +139,13 @@ function FilesPage() {
         file_url: path,
         file_type: ext,
         file_size: pickedFile.size,
+        material: material || null,
+        layer_height_mm: layerHeight ? Number(layerHeight) : null,
+        infill_percent: infill ? Number(infill) : null,
+        print_time_minutes: printTime ? Number(printTime) : null,
+        recommended_printer: printer || null,
+        supports_required: supports === "" ? null : supports === "yes",
+
       }).select("id").single();
       if (insErr) throw insErr;
 
@@ -160,6 +177,8 @@ function FilesPage() {
 
       toast.success("File uploaded — review and publish below");
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
+      setMaterial(""); setLayerHeight(""); setInfill(""); setPrintTime(""); setPrinter(""); setSupports("");
+
       if (inputRef.current) inputRef.current.value = "";
       await refresh();
     } catch (e: any) {
@@ -234,6 +253,35 @@ function FilesPage() {
               </select>
             </Field>
           )}
+          <div className="rounded-xl border border-border p-3">
+            <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Recommended print settings</div>
+            <p className="mt-1 text-xs text-ink-soft">Optional — shown on the file card so buyers know how you printed it.</p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <Field label="Material">
+                <input value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="PLA" className={inp} />
+              </Field>
+              <Field label="Layer height (mm)">
+                <input value={layerHeight} onChange={(e) => setLayerHeight(e.target.value)} type="number" step="0.01" placeholder="0.2" className={inp} />
+              </Field>
+              <Field label="Infill (%)">
+                <input value={infill} onChange={(e) => setInfill(e.target.value)} type="number" min="0" max="100" placeholder="15" className={inp} />
+              </Field>
+              <Field label="Print time (mins)">
+                <input value={printTime} onChange={(e) => setPrintTime(e.target.value)} type="number" min="0" placeholder="180" className={inp} />
+              </Field>
+              <Field label="Supports">
+                <select value={supports} onChange={(e) => setSupports(e.target.value as any)} className={inp}>
+                  <option value="">Not specified</option>
+                  <option value="yes">Required</option>
+                  <option value="no">Not needed</option>
+                </select>
+              </Field>
+              <Field label="Printer">
+                <input value={printer} onChange={(e) => setPrinter(e.target.value)} placeholder="Bambu P1S" className={inp} />
+              </Field>
+            </div>
+          </div>
+
           <Field label="File">
             <input
               ref={inputRef}
@@ -309,6 +357,9 @@ function FilesPage() {
                       </button>
                     </>
                   )}
+                  <button onClick={() => setSettingsOpenId(settingsOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Recommended print settings">
+                    <Sliders className="h-4 w-4" />
+                  </button>
                   <button onClick={() => togglePublish(f)} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
@@ -316,7 +367,15 @@ function FilesPage() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
+                {settingsOpenId !== f.id && <PrintSettingsChips settings={f} className="w-full" />}
+                {settingsOpenId === f.id && (
+                  <PrintSettingsEditor
+                    file={f}
+                    onSaved={async () => { setSettingsOpenId(null); await refresh(); }}
+                  />
+                )}
               </li>
+
               );
             })}
           </ul>
@@ -328,12 +387,73 @@ function FilesPage() {
           url={preview.url}
           title={preview.title}
           fileType={preview.fileType}
+          settings={preview.settings}
           onClose={() => setPreview(null)}
         />
       )}
     </div>
   );
 }
+
+function PrintSettingsEditor({ file, onSaved }: { file: any; onSaved: () => void | Promise<void> }) {
+  const [material, setMaterial] = useState(file.material ?? "");
+  const [layerHeight, setLayerHeight] = useState(file.layer_height_mm ?? "");
+  const [infill, setInfill] = useState(file.infill_percent ?? "");
+  const [printTime, setPrintTime] = useState(file.print_time_minutes ?? "");
+  const [printer, setPrinter] = useState(file.recommended_printer ?? "");
+  const [supports, setSupports] = useState(file.supports_required == null ? "" : file.supports_required ? "yes" : "no");
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    const { error } = await supabase.from("creator_files").update({
+      material: material || null,
+      layer_height_mm: layerHeight === "" ? null : Number(layerHeight),
+      infill_percent: infill === "" ? null : Number(infill),
+      print_time_minutes: printTime === "" ? null : Number(printTime),
+      recommended_printer: printer || null,
+      supports_required: supports === "" ? null : supports === "yes",
+    }).eq("id", file.id);
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success("Print settings saved");
+    await onSaved();
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-border p-3">
+      <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Recommended print settings</div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        <Field label="Material">
+          <input value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="PLA" className={inp} />
+        </Field>
+        <Field label="Layer height (mm)">
+          <input value={layerHeight} onChange={(e) => setLayerHeight(e.target.value)} type="number" step="0.01" placeholder="0.2" className={inp} />
+        </Field>
+        <Field label="Infill (%)">
+          <input value={infill} onChange={(e) => setInfill(e.target.value)} type="number" min="0" max="100" placeholder="15" className={inp} />
+        </Field>
+        <Field label="Print time (mins)">
+          <input value={printTime} onChange={(e) => setPrintTime(e.target.value)} type="number" min="0" placeholder="180" className={inp} />
+        </Field>
+        <Field label="Supports">
+          <select value={supports} onChange={(e) => setSupports(e.target.value)} className={inp}>
+            <option value="">Not specified</option>
+            <option value="yes">Required</option>
+            <option value="no">Not needed</option>
+          </select>
+        </Field>
+        <Field label="Printer">
+          <input value={printer} onChange={(e) => setPrinter(e.target.value)} placeholder="Bambu P1S" className={inp} />
+        </Field>
+      </div>
+      <button onClick={save} disabled={saving} className="btn-primary mt-3 h-9 px-4 text-sm">
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save settings"}
+      </button>
+    </div>
+  );
+}
+
 
 const inp = "w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary";
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
