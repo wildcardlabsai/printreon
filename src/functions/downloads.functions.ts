@@ -5,6 +5,86 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const Input = z.object({ fileId: z.string().uuid() });
 
+/**
+ * Shared access check. Returns the file row when the user may access it,
+ * otherwise throws with a user-facing reason.
+ */
+async function resolveAccessibleFile(fileId: string, userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  const { data: file, error: fileErr } = await supabaseAdmin
+    .from("creator_files")
+    .select("id, creator_id, file_url, file_type, is_free, is_published, tier_required_id, title, takedown_at")
+    .eq("id", fileId)
+    .maybeSingle();
+  if (fileErr || !file) throw new Error("File not found");
+  if (!file.file_url) throw new Error("This file has not been uploaded yet");
+  if (file.takedown_at) throw new Error("This file is unavailable (takedown notice)");
+
+  const { data: creatorOwn } = await supabaseAdmin
+    .from("creator_profiles")
+    .select("id, suspended_at")
+    .eq("id", file.creator_id)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const { data: creatorState } = await supabaseAdmin
+    .from("creator_profiles")
+    .select("suspended_at")
+    .eq("id", file.creator_id)
+    .maybeSingle();
+  if (creatorState?.suspended_at && !creatorOwn) {
+    throw new Error("This creator's page is currently suspended");
+  }
+
+  let allowed = !!creatorOwn;
+  if (!allowed && !file.is_published) throw new Error("File not available");
+  if (!allowed && file.is_free) allowed = true;
+
+  if (!allowed) {
+    const { data: subs } = await supabaseAdmin
+      .from("subscriptions")
+      .select("id, tier_id, status, creator_tiers(price)")
+      .eq("user_id", userId)
+      .eq("creator_id", file.creator_id)
+      .eq("status", "active");
+    if (subs && subs.length > 0) {
+      if (!file.tier_required_id) {
+        allowed = true;
+      } else {
+        const { data: requiredTier } = await supabaseAdmin
+          .from("creator_tiers")
+          .select("price")
+          .eq("id", file.tier_required_id)
+          .maybeSingle();
+        const requiredPrice = Number(requiredTier?.price ?? 0);
+        allowed = subs.some((s: any) => Number(s.creator_tiers?.price ?? 0) >= requiredPrice);
+      }
+    }
+  }
+
+  if (!allowed) throw new Error("Subscribe to a qualifying tier to view this file");
+  return file;
+}
+
+/**
+ * Short-lived signed URL used only to stream geometry into the 3D viewer.
+ * Runs the same access checks as a download but is not rate limited and does
+ * not record a download.
+ */
+export const getFilePreviewUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => Input.parse(d))
+  .handler(async ({ data, context }) => {
+    const file = await resolveAccessibleFile(data.fileId, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("files")
+      .createSignedUrl(file.file_url!, 300);
+    if (error || !signed) throw new Error("Could not create preview link");
+    return { url: signed.signedUrl, fileType: file.file_type ?? null };
+  });
+
 export const getFileDownloadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => Input.parse(d))
