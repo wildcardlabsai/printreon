@@ -10,6 +10,8 @@ const items = [
   { to: "/dashboard/tiers", label: "Tiers", icon: Layers },
   { to: "/dashboard/licences", label: "Licences", icon: ScrollText },
   { to: "/dashboard/subscribers", label: "Subscribers", icon: Users },
+  { to: "/dashboard/earnings", label: "Earnings", icon: Wallet },
+
 
   { to: "/dashboard/messages", label: "Messages", icon: MessageSquare },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
