@@ -6,7 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { cancelSubscription, resumeSubscription } from "@/functions/subscriptions.functions";
 import { createBillingPortalSession } from "@/functions/payments.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
-import { Heart, ArrowRight, AlertTriangle, CreditCard } from "lucide-react";
+import { Heart, ArrowRight, AlertTriangle, CreditCard, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/subscriptions")({
@@ -90,7 +90,8 @@ function SubsPage() {
               </div>
             )}
             <div className="mt-4 flex flex-wrap gap-2">
-              {cp?.slug && <Link to="/c/$slug" params={{ slug: cp.slug }} className="btn-ghost h-9 px-3 text-sm">View page</Link>}
+              <Link to="/me/library" className="btn-primary h-9 px-3 text-sm"><FolderOpen className="mr-2 h-4 w-4" />View files</Link>
+              {cp?.slug && <Link to="/c/$slug" params={{ slug: cp.slug }} className="btn-ghost h-9 px-3 text-sm">Creator page</Link>}
               {s.status === "active" && !s.cancel_at_period_end && (
                 <button onClick={() => onCancel(s.id)} className="btn-ghost h-9 px-3 text-sm text-destructive hover:bg-destructive/10">Cancel</button>
               )}

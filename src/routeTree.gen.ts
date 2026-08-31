@@ -42,6 +42,7 @@ import { Route as MePrintLogRouteImport } from './routes/me.print-log'
 import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
 import { Route as MeMessagesRouteImport } from './routes/me.messages'
 import { Route as MeLicencesRouteImport } from './routes/me.licences'
+import { Route as MeLibraryRouteImport } from './routes/me.library'
 import { Route as MeGiftsRouteImport } from './routes/me.gifts'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
@@ -247,6 +248,11 @@ const MeMessagesRoute = MeMessagesRouteImport.update({
 const MeLicencesRoute = MeLicencesRouteImport.update({
   id: '/licences',
   path: '/licences',
+  getParentRoute: () => MeRoute,
+} as any)
+const MeLibraryRoute = MeLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => MeRoute,
 } as any)
 const MeGiftsRoute = MeGiftsRouteImport.update({
@@ -518,6 +524,7 @@ export interface FileRoutesByFullPath {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/library': typeof MeLibraryRoute
   '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
@@ -591,6 +598,7 @@ export interface FileRoutesByTo {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/library': typeof MeLibraryRoute
   '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
@@ -668,6 +676,7 @@ export interface FileRoutesById {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/library': typeof MeLibraryRoute
   '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
@@ -746,6 +755,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/library'
     | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
@@ -819,6 +829,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/library'
     | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
@@ -895,6 +906,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/library'
     | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
@@ -1172,6 +1184,13 @@ declare module '@tanstack/react-router' {
       path: '/licences'
       fullPath: '/me/licences'
       preLoaderRoute: typeof MeLicencesRouteImport
+      parentRoute: typeof MeRoute
+    }
+    '/me/library': {
+      id: '/me/library'
+      path: '/library'
+      fullPath: '/me/library'
+      preLoaderRoute: typeof MeLibraryRouteImport
       parentRoute: typeof MeRoute
     }
     '/me/gifts': {
@@ -1574,6 +1593,7 @@ interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
   MeGiftsRoute: typeof MeGiftsRoute
+  MeLibraryRoute: typeof MeLibraryRoute
   MeLicencesRoute: typeof MeLicencesRoute
   MeMessagesRoute: typeof MeMessagesRoute
   MeNotificationsRoute: typeof MeNotificationsRoute
@@ -1589,6 +1609,7 @@ const MeRouteChildren: MeRouteChildren = {
   MeDownloadsRoute: MeDownloadsRoute,
   MeFollowingRoute: MeFollowingRoute,
   MeGiftsRoute: MeGiftsRoute,
+  MeLibraryRoute: MeLibraryRoute,
   MeLicencesRoute: MeLicencesRoute,
   MeMessagesRoute: MeMessagesRoute,
   MeNotificationsRoute: MeNotificationsRoute,
