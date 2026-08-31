@@ -51,6 +51,59 @@ function FilesPage() {
 
   useEffect(() => { refresh(); }, [creator]);
 
+  // 3D preview
+  const previewFn = useServerFn(getFilePreviewUrl);
+  const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null } | null>(null);
+  const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
+  const openPreview = async (f: any) => {
+    setPreviewLoadingId(f.id);
+    try {
+      const { url, fileType } = await previewFn({ data: { fileId: f.id } });
+      setPreview({ url, title: f.title, fileType: fileType ?? f.file_type });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Preview unavailable");
+    } finally {
+      setPreviewLoadingId(null);
+    }
+  };
+
+  // Generate/refresh thumbnails for an already-uploaded file
+  const [thumbBusyId, setThumbBusyId] = useState<string | null>(null);
+  const regenerateThumbs = async (f: any) => {
+    if (!user || !creator) return;
+    setThumbBusyId(f.id);
+    try {
+      const { data: signed, error } = await supabase.storage.from("files").createSignedUrl(f.file_url, 300);
+      if (error || !signed) throw new Error("Could not read the stored file");
+      const blob = await fetch(signed.signedUrl).then((r) => r.blob());
+      if (blob.size > MAX_PREVIEW_BYTES) throw new Error("File is too large to render previews");
+      const asFile = new File([blob], `${f.slug}.${f.file_type ?? "stl"}`);
+      const { blobs, stats } = await renderThumbnails(asFile, 3);
+      const urls: string[] = [];
+      for (let i = 0; i < blobs.length; i++) {
+        const thumbPath = `${user.id}/${creator.id}/${f.id}-${i}.webp`;
+        const { error: upErr } = await supabase.storage
+          .from("previews")
+          .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
+        if (upErr) continue;
+        urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl + `?v=${Date.now()}`);
+      }
+      await supabase.from("creator_files").update({
+        preview_images: urls,
+        dim_x: stats.dimX,
+        dim_y: stats.dimY,
+        dim_z: stats.dimZ,
+        triangle_count: stats.triangleCount,
+      }).eq("id", f.id);
+      toast.success("Previews generated");
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not generate previews");
+    } finally {
+      setThumbBusyId(null);
+    }
+  };
+
   const upload = async () => {
     if (!user || !creator || !pickedFile || !title) return;
     setBusy(true);
