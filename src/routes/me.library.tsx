@@ -105,8 +105,9 @@ function LibraryPage() {
         icon={Library}
         title="No creator files yet"
         description="Once you subscribe to a creator, every file they publish shows up here — ready to preview and download."
-        action={<Link to="/explore" className="btn-primary inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>}
-      />
+      >
+        <Link to="/explore" className="btn-primary inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>
+      </EmptyState>
     );
   }
 
