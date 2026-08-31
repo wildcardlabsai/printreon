@@ -108,3 +108,42 @@ export const openExpressDashboard = createServerFn({ method: "POST" })
     const link = await stripe.accounts.createLoginLink(creator.connected_account_id);
     return { url: link.url };
   });
+
+/** Real payout history from the creator's connected Stripe account. */
+export const listConnectPayouts = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => StatusInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const creator = await getCreatorForUser(context.userId);
+    if (!creator?.connected_account_id) return { payouts: [], available: 0, pending: 0, currency: "usd" };
+
+    const stripe = createStripeClient(data.environment);
+    const account = creator.connected_account_id;
+
+    try {
+      const [list, balance] = await Promise.all([
+        stripe.payouts.list({ limit: 20 }, { stripeAccount: account }),
+        stripe.balance.retrieve({}, { stripeAccount: account }),
+      ]);
+
+      const sum = (arr: { amount: number }[] | undefined) =>
+        (arr ?? []).reduce((a, b) => a + b.amount, 0) / 100;
+
+      return {
+        currency: balance.available?.[0]?.currency ?? "usd",
+        available: sum(balance.available as any),
+        pending: sum(balance.pending as any),
+        payouts: list.data.map((p) => ({
+          id: p.id,
+          amount: p.amount / 100,
+          currency: p.currency,
+          status: p.status,
+          arrivalDate: new Date(p.arrival_date * 1000).toISOString(),
+          created: new Date(p.created * 1000).toISOString(),
+          description: p.description ?? null,
+        })),
+      };
+    } catch (e: any) {
+      throw new Error(e?.message ?? "Could not load payout history");
+    }
+  });
