@@ -97,12 +97,22 @@ function Receipts() {
                 {new Date(r.downloaded_at).toLocaleString()}
               </p>
               <p className="mt-2 text-xs text-ink-soft">
-                Licence:{" "}
-                {r.creator_files?.is_free
-                  ? "Free download — personal use"
-                  : "Membership licence — personal use"}
-                . Commercial use requires written permission from the creator.
+                {commercialCreators.has(r.creator_id) ? (
+                  <>
+                    Licence: Commercial licence — active membership with this creator grants commercial printing
+                    rights. See <a href="/me/licences" className="font-semibold text-primary hover:underline">your licences</a> for the exact terms.
+                  </>
+                ) : (
+                  <>
+                    Licence:{" "}
+                    {r.creator_files?.is_free
+                      ? "Free download — personal use"
+                      : "Membership licence — personal use"}
+                    . Commercial use requires a tier that includes a commercial licence.
+                  </>
+                )}
               </p>
+
             </div>
           ))}
         </div>
