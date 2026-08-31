@@ -69,6 +69,20 @@ function Overview() {
         <Stat label="Followers" value={stats.followers} />
       </div>
 
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <Link to="/dashboard/earnings" className="card-soft transition-colors hover:border-primary">
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink-soft">Earned this month</div>
+          <div className="mt-2 text-3xl font-bold text-ink">${(earnings?.thisMonth ?? 0).toFixed(2)}</div>
+          <div className="mt-1 text-xs text-ink-soft">View earnings →</div>
+        </Link>
+        <Link to="/dashboard/earnings" className="card-soft transition-colors hover:border-primary">
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink-soft">Lifetime earnings</div>
+          <div className="mt-2 text-3xl font-bold text-ink">${(earnings?.lifetime ?? 0).toFixed(2)}</div>
+          <div className="mt-1 text-xs text-ink-soft">After platform &amp; processing fees</div>
+        </Link>
+      </div>
+
+
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
         <div className="card-soft lg:col-span-2">
           <h2 className="text-lg font-bold text-ink">Profile completion</h2>
