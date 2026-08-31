@@ -7,6 +7,7 @@ import {
   startConnectOnboarding,
   refreshConnectStatus,
   openExpressDashboard,
+  listConnectPayouts,
 } from "@/functions/connect.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { Banknote, Info, CheckCircle2, ExternalLink, RefreshCw, AlertTriangle, Loader2 } from "lucide-react";
@@ -22,10 +23,13 @@ function PayoutsPage() {
   const [active, setActive] = useState(0);
   const [busy, setBusy] = useState<"start" | "refresh" | "dash" | null>(null);
   const [requirements, setRequirements] = useState<string[]>([]);
+  const [payouts, setPayouts] = useState<any[] | null>(null);
+  const [balance, setBalance] = useState<{ available: number; pending: number; currency: string } | null>(null);
 
   const start = useServerFn(startConnectOnboarding);
   const refreshStatus = useServerFn(refreshConnectStatus);
   const openDash = useServerFn(openExpressDashboard);
+  const loadPayouts = useServerFn(listConnectPayouts);
   const env = getStripeEnvironment();
 
   useEffect(() => {
@@ -40,6 +44,20 @@ function PayoutsPage() {
         setMrr((data ?? []).reduce((s, r: any) => s + Number(r.creator_tiers?.price ?? 0), 0));
       });
   }, [creator]);
+
+  useEffect(() => {
+    if (!creator?.connected_account_id) {
+      setPayouts([]);
+      return;
+    }
+    loadPayouts({ data: { environment: env } })
+      .then((r: any) => {
+        setPayouts(r.payouts ?? []);
+        setBalance({ available: r.available ?? 0, pending: r.pending ?? 0, currency: r.currency ?? "usd" });
+      })
+      .catch(() => setPayouts([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creator?.connected_account_id]);
 
   // Auto-refresh status when arriving back from Stripe
   useEffect(() => {
@@ -204,6 +222,64 @@ function PayoutsPage() {
             </>
           )}
         </div>
+      </div>
+
+      <div className="card-soft mt-6">
+        <h3 className="text-base font-bold text-ink">Payout history</h3>
+        {balance && (
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border border-border bg-secondary/40 p-3">
+              <div className="text-xs uppercase text-ink-soft">Available now</div>
+              <div className="mt-1 text-xl font-bold text-ink">${balance.available.toFixed(2)}</div>
+            </div>
+            <div className="rounded-lg border border-border bg-secondary/40 p-3">
+              <div className="text-xs uppercase text-ink-soft">In transit / pending</div>
+              <div className="mt-1 text-xl font-bold text-ink">${balance.pending.toFixed(2)}</div>
+            </div>
+          </div>
+        )}
+        {payouts === null ? (
+          <p className="mt-3 text-sm text-ink-soft">Loading payout history…</p>
+        ) : payouts.length === 0 ? (
+          <p className="mt-3 text-sm text-ink-soft">
+            No payouts yet. Once subscriber payments settle, each payout and its arrival date shows here.
+          </p>
+        ) : (
+          <>
+            <p className="mt-3 text-sm text-ink-soft">
+              Next payout:{" "}
+              <span className="font-semibold text-ink">
+                {new Date(payouts[0].arrivalDate).toLocaleDateString()} — ${Number(payouts[0].amount).toFixed(2)}
+              </span>
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-secondary text-left text-xs uppercase text-ink-soft">
+                  <tr>
+                    <th className="px-3 py-2">Initiated</th>
+                    <th className="px-3 py-2">Arrives</th>
+                    <th className="px-3 py-2 text-right">Amount</th>
+                    <th className="px-3 py-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {payouts.map((p: any) => (
+                    <tr key={p.id}>
+                      <td className="px-3 py-2 text-ink-soft">{new Date(p.created).toLocaleDateString()}</td>
+                      <td className="px-3 py-2 text-ink-soft">{new Date(p.arrivalDate).toLocaleDateString()}</td>
+                      <td className="px-3 py-2 text-right font-semibold text-ink">${Number(p.amount).toFixed(2)}</td>
+                      <td className="px-3 py-2">
+                        <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${p.status === "paid" ? "bg-emerald-100 text-emerald-700" : "bg-secondary text-ink-soft"}`}>
+                          {p.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="card-soft mt-6">

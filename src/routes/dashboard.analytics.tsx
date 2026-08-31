@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { TrendingUp, Download, Users, DollarSign } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { creatorEarningsSummary, type EarningsSummary } from "@/functions/earnings.functions";
 
 export const Route = createFileRoute("/dashboard/analytics")({
   component: AnalyticsPage,
@@ -15,6 +17,14 @@ function AnalyticsPage() {
   const [downloads, setDownloads] = useState<any[]>([]);
   const [subs, setSubs] = useState<any[]>([]);
   const [topFiles, setTopFiles] = useState<any[]>([]);
+  const [earnings, setEarnings] = useState<EarningsSummary | null>(null);
+  const loadEarnings = useServerFn(creatorEarningsSummary);
+
+  useEffect(() => {
+    loadEarnings({ data: undefined })
+      .then(setEarnings)
+      .catch(() => setEarnings(null));
+  }, [loadEarnings]);
 
   useEffect(() => {
     if (!creator) return;
@@ -30,43 +40,52 @@ function AnalyticsPage() {
   }, [creator]);
 
   const series = useMemo(() => {
-    const days: { label: string; date: string; downloads: number; subs: number }[] = [];
+    const revByDay = new Map((earnings?.daily ?? []).map((d) => [d.date, d.net]));
+    const days: { label: string; date: string; downloads: number; subs: number; revenue: number }[] = [];
     for (let i = DAYS - 1; i >= 0; i--) {
       const dt = new Date(Date.now() - i * 86400 * 1000);
       const key = dt.toISOString().slice(0, 10);
-      days.push({ date: key, label: dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }), downloads: 0, subs: 0 });
+      days.push({ date: key, label: dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }), downloads: 0, subs: 0, revenue: revByDay.get(key) ?? 0 });
     }
     const idx = new Map(days.map((d, i) => [d.date, i]));
     downloads.forEach((d) => { const k = (d.downloaded_at as string).slice(0, 10); const i = idx.get(k); if (i != null) days[i].downloads++; });
     subs.forEach((s) => { const k = (s.created_at as string).slice(0, 10); const i = idx.get(k); if (i != null) days[i].subs++; });
     return days;
-  }, [downloads, subs]);
+  }, [downloads, subs, earnings]);
 
   const totalDl = downloads.length;
   const totalNewSubs = subs.length;
   const newMrr = subs.filter((s) => s.status === "active").reduce((sum, s) => sum + Number(s.creator_tiers?.price ?? 0), 0);
 
   const maxDl = Math.max(1, ...series.map((d) => d.downloads));
+  const maxRev = Math.max(1, ...series.map((d) => d.revenue));
+  const revenue30 = series.reduce((a, d) => a + d.revenue, 0);
 
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <Stat label={`Downloads (${DAYS}d)`} value={totalDl} icon={Download} />
         <Stat label={`New subs (${DAYS}d)`} value={totalNewSubs} icon={Users} />
         <Stat label={`New MRR (${DAYS}d)`} value={`$${newMrr.toFixed(0)}`} icon={DollarSign} />
+        <Stat label={`Revenue (${DAYS}d)`} value={`$${revenue30.toFixed(2)}`} icon={DollarSign} />
       </div>
 
       <div className="card-soft mt-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-ink">Activity (last {DAYS} days)</h2>
+          <div className="ml-auto mr-3 flex items-center gap-3 text-[11px] text-ink-soft">
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-primary/80" /> Downloads</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-emerald-500/70" /> Revenue</span>
+          </div>
           <TrendingUp className="h-5 w-5 text-primary" />
         </div>
         <div className="mt-4 flex h-40 items-end gap-1">
           {series.map((d) => (
-            <div key={d.date} className="group relative flex-1">
-              <div className="w-full rounded-t bg-primary/80 transition-all" style={{ height: `${(d.downloads / maxDl) * 100}%` }} />
+            <div key={d.date} className="group relative flex h-full flex-1 items-end gap-[2px]">
+              <div className="w-1/2 rounded-t bg-primary/80 transition-all" style={{ height: `${(d.downloads / maxDl) * 100}%` }} />
+              <div className="w-1/2 rounded-t bg-emerald-500/70 transition-all" style={{ height: `${(d.revenue / maxRev) * 100}%` }} />
               <div className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-ink px-2 py-1 text-[10px] font-medium text-card group-hover:block">
-                {d.label}: {d.downloads} dl · {d.subs} subs
+                {d.label}: {d.downloads} dl · {d.subs} subs · ${d.revenue.toFixed(2)}
               </div>
             </div>
           ))}
