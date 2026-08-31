@@ -76,6 +76,7 @@ import { Route as AdminPreregistrationsRouteImport } from './routes/admin.prereg
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminMembershipsRouteImport } from './routes/admin.memberships'
 import { Route as AdminInvitesRouteImport } from './routes/admin.invites'
+import { Route as AdminGoLiveRouteImport } from './routes/admin.go-live'
 import { Route as AdminFeedbackRouteImport } from './routes/admin.feedback'
 import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
@@ -423,6 +424,11 @@ const AdminInvitesRoute = AdminInvitesRouteImport.update({
   path: '/invites',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGoLiveRoute = AdminGoLiveRouteImport.update({
+  id: '/go-live',
+  path: '/go-live',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFeedbackRoute = AdminFeedbackRouteImport.update({
   id: '/feedback',
   path: '/feedback',
@@ -513,6 +519,7 @@ export interface FileRoutesByFullPath {
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/feedback': typeof AdminFeedbackRoute
+  '/admin/go-live': typeof AdminGoLiveRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -590,6 +597,7 @@ export interface FileRoutesByTo {
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/feedback': typeof AdminFeedbackRoute
+  '/admin/go-live': typeof AdminGoLiveRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -671,6 +679,7 @@ export interface FileRoutesById {
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/feature-flags': typeof AdminFeatureFlagsRoute
   '/admin/feedback': typeof AdminFeedbackRoute
+  '/admin/go-live': typeof AdminGoLiveRoute
   '/admin/invites': typeof AdminInvitesRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -753,6 +762,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/feedback'
+    | '/admin/go-live'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -830,6 +840,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/feedback'
+    | '/admin/go-live'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -910,6 +921,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/admin/feature-flags'
     | '/admin/feedback'
+    | '/admin/go-live'
     | '/admin/invites'
     | '/admin/memberships'
     | '/admin/payments'
@@ -1461,6 +1473,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInvitesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/go-live': {
+      id: '/admin/go-live'
+      path: '/go-live'
+      fullPath: '/admin/go-live'
+      preLoaderRoute: typeof AdminGoLiveRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/feedback': {
       id: '/admin/feedback'
       path: '/feedback'
@@ -1550,6 +1569,7 @@ interface AdminRouteChildren {
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
   AdminFeedbackRoute: typeof AdminFeedbackRoute
+  AdminGoLiveRoute: typeof AdminGoLiveRoute
   AdminInvitesRoute: typeof AdminInvitesRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
@@ -1573,6 +1593,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEmailsRoute: AdminEmailsRoute,
   AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
   AdminFeedbackRoute: AdminFeedbackRoute,
+  AdminGoLiveRoute: AdminGoLiveRoute,
   AdminInvitesRoute: AdminInvitesRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
