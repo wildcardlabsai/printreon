@@ -138,14 +138,45 @@ export function SiteHeader() {
                   </button>
                 ))}
               </nav>
-              <SheetClose asChild>
-                <button
-                  onClick={() => scrollTo("beta-access")}
-                  className="btn-primary mt-4 h-11 w-full text-sm"
-                >
-                  Apply For Beta
-                </button>
-              </SheetClose>
+              {user ? (
+                <div className="mt-4 flex flex-col gap-1 border-t border-border pt-4 text-base font-medium text-ink">
+                  <SheetClose asChild>
+                    <Link to="/me" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                      <ShoppingBag className="h-4 w-4" /> My account
+                    </Link>
+                  </SheetClose>
+                  {isCreator && (
+                    <SheetClose asChild>
+                      <Link to="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                        <Palette className="h-4 w-4" /> Creator studio
+                      </Link>
+                    </SheetClose>
+                  )}
+                  {isAdmin && (
+                    <SheetClose asChild>
+                      <Link to="/admin" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                        <Shield className="h-4 w-4" /> Admin
+                      </Link>
+                    </SheetClose>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-destructive hover:bg-destructive/10"
+                  >
+                    <LogOut className="h-4 w-4" /> Sign out
+                  </button>
+                </div>
+              ) : (
+                <SheetClose asChild>
+                  <button
+                    onClick={() => scrollTo("beta-access")}
+                    className="btn-primary mt-4 h-11 w-full text-sm"
+                  >
+                    Apply For Beta
+                  </button>
+                </SheetClose>
+              )}
+
             </SheetContent>
           </Sheet>
         </div>
