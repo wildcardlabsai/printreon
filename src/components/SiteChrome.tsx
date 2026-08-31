@@ -17,7 +17,7 @@ import {
 const NAV_LINKS = [
   { id: "features", label: "Features" },
   { id: "founder-benefits", label: "Founder Benefits" },
-  { id: "beta-access", label: "Beta Access" },
+  { id: "beta-access", label: "Become a Creator" },
 ] as const;
 
 export function SiteHeader() {
@@ -53,8 +53,9 @@ export function SiteHeader() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
-            Invite-only beta
+            Beta · live now
           </span>
+
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
           {NAV_LINKS.map((link) => (
@@ -105,13 +106,15 @@ export function SiteHeader() {
               <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
                 Sign in
               </Link>
-              <button
-                onClick={() => scrollTo("beta-access")}
+              <Link
+                to="/auth"
+                search={{ mode: "signup" }}
                 className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
               >
-                Apply For Beta
-              </button>
+                Create free account
+              </Link>
             </>
+
           )}
 
 
@@ -175,15 +178,25 @@ export function SiteHeader() {
                   </button>
                 </div>
               ) : (
-                <SheetClose asChild>
-                  <button
-                    onClick={() => scrollTo("beta-access")}
-                    className="btn-primary mt-4 h-11 w-full text-sm"
-                  >
-                    Apply For Beta
-                  </button>
-                </SheetClose>
+                <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
+                  <SheetClose asChild>
+                    <Link to="/explore" className="rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-secondary">
+                      Explore creators
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-11 w-full text-sm">
+                      Create free account
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <button onClick={() => scrollTo("beta-access")} className="btn-ghost h-11 w-full text-sm">
+                      Apply as a creator
+                    </button>
+                  </SheetClose>
+                </div>
               )}
+
 
             </SheetContent>
           </Sheet>
@@ -200,7 +213,7 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-3 max-w-sm text-sm text-ink-soft">
-            Memberships built for 3D printing creators. Now accepting founding-creator beta applications.
+            Memberships built for 3D printing creators. The beta is live — browse creators, or apply to start your own page.
           </p>
           <p className="mt-3 text-xs text-ink-soft">
             In partnership with{" "}

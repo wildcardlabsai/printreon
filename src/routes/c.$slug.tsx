@@ -76,6 +76,8 @@ function CreatorPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [following, setFollowing] = useState(false);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [subTierPrice, setSubTierPrice] = useState<number | null>(null);
+
   const [notFoundFlag, setNotFoundFlag] = useState(false);
   const [checkoutTierId, setCheckoutTierId] = useState<string | null>(null);
   const [simulatingTier, setSimulatingTier] = useState<string | null>(null);
@@ -103,7 +105,21 @@ function CreatorPage() {
         setFollowing(!!fol);
         const { data: wl } = await supabase.from("wishlist").select("file_id").eq("user_id", user.id);
         setWishlist(new Set((wl ?? []).map((w) => w.file_id)));
+        const { data: subs } = await supabase
+          .from("subscriptions")
+          .select("id, creator_tiers(price)")
+          .eq("user_id", user.id)
+          .eq("creator_id", cp.id)
+          .eq("status", "active");
+        setSubTierPrice(
+          (subs ?? []).length === 0
+            ? null
+            : Math.max(...(subs ?? []).map((s: any) => Number(s.creator_tiers?.price ?? 0)))
+        );
+      } else {
+        setSubTierPrice(null);
       }
+
     })();
   }, [slug, user]);
 
@@ -203,6 +219,20 @@ function CreatorPage() {
     }
   };
 
+  // A file is unlocked when it is marked free, when the viewer owns the page,
+  // or when the viewer's active tier is worth at least the required tier.
+  const isOwner = !!user && creator?.user_id === user.id;
+  const unlocked = (f: any) => {
+    if (isOwner || f.is_free) return true;
+    if (subTierPrice === null) return false;
+    if (!f.tier_required_id) return true;
+    const required = Number(tiers.find((t) => t.id === f.tier_required_id)?.price ?? 0);
+    return subTierPrice >= required;
+  };
+
+  const scrollToTiers = () => document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -217,6 +247,23 @@ function CreatorPage() {
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-ink md:text-3xl">{creator.display_name}</h1>
             {creator.short_intro && <p className="mt-1 text-ink-soft">{creator.short_intro}</p>}
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-semibold text-ink-soft">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1">
+                <Box className="h-3.5 w-3.5" />
+                {files.length} {files.length === 1 ? "file" : "files"}
+              </span>
+              {files.some((f) => f.is_free) && (
+                <span className="rounded-full bg-accent px-2.5 py-1 text-primary">
+                  {files.filter((f) => f.is_free).length} free
+                </span>
+              )}
+              {tiers.length > 0 && (
+                <span className="rounded-full bg-secondary px-2.5 py-1">
+                  {tiers.length} {tiers.length === 1 ? "tier" : "tiers"}
+                </span>
+              )}
+            </div>
+
             <div className="mt-3 flex flex-wrap gap-3 text-sm text-ink-soft">
               {creator.website_url && <a href={creator.website_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary"><Globe className="h-4 w-4" />Website</a>}
               {creator.instagram_url && <a href={creator.instagram_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary"><Instagram className="h-4 w-4" />Instagram</a>}
@@ -256,7 +303,7 @@ function CreatorPage() {
           </div>
         )}
 
-        <h2 className="mt-10 text-2xl font-bold text-ink">Membership tiers</h2>
+        <h2 id="tiers" className="mt-10 text-2xl font-bold text-ink">Membership tiers</h2>
         {tiers.length === 0 ? (
           <p className="mt-2 text-ink-soft">This creator hasn't published tiers yet.</p>
         ) : (
@@ -315,7 +362,10 @@ function CreatorPage() {
           </div>
         )}
 
-        <h2 className="mt-12 text-2xl font-bold text-ink">Files</h2>
+        <h2 className="mt-12 text-2xl font-bold text-ink">
+          Files <span className="text-base font-medium text-ink-soft">({files.length})</span>
+        </h2>
+
         {files.length === 0 ? (
           <div className="card-soft mt-4 text-center">
             <p className="text-ink-soft">No files published yet — check back soon.</p>
@@ -346,11 +396,17 @@ function CreatorPage() {
                 </div>
                 <PrintSettingsChips settings={f} className="mt-2" />
                 <div className="mt-4 flex gap-2">
-                  <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
-                    {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                    Download
-                  </button>
-                  {canPreview(f.file_type) && (
+                  {unlocked(f) ? (
+                    <button onClick={() => handleDownload(f.id)} disabled={downloadingId === f.id} className="btn-ghost flex-1">
+                      {downloadingId === f.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                      Download
+                    </button>
+                  ) : (
+                    <button onClick={scrollToTiers} className="btn-primary flex-1">
+                      <Lock className="mr-2 h-4 w-4" /> Subscribe to unlock
+                    </button>
+                  )}
+                  {canPreview(f.file_type) && unlocked(f) && (
                     <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost" title="3D preview">
                       {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
                     </button>
@@ -359,6 +415,7 @@ function CreatorPage() {
                     <Bookmark className={`h-4 w-4 ${wishlist.has(f.id) ? "fill-current text-primary" : ""}`} />
                   </button>
                 </div>
+
               </div>
             ))}
           </div>

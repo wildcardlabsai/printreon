@@ -23,6 +23,7 @@ interface Creator {
 function Explore() {
   const [allCreators, setAllCreators] = useState<Creator[] | null>(null);
   const [featured, setFeatured] = useState<any[]>([]);
+  const [fileCounts, setFileCounts] = useState<Record<string, number>>({});
   const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
 
@@ -35,6 +36,17 @@ function Explore() {
       .limit(60)
       .then(({ data }) => setAllCreators(data ?? []));
 
+    supabase.from("creator_files")
+      .select("creator_id")
+      .eq("is_published", true)
+      .is("takedown_at", null)
+      .limit(5000)
+      .then(({ data }) => {
+        const m: Record<string, number> = {};
+        (data ?? []).forEach((f: any) => { m[f.creator_id] = (m[f.creator_id] ?? 0) + 1; });
+        setFileCounts(m);
+      });
+
     supabase.from("featured_creators")
       .select("sort_order, creator_profiles(id, slug, display_name, short_intro, profile_image_url, banner_image_url, is_published, suspended_at)")
       .order("sort_order")
@@ -45,6 +57,12 @@ function Explore() {
           .filter((c: any) => c && c.is_published && !c.suspended_at)
       ));
   }, []);
+
+  const fileLabel = (id: string) => {
+    const n = fileCounts[id] ?? 0;
+    return `${n} ${n === 1 ? "file" : "files"}`;
+  };
+
 
   // If no creators have been hand-featured yet, spotlight the newest ones so
   // the discovery section is never empty.
@@ -118,7 +136,8 @@ function Explore() {
                         <p className="text-xs text-ink-soft">@{c.slug}</p>
                       </div>
                     </div>
-                    {c.short_intro && <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{c.short_intro}</p>}
+                    <p className="mt-3 text-xs font-semibold text-ink-soft">{fileLabel(c.id)}</p>
+                    {c.short_intro && <p className="mt-2 line-clamp-2 text-sm text-ink-soft">{c.short_intro}</p>}
                   </div>
                 </Link>
               ))}
@@ -165,7 +184,8 @@ function Explore() {
                       <p className="text-xs text-ink-soft">@{c.slug}</p>
                     </div>
                   </div>
-                  {c.short_intro && <p className="mt-3 text-sm text-ink-soft line-clamp-2">{c.short_intro}</p>}
+                  <p className="mt-3 text-xs font-semibold text-ink-soft">{fileLabel(c.id)}</p>
+                  {c.short_intro && <p className="mt-2 text-sm text-ink-soft line-clamp-2">{c.short_intro}</p>}
                 </div>
               </Link>
             ))}
