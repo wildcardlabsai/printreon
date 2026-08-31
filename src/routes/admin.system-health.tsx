@@ -41,8 +41,9 @@ function Health() {
         <StatusRow label="Database" status={checks.dbOk} note={checks.dbOk === "ok" ? "Reachable" : "Unable to query feature_flags"} />
         <StatusRow label="Authentication" status={checks.authOk} note="Supabase Auth reachable" />
         <StatusRow label="Storage" status="ok" note="Buckets configured: avatars, banners, files, previews" />
-        <StatusRow label="Stripe" status="warn" note="Not configured. Payments overview will populate when connected." />
-        <StatusRow label="Email provider" status="warn" note="Not configured — invite/reply emails are manual." />
+        <StatusRow label="Stripe" status="warn" note="See the Go-live check for keys, environment and webhook activity." />
+        <StatusRow label="Email provider" status="warn" note="Queued only — needs a verified sender domain." />
+
         <StatusRow label="API routes" status="ok" note="TanStack server functions reachable from client" />
       </div>
     </div>

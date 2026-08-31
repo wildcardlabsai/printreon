@@ -1885,6 +1885,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_cron_jobs: {
+        Args: never
+        Returns: {
+          active: boolean
+          jobname: string
+          last_run: string
+          last_status: string
+          schedule: string
+        }[]
+      }
       generate_beta_referral_code: { Args: never; Returns: string }
       get_beta_referral_stats: {
         Args: { _code: string }

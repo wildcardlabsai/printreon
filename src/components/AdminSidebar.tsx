@@ -18,6 +18,8 @@ const items = [
   { to: "/admin/stl-library", label: "STL Library", icon: FileBox },
   { to: "/admin/payments", label: "Payments", icon: DollarSign },
   { to: "/admin/revenue", label: "Revenue", icon: BarChart3 },
+  { to: "/admin/go-live", label: "Go-live check", icon: Shield },
+
   { to: "/admin/reports", label: "Moderation", icon: Flag },
   { to: "/admin/emails", label: "Emails", icon: Mail },
   { to: "/admin/support", label: "Support", icon: LifeBuoy },
