@@ -136,7 +136,8 @@ function Explore() {
                         <p className="text-xs text-ink-soft">@{c.slug}</p>
                       </div>
                     </div>
-                    {c.short_intro && <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{c.short_intro}</p>}
+                    <p className="mt-3 text-xs font-semibold text-ink-soft">{fileLabel(c.id)}</p>
+                    {c.short_intro && <p className="mt-2 line-clamp-2 text-sm text-ink-soft">{c.short_intro}</p>}
                   </div>
                 </Link>
               ))}
@@ -183,7 +184,8 @@ function Explore() {
                       <p className="text-xs text-ink-soft">@{c.slug}</p>
                     </div>
                   </div>
-                  {c.short_intro && <p className="mt-3 text-sm text-ink-soft line-clamp-2">{c.short_intro}</p>}
+                  <p className="mt-3 text-xs font-semibold text-ink-soft">{fileLabel(c.id)}</p>
+                  {c.short_intro && <p className="mt-2 text-sm text-ink-soft line-clamp-2">{c.short_intro}</p>}
                 </div>
               </Link>
             ))}
