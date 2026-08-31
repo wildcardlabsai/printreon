@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { Plus, Upload, Megaphone, Layers, Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { creatorUrl } from "@/lib/site";
+import { creatorEarningsSummary, type EarningsSummary } from "@/functions/earnings.functions";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
