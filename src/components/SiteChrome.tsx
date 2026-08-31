@@ -162,6 +162,11 @@ export function SiteHeader() {
                       </Link>
                     </SheetClose>
                   )}
+                  <SheetClose asChild>
+                    <Link to="/feedback" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                      <MessageSquare className="h-4 w-4" /> Send feedback
+                    </Link>
+                  </SheetClose>
                   <button
                     onClick={handleSignOut}
                     className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-destructive hover:bg-destructive/10"
