@@ -53,8 +53,9 @@ export function SiteHeader() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
-            Invite-only beta
+            Beta · live now
           </span>
+
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
           {NAV_LINKS.map((link) => (
@@ -105,13 +106,15 @@ export function SiteHeader() {
               <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
                 Sign in
               </Link>
-              <button
-                onClick={() => scrollTo("beta-access")}
+              <Link
+                to="/auth"
+                search={{ mode: "signup" }}
                 className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap"
               >
-                Apply For Beta
-              </button>
+                Create free account
+              </Link>
             </>
+
           )}
 
 
