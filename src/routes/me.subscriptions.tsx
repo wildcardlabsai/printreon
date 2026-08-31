@@ -84,11 +84,31 @@ function SubsPage() {
                 </div>
               </div>
             </div>
-            {s.cancel_at_period_end && (
-              <div className="mt-3 flex items-center gap-2 rounded-lg bg-secondary p-2 text-xs text-ink-soft">
-                <AlertTriangle className="h-3 w-3 text-primary" /> Will end at the end of the current period.
+            {(s.status === "past_due" || s.status === "unpaid") && (
+              <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                <div className="flex items-center gap-2 font-semibold">
+                  <AlertTriangle className="h-3.5 w-3.5" /> Payment failed
+                </div>
+                <p className="mt-1 text-ink-soft">
+                  We couldn't take your last payment. Update your card to keep access — after 7 days this membership is paused automatically.
+                </p>
+                <button onClick={onPortal} className="btn-primary mt-2 h-8 px-3 text-xs">
+                  Update payment method
+                </button>
               </div>
             )}
+            {s.status === "expired" && (
+              <div className="mt-3 rounded-lg bg-secondary p-2 text-xs text-ink-soft">
+                This membership has ended. Resubscribe from the creator's page to regain access.
+              </div>
+            )}
+            {s.cancel_at_period_end && (
+              <div className="mt-3 flex items-center gap-2 rounded-lg bg-secondary p-2 text-xs text-ink-soft">
+                <AlertTriangle className="h-3 w-3 text-primary" /> Will end at the end of the current period
+                {s.current_period_end ? ` (${new Date(s.current_period_end).toLocaleDateString()})` : ""}.
+              </div>
+            )}
+
             <div className="mt-4 flex flex-wrap gap-2">
               <Link to="/me/library" className="btn-primary h-9 px-3 text-sm"><FolderOpen className="mr-2 h-4 w-4" />View files</Link>
               {cp?.slug && <Link to="/c/$slug" params={{ slug: cp.slug }} className="btn-ghost h-9 px-3 text-sm">Creator page</Link>}
