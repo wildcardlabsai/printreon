@@ -76,6 +76,8 @@ function CreatorPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [following, setFollowing] = useState(false);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [subTierPrice, setSubTierPrice] = useState<number | null>(null);
+
   const [notFoundFlag, setNotFoundFlag] = useState(false);
   const [checkoutTierId, setCheckoutTierId] = useState<string | null>(null);
   const [simulatingTier, setSimulatingTier] = useState<string | null>(null);
