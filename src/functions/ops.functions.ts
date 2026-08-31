@@ -132,3 +132,72 @@ export const adminRevenueMetrics = createServerFn({ method: "POST" })
       series,
     };
   });
+
+/**
+ * Go-live readiness: which payment credentials exist, which Stripe
+ * environment is active, whether webhooks have ever been verified, and
+ * whether the scheduled jobs and payout accounts are in place.
+ */
+export const adminStripeReadiness = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.userId);
+
+    const has = (key: string) => Boolean(process.env[key]);
+    const keys = {
+      sandboxApiKey: has("STRIPE_SANDBOX_API_KEY"),
+      liveApiKey: has("STRIPE_LIVE_API_KEY"),
+      sandboxWebhookSecret: has("PAYMENTS_SANDBOX_WEBHOOK_SECRET"),
+      liveWebhookSecret: has("PAYMENTS_LIVE_WEBHOOK_SECRET"),
+      lovableApiKey: has("LOVABLE_API_KEY"),
+      cronToken: has("CRON_JOB_TOKEN") || has("CRON_SECRET"),
+      emailApiKey: has("RESEND_API_KEY"),
+    };
+
+    const lastEvent = async (env: "sandbox" | "live") => {
+      const { data } = await supabaseAdmin
+        .from("payment_events")
+        .select("occurred_at, kind, stripe_event_id")
+        .eq("environment", env)
+        .not("stripe_event_id", "is", null)
+        .order("occurred_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data ?? null;
+    };
+
+    const [sandboxEvent, liveEvent] = await Promise.all([lastEvent("sandbox"), lastEvent("live")]);
+
+    const { count: liveSubs } = await supabaseAdmin
+      .from("subscriptions")
+      .select("id", { count: "exact", head: true })
+      .eq("environment", "live");
+
+    const { data: tiers } = await supabaseAdmin
+      .from("creator_tiers")
+      .select("id, stripe_price_id, is_active");
+    const activeTiers = (tiers ?? []).filter((t) => t.is_active !== false);
+    const tiersWithPrice = activeTiers.filter((t) => Boolean(t.stripe_price_id)).length;
+
+    const { data: creators } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("id, connected_account_id, payout_status, is_published");
+    const published = (creators ?? []).filter((c) => c.is_published);
+    const payoutReady = published.filter((c) => c.payout_status === "active").length;
+
+    const { data: jobs } = await supabaseAdmin
+      .rpc("admin_cron_jobs" as never)
+      .then((r) => r as { data: any[] | null })
+      .catch(() => ({ data: null }));
+
+    return {
+      keys,
+      liveReady: keys.liveApiKey && keys.liveWebhookSecret,
+      sandboxEvent,
+      liveEvent,
+      liveSubscriptions: liveSubs ?? 0,
+      tiers: { total: activeTiers.length, withStripePrice: tiersWithPrice },
+      payouts: { publishedCreators: published.length, payoutReady },
+      cronJobs: jobs ?? null,
+    };
+  });
