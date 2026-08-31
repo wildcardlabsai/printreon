@@ -85,6 +85,9 @@ import { Route as AdminChangelogRouteImport } from './routes/admin.changelog'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminActivityLogRouteImport } from './routes/admin.activity-log'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron/publish-scheduled'
 import { Route as ApiPublicCronExpireSubscriptionsRouteImport } from './routes/api/public/cron/expire-subscriptions'
@@ -469,6 +472,22 @@ const AdminActivityLogRoute = AdminActivityLogRouteImport.update({
   path: '/activity-log',
   getParentRoute: () => AdminRoute,
 } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -568,6 +587,9 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -646,6 +668,9 @@ export interface FileRoutesByTo {
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -728,6 +753,9 @@ export interface FileRoutesById {
   '/api/public/cron/expire-subscriptions': typeof ApiPublicCronExpireSubscriptionsRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -811,6 +839,9 @@ export interface FileRouteTypes {
     | '/api/public/cron/expire-subscriptions'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -889,6 +920,9 @@ export interface FileRouteTypes {
     | '/api/public/cron/expire-subscriptions'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
   id:
     | '__root__'
     | '/'
@@ -970,6 +1004,9 @@ export interface FileRouteTypes {
     | '/api/public/cron/expire-subscriptions'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/payments/webhook'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
+    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1000,6 +1037,9 @@ export interface RootRouteChildren {
   ApiPublicCronExpireSubscriptionsRoute: typeof ApiPublicCronExpireSubscriptionsRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1536,6 +1576,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminActivityLogRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -1734,6 +1795,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronExpireSubscriptionsRoute: ApiPublicCronExpireSubscriptionsRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
