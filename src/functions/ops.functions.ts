@@ -185,10 +185,14 @@ export const adminStripeReadiness = createServerFn({ method: "POST" })
     const published = (creators ?? []).filter((c) => c.is_published);
     const payoutReady = published.filter((c) => c.payout_status === "active").length;
 
-    const { data: jobs } = await supabaseAdmin
-      .rpc("admin_cron_jobs" as never)
-      .then((r) => r as { data: any[] | null })
-      .catch(() => ({ data: null }));
+    let jobs: any[] | null = null;
+    try {
+      const res = await supabaseAdmin.rpc("admin_cron_jobs");
+      jobs = (res.data as any[] | null) ?? null;
+    } catch {
+      jobs = null;
+    }
+
 
     return {
       keys,
