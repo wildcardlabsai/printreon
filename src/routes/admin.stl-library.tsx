@@ -10,7 +10,13 @@ function STLLibrary() {
   const [rows, setRows] = useState<any[]>([]);
 
   const refresh = async () => {
-    const { data } = await supabase.from("creator_files").select("*, creator_profiles(display_name, slug)").order("created_at", { ascending: false }).limit(500);
+    const { data } = await supabase
+      .from("creator_files")
+      .select(
+        "id, title, slug, category, file_type, file_size, is_free, is_published, status, download_count, takedown_at, created_at, creator_id, creator_profiles(display_name, slug)"
+      )
+      .order("created_at", { ascending: false })
+      .limit(500);
     setRows(data ?? []);
   };
   useEffect(() => { refresh(); }, []);
