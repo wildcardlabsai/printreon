@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut } from "lucide-react";
+import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut, MessageSquare } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
@@ -91,6 +91,9 @@ export function SiteHeader() {
                     <Link to="/admin"><Shield className="mr-2 h-4 w-4" /> Admin</Link>
                   </DropdownMenuItem>
                 )}
+                <DropdownMenuItem asChild>
+                  <Link to="/feedback"><MessageSquare className="mr-2 h-4 w-4" /> Send feedback</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Sign out
