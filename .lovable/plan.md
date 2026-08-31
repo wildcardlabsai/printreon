@@ -1,56 +1,53 @@
 # Email setup for printreon.com
 
-Two separate systems, no clash:
+No mailbox for now. Two things to arrange:
 
-| | Mailboxes (you read/reply) | App emails (Printreon sends) |
-|---|---|---|
-| Provider | Namecheap Private Email | Lovable built-in email |
-| Address | info@printreon.com, invites@printreon.com | e.g. Printreon <hello@printreon.com> |
-| Lives on | printreon.com (root) | notify.printreon.com (subdomain) |
-| DNS at Namecheap | MX + SPF + DKIM, auto-configured | one set of NS records for the subdomain only |
+1. **Inbound** — anything a visitor submits (contact, feedback, beta applications) lands in your Gmail at mattoftaylor@gmail.com.
+2. **Outbound** — everything Printreon sends comes from your own domain, so it reads as `Printreon <hello@printreon.com>` rather than a generic sender.
 
-Both can safely coexist because they use different names. Private Email owns the root domain's mail; Lovable owns only the `notify.` subdomain. Nothing gets overwritten.
+## Part 1 — Sender domain (one DNS step from you)
 
-Private Email is the simplest route here since the domain is already at Namecheap — they set the mail DNS up for you automatically, so there's no manual record entry like Zoho needed.
+I'll kick off the email setup dialog. It gives you one set of NS records to paste into Namecheap (Domain List > printreon.com > Advanced DNS) for a `notify.printreon.com` subdomain. Lovable then manages SPF/DKIM/MX inside that subdomain only — your root domain records are untouched, so adding a mailbox later is still easy.
 
-## Part 1 — Namecheap Private Email (you do this, ~10 minutes)
+Once DNS verifies, sending is live.
 
-1. In Namecheap: Domain List > printreon.com > **Private Email** tab (or Apps > Private Email), and buy a plan. The Starter plan (~£10/yr) includes one mailbox; you can add a second mailbox for a small extra, or use aliases for free.
-2. During setup Namecheap asks which domain to use — pick `printreon.com`. It offers to **auto-configure the DNS records** (MX, SPF, DKIM, autodiscover). Accept that; it writes them into Advanced DNS for you.
-3. Create the mailbox `info@printreon.com`.
-4. For `invites@printreon.com`: either add a second mailbox, or add it as a **free alias** on the info@ mailbox if you're happy for both to land in one inbox. Aliases are under Private Email > Manage > Aliases.
-5. Wait for propagation (usually well under an hour), then send yourself a test message. Webmail is at privateemail.com.
+## Part 2 — Outbound emails I'll build
 
-Cheaper alternative if you don't need a real mailbox: Namecheap includes **free email forwarding** on domains registered with them (Advanced DNS > Mail Settings > Email Forwarding). That forwards info@ and invites@ straight to your Gmail — you can receive, but replying from that address needs extra Gmail SMTP setup. Private Email is the cleaner option if you want to reply as info@printreon.com.
+All branded to match the site (acid-lime accents, Instrument Serif headings), all from your domain, all logged:
 
-One thing to watch: if you turn on Namecheap Email Forwarding *and* Private Email, the MX records conflict. Pick one.
+**To you (mattoftaylor@gmail.com)**
+- New beta application — with everything they submitted
+- New feedback submission
+- New contact form message
 
+**To users**
+- Welcome email on account creation
+- Beta application received — confirmation to the applicant
+- Beta invite — when you approve someone from the admin panel
+- Subscription started, cancelled, payment failed (dunning)
+- New file or post from a creator you follow
+- Creator payout and Stripe Connect onboarding reminders
 
-## Part 2 — App sending (I do this)
+**Auth emails** — verification, password reset and magic link get converted from the default generic templates to branded Printreon ones from your domain.
 
-1. Set up the sender domain through Lovable's email setup — you'll get a short dialog and one set of NS records to paste into Namecheap for `notify.printreon.com`. This is the only DNS bit for app email.
-2. Once that's registered, I'll install the email infrastructure (queue, retries, delivery log, bounce/complaint handling, unsubscribe).
-3. Build branded Printreon email templates matching the site (acid-lime accents, Instrument Serif headings, white background).
-4. Wire up the emails the platform actually needs:
-   - Beta application received → notification to `invites@printreon.com`, plus a confirmation to the applicant
-   - Welcome email on account creation
-   - Subscription started / cancelled / payment failed
-   - New file or post from a creator you follow
-   - Creator payout and Connect onboarding reminders
-5. Convert the existing auth emails (verification, password reset, magic link) to branded Printreon templates instead of the default generic ones.
-6. Replace the current Resend-backed sending path so everything runs through one system with a single delivery log.
+## Part 3 — Announcements, newsletters and mass email
 
-## Part 3 — Admin visibility
+Worth being straight with you here: the built-in system is for one-trigger-one-recipient email — a signup, a purchase, an invite. It deliberately won't do list sends or campaigns, because mixing marketing blasts with account email wrecks a domain's sending reputation and your receipts start landing in spam.
 
-The existing `/admin/emails` page gets repointed at the new delivery log: sent / failed / suppressed counts, per-email status, filters by template and date, and the bounce list. Same page, real data behind it.
+So:
+- **Creator announcements** stay as they are today — in-app notifications on the follower's dashboard. I can add an email for the follower's *own* announcements digest later if you want, but it's a separate design.
+- **Newsletter / mass marketing** needs a dedicated service (Mailchimp, Beehiiv, Loops, Resend Broadcasts). Best practice is to run that off a *different* subdomain, e.g. `news.printreon.com`, so a campaign unsubscribe never blocks someone's password reset. I can wire an export of your beta list into whichever you pick.
+
+Invites are fine on the built-in system — they're per-person and triggered by your approval, not a blast.
+
+## Part 4 — Admin visibility
+
+The existing `/admin/emails` page gets repointed at the real delivery log: sent / failed / suppressed counts, per-email status with error detail, filters by template and date range, and the bounce/complaint list.
 
 ## Technical notes
 
-- The current `src/server/email.server.ts` sends via the Resend connector gateway from `onboarding@resend.dev`, which only delivers to the Resend account owner — that's why beta-application emails haven't been arriving. It gets replaced.
-- Lovable email delegates `notify.printreon.com` to Lovable nameservers and manages SPF/DKIM/MX inside that delegated zone only. Root-domain records (Zoho's) are untouched.
-- Sender domain for the API is the delegated subdomain; the visible From address can still read as `@printreon.com`.
-- `email_outbox` rows stay for history; new sends log to the platform's delivery log.
-
-## Order
-
-Part 2 can start immediately — it doesn't wait on Zoho. Suggest kicking off the sender domain dialog now and doing the Zoho signup in parallel.
+- Current `src/server/email.server.ts` sends via the Resend gateway from `onboarding@resend.dev`, which only ever delivers to the Resend account owner — that's why beta-application notifications haven't arrived. It gets replaced by the built-in queue (retries, suppression, unsubscribe, delivery log).
+- Contact and feedback forms are public/anonymous, so their notifications go through a server route using service-role credentials rather than the authenticated send path.
+- Every app email carries a mandatory unsubscribe footer, including the ones addressed to you — that's enforced platform-side and can't be turned off per-email.
+- `email_outbox` rows are kept for history; new sends log to the platform delivery log.
+- `/contact` currently has no server-side handler wired to email; that gets added.
