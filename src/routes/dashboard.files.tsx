@@ -356,7 +356,7 @@ function FilesPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {f.file_url && canPreview(f.file_type ?? f.file_url) && (
+                  {f.file_type && canPreview(f.file_type) && (
                     <>
                       <button onClick={() => openPreview(f)} disabled={previewLoadingId === f.id} className="btn-ghost h-9 px-3" title="3D preview">
                         {previewLoadingId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Box className="h-4 w-4" />}
