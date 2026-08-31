@@ -209,10 +209,12 @@ function FilesPage() {
 
   const remove = async (f: any) => {
     if (!confirm(`Delete "${f.title}"? This is permanent.`)) return;
-    if (f.file_url) await supabase.storage.from("files").remove([f.file_url]);
-    const { error } = await supabase.from("creator_files").delete().eq("id", f.id);
-    if (error) return toast.error(error.message);
-    toast.success("Deleted");
+    try {
+      await deleteFileFn({ data: { fileId: f.id } });
+      toast.success("Deleted");
+    } catch (e: any) {
+      return toast.error(e?.message ?? "Could not delete this file");
+    }
     await refresh();
   };
 
