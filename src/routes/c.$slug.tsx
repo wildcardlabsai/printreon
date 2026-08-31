@@ -107,18 +107,21 @@ function CreatorPage() {
   }, [slug, user]);
 
   const downloadFn = useServerFn(getFileDownloadUrl);
+  const previewFn = useServerFn(getFilePreviewUrl);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>("");
+  const [previewType, setPreviewType] = useState<string | null>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<string | null>(null);
 
   const openPreview = async (file: any) => {
     if (!user) { toast.error("Sign in to preview"); return; }
     setPreviewLoadingId(file.id);
     try {
-      const { url } = await downloadFn({ data: { fileId: file.id } });
+      const { url, fileType } = await previewFn({ data: { fileId: file.id } });
       setPreviewUrl(url);
       setPreviewTitle(file.title);
+      setPreviewType(fileType ?? file.file_type ?? null);
     } catch (e: any) {
       toast.error(e?.message ?? "Preview unavailable");
     } finally {
