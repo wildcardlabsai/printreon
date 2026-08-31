@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { MessageSquarePlus } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyFeedbackSubmitted } from "@/functions/inbox.functions";
 
 export const Route = createFileRoute("/feedback")({
   head: () => ({
@@ -24,6 +26,7 @@ const COOLDOWN_MS = 30_000;
 
 function FeedbackPage() {
   const { user } = useAuth();
+  const notifyFeedback = useServerFn(notifyFeedbackSubmitted);
   const [type, setType] = useState("idea");
   const [name, setName] = useState("");
   const [email, setEmail] = useState(user?.email ?? "");
@@ -45,7 +48,7 @@ function FeedbackPage() {
       return;
     }
     setSending(true);
-    const { error } = await supabase.rpc("submit_feedback", {
+    const { data: fbRows, error } = await supabase.rpc("submit_feedback", {
       payload: {
         type,
         name: name.trim(),
@@ -64,6 +67,11 @@ function FeedbackPage() {
             : "Something went wrong — please try again.",
       );
       return;
+    }
+    const fbRow: any = Array.isArray(fbRows) ? fbRows[0] : fbRows;
+    const fbId = typeof fbRow === "string" ? fbRow : fbRow?.id;
+    if (fbId) {
+      notifyFeedback({ data: { feedbackId: fbId } }).catch(() => {});
     }
     setLastSentAt(Date.now());
     setMessage("");

@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, BarChart3, ClipboardList, Mail, Users, Star, CreditCard, FileBox,
   DollarSign, LifeBuoy, Megaphone, Flag, Activity, HeartPulse, Settings, Shield, LogOut, Menu, X,
-  ScrollText, MessageSquare,
+  ScrollText, MessageSquare, Inbox, Send,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 const items = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/admin/inbox", label: "Inbox", icon: Inbox },
   { to: "/admin/preregistrations", label: "Preregistrations", icon: ClipboardList },
   { to: "/admin/invites", label: "Invites", icon: Mail },
   { to: "/admin/users", label: "Users", icon: Users },
@@ -22,6 +23,7 @@ const items = [
 
   { to: "/admin/reports", label: "Moderation", icon: Flag },
   { to: "/admin/emails", label: "Emails", icon: Mail },
+  { to: "/admin/newsletter", label: "Newsletter", icon: Send },
   { to: "/admin/support", label: "Support", icon: LifeBuoy },
   { to: "/admin/announcements", label: "Announcements", icon: Megaphone },
   { to: "/admin/changelog", label: "Changelog", icon: ScrollText },

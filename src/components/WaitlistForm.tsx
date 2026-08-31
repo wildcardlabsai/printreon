@@ -4,6 +4,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyBetaApplication } from "@/functions/inbox.functions";
 
 const baseSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -44,6 +46,7 @@ export function WaitlistForm({
   const [acknowledge, setAcknowledge] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [referredBy, setReferredBy] = useState<string | null>(null);
+  const notifyBeta = useServerFn(notifyBetaApplication);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -137,6 +140,8 @@ export function WaitlistForm({
       setMessage("Something went wrong. Please try again.");
       return;
     }
+
+    notifyBeta({ data: { email: payload.email } }).catch(() => {});
 
     try {
       localStorage.setItem(

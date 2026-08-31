@@ -17,7 +17,16 @@ export interface TemplateEntry {
  *   import { template as welcomeTemplate } from './welcome'
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
+import { template as betaInvite } from './beta-invite'
+import { template as adminFeedbackNotice } from './admin-feedback-notice'
+import { template as adminContactNotice } from './admin-contact-notice'
+import { template as adminBetaApplicationNotice } from './admin-beta-application-notice'
+import { template as newsletterWelcome } from './newsletter-welcome'
+
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  // Add templates here as they are created, e.g.:
-  // 'welcome': welcomeTemplate,
+  'beta-invite': betaInvite,
+  'admin-feedback-notice': adminFeedbackNotice,
+  'admin-contact-notice': adminContactNotice,
+  'admin-beta-application-notice': adminBetaApplicationNotice,
+  'newsletter-welcome': newsletterWelcome,
 }
