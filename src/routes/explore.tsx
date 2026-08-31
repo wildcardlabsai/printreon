@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, Mail } from "lucide-react";
+import { Sparkles, Mail, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/explore")({
@@ -22,7 +22,7 @@ interface Creator {
 
 function Explore() {
   const [allCreators, setAllCreators] = useState<Creator[] | null>(null);
-  const [trending, setTrending] = useState<any[]>([]);
+  const [featured, setFeatured] = useState<any[]>([]);
   const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
 
@@ -35,13 +35,15 @@ function Explore() {
       .limit(60)
       .then(({ data }) => setAllCreators(data ?? []));
 
-    supabase.from("creator_files")
-      .select("id, title, slug, download_count, preview_images, creator_profiles(display_name, slug)")
-      .eq("is_published", true)
-      .is("takedown_at", null)
-      .order("download_count", { ascending: false })
-      .limit(8)
-      .then(({ data }) => setTrending(data ?? []));
+    supabase.from("featured_creators")
+      .select("sort_order, creator_profiles(id, slug, display_name, short_intro, profile_image_url, banner_image_url, is_published, suspended_at)")
+      .order("sort_order")
+      .limit(6)
+      .then(({ data }) => setFeatured(
+        (data ?? [])
+          .map((r: any) => r.creator_profiles)
+          .filter((c: any) => c && c.is_published && !c.suspended_at)
+      ));
   }, []);
 
   const q = query.trim().toLowerCase();
@@ -83,35 +85,43 @@ function Explore() {
           />
         </div>
 
-        {trending.length > 0 && !q && (
+        {featured.length > 0 && !q && (
           <div className="mt-10">
-            <h2 className="text-xl font-bold text-ink">Trending files</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {trending.map((f: any) => (
+            <div className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-bold text-ink">Featured creators</h2>
+            </div>
+            <p className="mt-1 text-sm text-ink-soft">Hand-picked designers worth a follow.</p>
+            <div className="mt-4 grid gap-5 md:grid-cols-3">
+              {featured.map((c: any) => (
                 <Link
-                  key={f.id}
+                  key={c.id}
                   to="/c/$slug"
-                  params={{ slug: f.creator_profiles?.slug ?? "" }}
-                  className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
+                  params={{ slug: c.slug }}
+                  className="group relative overflow-hidden rounded-2xl border border-primary/40 bg-card shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)]"
                 >
-                  <div className="aspect-[4/3] bg-secondary">
-                    {Array.isArray(f.preview_images) && f.preview_images[0] && (
-                      <img src={f.preview_images[0]} alt={`${f.title} preview render`} className="h-full w-full object-cover" loading="lazy" />
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-semibold text-ink line-clamp-1">{f.title}</h3>
-                    <p className="text-xs text-ink-soft">
-                      {f.creator_profiles?.display_name} · {f.download_count} downloads
-                    </p>
+                  <span className="absolute right-3 top-3 z-10 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">Featured</span>
+                  <div className="aspect-[3/1] bg-gradient-to-br from-accent to-secondary" style={c.banner_image_url ? { backgroundImage: `url(${c.banner_image_url})`, backgroundSize: "cover" } : undefined} />
+                  <div className="p-5">
+                    <div className="flex items-center gap-3">
+                      {c.profile_image_url ? (
+                        <img src={c.profile_image_url} alt={`${c.display_name} profile photo`} className="h-12 w-12 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent font-bold text-primary">{c.display_name[0]}</div>
+                      )}
+                      <div>
+                        <h3 className="font-semibold text-ink group-hover:text-primary">{c.display_name}</h3>
+                        <p className="text-xs text-ink-soft">@{c.slug}</p>
+                      </div>
+                    </div>
+                    {c.short_intro && <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{c.short_intro}</p>}
                   </div>
                 </Link>
               ))}
             </div>
+            <h2 className="mt-12 text-xl font-bold text-ink">All creators</h2>
           </div>
         )}
-
-
 
         {creators === null ? (
           <div className="mt-10 grid gap-5 md:grid-cols-3">
