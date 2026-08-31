@@ -786,22 +786,28 @@ function FinalCTA() {
         <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/30 blur-3xl" aria-hidden />
 
         <div className="relative">
-          <span className="eyebrow-dark">// Pre-launch · waitlist open</span>
+          <span className="eyebrow-dark">// Beta · live now</span>
           <h2 className="mx-auto mt-6 max-w-3xl text-5xl text-background md:text-7xl">
-            <span className="font-display italic">Be first in line</span>{" "}
+            <span className="font-display italic">Printreon is open</span>{" "}
             <br className="hidden md:block" />
-            <span className="font-bold">when Printreon opens.</span>
+            <span className="font-bold">for makers and supporters.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-background/70">
-            Built for STL creators and the people who love their work.
-            Partnered with{" "}
+            Create a free account to browse and support creators, or apply below to open your own
+            creator page. Partnered with{" "}
             <a href={PARTNER.url} target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">
               {PARTNER.name}
             </a>.
           </p>
-          <div className="mt-10 flex justify-center">
-            <WaitlistForm variant="dark" />
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-12 px-6 text-base">
+              Create free account
+            </Link>
+            <Link to="/explore" className="btn-ghost h-12 border border-background/20 px-6 text-base text-background hover:bg-background/10">
+              Explore creators
+            </Link>
           </div>
+
         </div>
       </div>
     </section>
@@ -922,20 +928,28 @@ function BetaApplication() {
       <div className="container-wide relative py-24 md:py-32">
         <div className="grid gap-12 md:grid-cols-12 md:items-start">
           <div className="md:col-span-5">
-            <span className="eyebrow-dark"><AlertTriangle className="mr-1.5 inline h-3.5 w-3.5" /> Limited spots</span>
+            <span className="eyebrow-dark"><Rocket className="mr-1.5 inline h-3.5 w-3.5" /> Beta is live</span>
             <h2 className="mt-5 text-4xl text-background md:text-6xl">
-              <span className="font-display italic">Ready to</span>{" "}
-              <span className="font-bold">join the beta?</span>
+              <span className="font-display italic">Want to</span>{" "}
+              <span className="font-bold">sell on Printreon?</span>
             </h2>
             <p className="mt-5 max-w-md text-lg text-background/70">
-              Join the founding creators helping shape Printreon before public launch. Founder
-              pricing is locked in the moment you're accepted.
+              The platform is live and supporters are already browsing. Creator pages are still
+              approved one by one — apply below and we'll get you set up. Founder pricing is
+              locked in the moment you're accepted.
             </p>
             <ul className="mt-8 space-y-3 text-sm text-background/80">
-              <li className="flex items-start gap-2"><Crown className="mt-0.5 h-4 w-4 text-primary" /> Lifetime founder pricing & badge</li>
-              <li className="flex items-start gap-2"><Rocket className="mt-0.5 h-4 w-4 text-primary" /> First wave of invites going out soon</li>
-              <li className="flex items-start gap-2"><ShieldCheck className="mt-0.5 h-4 w-4 text-primary" /> No spam, no marketing list — invite-only</li>
+              <li className="flex items-start gap-2"><Crown className="mt-0.5 h-4 w-4 text-primary" /> Lifetime founder pricing &amp; badge</li>
+              <li className="flex items-start gap-2"><Rocket className="mt-0.5 h-4 w-4 text-primary" /> Live platform — start uploading as soon as you're approved</li>
+              <li className="flex items-start gap-2"><ShieldCheck className="mt-0.5 h-4 w-4 text-primary" /> No spam, no marketing list</li>
             </ul>
+            <p className="mt-6 text-sm text-background/70">
+              Just here to download?{" "}
+              <Link to="/auth" search={{ mode: "signup" }} className="font-semibold text-primary hover:underline">
+                Create a free supporter account →
+              </Link>
+            </p>
+
           </div>
           <div className="md:col-span-7">
             <div className="rounded-3xl border border-background/10 bg-background/[0.03] p-6 md:p-8 backdrop-blur">
