@@ -125,6 +125,13 @@ function TierEditor({ tier, onUpdate, onDelete }: { tier: any; onUpdate: (t: any
       <label className="mt-3 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} /> Active and visible on profile
       </label>
+      <p className="mt-2 text-xs text-ink-soft">
+        {tier.commercial_licence ? "Includes a commercial licence." : "Personal use only."}{" "}
+        <Link to="/dashboard/licences" className="font-semibold text-primary hover:underline">
+          Manage commercial licence terms
+        </Link>
+      </p>
+
       <div className="mt-3 flex justify-between">
         <button
           onClick={() =>
