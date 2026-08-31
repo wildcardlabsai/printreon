@@ -327,20 +327,32 @@ export const adminInboxUpdate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     const db = await admin();
-    const patch: Record<string, any> = {};
-    if (data.status !== undefined) patch['status'] = data.status;
-
     if (data.kind === "feedback") {
-      if (data.notes !== undefined) patch['admin_notes'] = data.notes;
-      const { error } = await db.from("feedback").update(patch).eq("id", data.id);
+      const { error } = await db
+        .from("feedback")
+        .update({
+          ...(data.status !== undefined ? { status: data.status } : {}),
+          ...(data.notes !== undefined ? { admin_notes: data.notes } : {}),
+        })
+        .eq("id", data.id);
       if (error) throw new Error(error.message);
     } else if (data.kind === "contact") {
-      if (data.notes !== undefined) patch['admin_notes'] = data.notes;
-      const { error } = await db.from("support_tickets").update(patch).eq("id", data.id);
+      const { error } = await db
+        .from("support_tickets")
+        .update({
+          ...(data.status !== undefined ? { status: data.status } : {}),
+          ...(data.notes !== undefined ? { admin_notes: data.notes } : {}),
+        })
+        .eq("id", data.id);
       if (error) throw new Error(error.message);
     } else {
-      if (data.notes !== undefined) patch['notes'] = data.notes;
-      const { error } = await db.from("beta_preregistrations").update(patch).eq("id", data.id);
+      const { error } = await db
+        .from("beta_preregistrations")
+        .update({
+          ...(data.status !== undefined ? { status: data.status } : {}),
+          ...(data.notes !== undefined ? { notes: data.notes } : {}),
+        })
+        .eq("id", data.id);
       if (error) throw new Error(error.message);
     }
     return { ok: true };
