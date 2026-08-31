@@ -46,6 +46,10 @@ function Explore() {
       ));
   }, []);
 
+  // If no creators have been hand-featured yet, spotlight the newest ones so
+  // the discovery section is never empty.
+  const spotlight = featured.length > 0 ? featured : (allCreators ?? []).slice(0, 3);
+
   const q = query.trim().toLowerCase();
   const creators =
     allCreators === null
@@ -85,22 +89,22 @@ function Explore() {
           />
         </div>
 
-        {featured.length > 0 && !q && (
+        {spotlight.length > 0 && !q && (
           <div className="mt-10">
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-primary" />
-              <h2 className="text-xl font-bold text-ink">Featured creators</h2>
+              <h2 className="text-xl font-bold text-ink">{featured.length > 0 ? "Featured creators" : "Creators to discover"}</h2>
             </div>
             <p className="mt-1 text-sm text-ink-soft">Hand-picked designers worth a follow.</p>
             <div className="mt-4 grid gap-5 md:grid-cols-3">
-              {featured.map((c: any) => (
+              {spotlight.map((c: any) => (
                 <Link
                   key={c.id}
                   to="/c/$slug"
                   params={{ slug: c.slug }}
                   className="group relative overflow-hidden rounded-2xl border border-primary/40 bg-card shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)]"
                 >
-                  <span className="absolute right-3 top-3 z-10 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">Featured</span>
+                  {featured.length > 0 && <span className="absolute right-3 top-3 z-10 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">Featured</span>}
                   <div className="aspect-[3/1] bg-gradient-to-br from-accent to-secondary" style={c.banner_image_url ? { backgroundImage: `url(${c.banner_image_url})`, backgroundSize: "cover" } : undefined} />
                   <div className="p-5">
                     <div className="flex items-center gap-3">
