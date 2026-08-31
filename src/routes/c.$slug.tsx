@@ -258,12 +258,21 @@ function CreatorPage() {
             {tiers.map((t) => (
               <div key={t.id} className="card-soft flex flex-col">
                 <h3 className="text-lg font-bold text-ink">{t.name}</h3>
-                <div className="mt-2 text-3xl font-bold text-ink">${Number(t.price).toFixed(0)}<span className="text-base font-medium text-ink-soft">/mo</span></div>
+                <div className="mt-2 text-3xl font-bold text-ink">${Number(t.price).toFixed(0)}<span className="text-base font-medium text-ink-soft">/{t.billing_interval === "year" ? "yr" : "mo"}</span></div>
+                {t.commercial_licence && (
+                  <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
+                    Commercial licence included
+                  </span>
+                )}
+                {t.commercial_licence && t.commercial_licence_summary && (
+                  <p className="mt-2 text-xs text-ink-soft">{t.commercial_licence_summary}</p>
+                )}
                 {Array.isArray(t.benefits) && (
                   <ul className="mt-4 space-y-1 text-sm text-ink-soft">
                     {t.benefits.map((b: string, i: number) => <li key={i}>• {b}</li>)}
                   </ul>
                 )}
+
                 <button
                   className="btn-primary mt-6 w-full"
                   onClick={() => {

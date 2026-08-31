@@ -29,19 +29,35 @@ export const Route = createFileRoute("/me/receipts")({
 function Receipts() {
   const { user } = useAuth();
   const [rows, setRows] = useState<any[] | null>(null);
+  const [commercialCreators, setCommercialCreators] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("downloads")
       .select(
-        "id, downloaded_at, creator_files(title, is_free, tier_required_id), creator_profiles(display_name, slug)"
+        "id, downloaded_at, creator_id, creator_files(title, is_free, tier_required_id), creator_profiles(display_name, slug)"
       )
       .eq("user_id", user.id)
       .order("downloaded_at", { ascending: false })
       .limit(200)
       .then(({ data }) => setRows(data ?? []));
+
+    // Live check: which creators currently grant this member commercial rights.
+    supabase
+      .from("subscriptions")
+      .select("creator_id, status, creator_tiers(commercial_licence)")
+      .eq("user_id", user.id)
+      .in("status", ["active", "trialing"])
+      .then(({ data }) => {
+        const set = new Set<string>();
+        (data ?? []).forEach((s: any) => {
+          if (s.creator_tiers?.commercial_licence) set.add(s.creator_id);
+        });
+        setCommercialCreators(set);
+      });
   }, [user]);
+
 
   return (
     <div>
@@ -81,12 +97,22 @@ function Receipts() {
                 {new Date(r.downloaded_at).toLocaleString()}
               </p>
               <p className="mt-2 text-xs text-ink-soft">
-                Licence:{" "}
-                {r.creator_files?.is_free
-                  ? "Free download — personal use"
-                  : "Membership licence — personal use"}
-                . Commercial use requires written permission from the creator.
+                {commercialCreators.has(r.creator_id) ? (
+                  <>
+                    Licence: Commercial licence — active membership with this creator grants commercial printing
+                    rights. See <a href="/me/licences" className="font-semibold text-primary hover:underline">your licences</a> for the exact terms.
+                  </>
+                ) : (
+                  <>
+                    Licence:{" "}
+                    {r.creator_files?.is_free
+                      ? "Free download — personal use"
+                      : "Membership licence — personal use"}
+                    . Commercial use requires a tier that includes a commercial licence.
+                  </>
+                )}
               </p>
+
             </div>
           ))}
         </div>

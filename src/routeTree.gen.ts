@@ -41,6 +41,7 @@ import { Route as MeReceiptsRouteImport } from './routes/me.receipts'
 import { Route as MePrintLogRouteImport } from './routes/me.print-log'
 import { Route as MeNotificationsRouteImport } from './routes/me.notifications'
 import { Route as MeMessagesRouteImport } from './routes/me.messages'
+import { Route as MeLicencesRouteImport } from './routes/me.licences'
 import { Route as MeGiftsRouteImport } from './routes/me.gifts'
 import { Route as MeFollowingRouteImport } from './routes/me.following'
 import { Route as MeDownloadsRouteImport } from './routes/me.downloads'
@@ -55,6 +56,7 @@ import { Route as DashboardPromosRouteImport } from './routes/dashboard.promos'
 import { Route as DashboardPostsRouteImport } from './routes/dashboard.posts'
 import { Route as DashboardPayoutsRouteImport } from './routes/dashboard.payouts'
 import { Route as DashboardMessagesRouteImport } from './routes/dashboard.messages'
+import { Route as DashboardLicencesRouteImport } from './routes/dashboard.licences'
 import { Route as DashboardFilesRouteImport } from './routes/dashboard.files'
 import { Route as DashboardBundlesRouteImport } from './routes/dashboard.bundles'
 import { Route as DashboardAnnouncementsRouteImport } from './routes/dashboard.announcements'
@@ -242,6 +244,11 @@ const MeMessagesRoute = MeMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => MeRoute,
 } as any)
+const MeLicencesRoute = MeLicencesRouteImport.update({
+  id: '/licences',
+  path: '/licences',
+  getParentRoute: () => MeRoute,
+} as any)
 const MeGiftsRoute = MeGiftsRouteImport.update({
   id: '/gifts',
   path: '/gifts',
@@ -310,6 +317,11 @@ const DashboardPayoutsRoute = DashboardPayoutsRouteImport.update({
 const DashboardMessagesRoute = DashboardMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLicencesRoute = DashboardLicencesRouteImport.update({
+  id: '/licences',
+  path: '/licences',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardFilesRoute = DashboardFilesRouteImport.update({
@@ -491,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -505,6 +518,7 @@ export interface FileRoutesByFullPath {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -562,6 +576,7 @@ export interface FileRoutesByTo {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -576,6 +591,7 @@ export interface FileRoutesByTo {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -637,6 +653,7 @@ export interface FileRoutesById {
   '/dashboard/announcements': typeof DashboardAnnouncementsRoute
   '/dashboard/bundles': typeof DashboardBundlesRoute
   '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/licences': typeof DashboardLicencesRoute
   '/dashboard/messages': typeof DashboardMessagesRoute
   '/dashboard/payouts': typeof DashboardPayoutsRoute
   '/dashboard/posts': typeof DashboardPostsRoute
@@ -651,6 +668,7 @@ export interface FileRoutesById {
   '/me/downloads': typeof MeDownloadsRoute
   '/me/following': typeof MeFollowingRoute
   '/me/gifts': typeof MeGiftsRoute
+  '/me/licences': typeof MeLicencesRoute
   '/me/messages': typeof MeMessagesRoute
   '/me/notifications': typeof MeNotificationsRoute
   '/me/print-log': typeof MePrintLogRoute
@@ -713,6 +731,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -727,6 +746,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -784,6 +804,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -798,6 +819,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -858,6 +880,7 @@ export interface FileRouteTypes {
     | '/dashboard/announcements'
     | '/dashboard/bundles'
     | '/dashboard/files'
+    | '/dashboard/licences'
     | '/dashboard/messages'
     | '/dashboard/payouts'
     | '/dashboard/posts'
@@ -872,6 +895,7 @@ export interface FileRouteTypes {
     | '/me/downloads'
     | '/me/following'
     | '/me/gifts'
+    | '/me/licences'
     | '/me/messages'
     | '/me/notifications'
     | '/me/print-log'
@@ -1143,6 +1167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeMessagesRouteImport
       parentRoute: typeof MeRoute
     }
+    '/me/licences': {
+      id: '/me/licences'
+      path: '/licences'
+      fullPath: '/me/licences'
+      preLoaderRoute: typeof MeLicencesRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/me/gifts': {
       id: '/me/gifts'
       path: '/gifts'
@@ -1239,6 +1270,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/dashboard/messages'
       preLoaderRoute: typeof DashboardMessagesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/licences': {
+      id: '/dashboard/licences'
+      path: '/licences'
+      fullPath: '/dashboard/licences'
+      preLoaderRoute: typeof DashboardLicencesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/files': {
@@ -1485,6 +1523,7 @@ interface DashboardRouteChildren {
   DashboardAnnouncementsRoute: typeof DashboardAnnouncementsRoute
   DashboardBundlesRoute: typeof DashboardBundlesRoute
   DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardLicencesRoute: typeof DashboardLicencesRoute
   DashboardMessagesRoute: typeof DashboardMessagesRoute
   DashboardPayoutsRoute: typeof DashboardPayoutsRoute
   DashboardPostsRoute: typeof DashboardPostsRoute
@@ -1500,6 +1539,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnnouncementsRoute: DashboardAnnouncementsRoute,
   DashboardBundlesRoute: DashboardBundlesRoute,
   DashboardFilesRoute: DashboardFilesRoute,
+  DashboardLicencesRoute: DashboardLicencesRoute,
   DashboardMessagesRoute: DashboardMessagesRoute,
   DashboardPayoutsRoute: DashboardPayoutsRoute,
   DashboardPostsRoute: DashboardPostsRoute,
@@ -1534,6 +1574,7 @@ interface MeRouteChildren {
   MeDownloadsRoute: typeof MeDownloadsRoute
   MeFollowingRoute: typeof MeFollowingRoute
   MeGiftsRoute: typeof MeGiftsRoute
+  MeLicencesRoute: typeof MeLicencesRoute
   MeMessagesRoute: typeof MeMessagesRoute
   MeNotificationsRoute: typeof MeNotificationsRoute
   MePrintLogRoute: typeof MePrintLogRoute
@@ -1548,6 +1589,7 @@ const MeRouteChildren: MeRouteChildren = {
   MeDownloadsRoute: MeDownloadsRoute,
   MeFollowingRoute: MeFollowingRoute,
   MeGiftsRoute: MeGiftsRoute,
+  MeLicencesRoute: MeLicencesRoute,
   MeMessagesRoute: MeMessagesRoute,
   MeNotificationsRoute: MeNotificationsRoute,
   MePrintLogRoute: MePrintLogRoute,

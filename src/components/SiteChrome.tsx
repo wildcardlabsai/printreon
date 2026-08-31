@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NAV_LINKS = [
   { id: "features", label: "Features" },
@@ -16,7 +24,14 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isCreator, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    setMenuOpen(false);
+    await signOut();
+    navigate({ to: "/", replace: true });
+  };
+
 
   const scrollTo = (id: string) => {
     setMenuOpen(false);
@@ -52,9 +67,36 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
-            <Link to="/me" className="btn-primary h-9 px-4 py-2 text-sm whitespace-nowrap">
-              My account
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm font-medium text-ink hover:bg-secondary">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-[11px] font-bold uppercase text-primary">
+                  {(user.email ?? "?").slice(0, 1)}
+                </span>
+                <span className="hidden max-w-[10rem] truncate sm:inline">{user.email}</span>
+                <ChevronDown className="h-4 w-4 text-ink-soft" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/me"><ShoppingBag className="mr-2 h-4 w-4" /> My account</Link>
+                </DropdownMenuItem>
+                {isCreator && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard"><Palette className="mr-2 h-4 w-4" /> Creator studio</Link>
+                  </DropdownMenuItem>
+                )}
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin"><Shield className="mr-2 h-4 w-4" /> Admin</Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" /> Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <>
               <Link to="/auth" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
@@ -68,6 +110,7 @@ export function SiteHeader() {
               </button>
             </>
           )}
+
 
 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -95,14 +138,45 @@ export function SiteHeader() {
                   </button>
                 ))}
               </nav>
-              <SheetClose asChild>
-                <button
-                  onClick={() => scrollTo("beta-access")}
-                  className="btn-primary mt-4 h-11 w-full text-sm"
-                >
-                  Apply For Beta
-                </button>
-              </SheetClose>
+              {user ? (
+                <div className="mt-4 flex flex-col gap-1 border-t border-border pt-4 text-base font-medium text-ink">
+                  <SheetClose asChild>
+                    <Link to="/me" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                      <ShoppingBag className="h-4 w-4" /> My account
+                    </Link>
+                  </SheetClose>
+                  {isCreator && (
+                    <SheetClose asChild>
+                      <Link to="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                        <Palette className="h-4 w-4" /> Creator studio
+                      </Link>
+                    </SheetClose>
+                  )}
+                  {isAdmin && (
+                    <SheetClose asChild>
+                      <Link to="/admin" className="flex items-center gap-2 rounded-lg px-3 py-3 hover:bg-secondary">
+                        <Shield className="h-4 w-4" /> Admin
+                      </Link>
+                    </SheetClose>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-destructive hover:bg-destructive/10"
+                  >
+                    <LogOut className="h-4 w-4" /> Sign out
+                  </button>
+                </div>
+              ) : (
+                <SheetClose asChild>
+                  <button
+                    onClick={() => scrollTo("beta-access")}
+                    className="btn-primary mt-4 h-11 w-full text-sm"
+                  >
+                    Apply For Beta
+                  </button>
+                </SheetClose>
+              )}
+
             </SheetContent>
           </Sheet>
         </div>
