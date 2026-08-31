@@ -1,42 +1,70 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
+import { supabase } from "@/integrations/supabase/client";
 
-const items = [
-  {
-    date: "2026-05",
-    title: "Stripe Connect payouts + creator email notifications",
-    body: "Creators can now onboard to Stripe Connect from dashboard → Payouts to receive subscriber payments directly, with an automatic platform fee split. Subscribers also get an email whenever a creator they follow drops a new file or post. Dashboard empty states (subscribers, files, tiers, announcements) were polished with helpful calls to action.",
-  },
-  {
-    date: "2026-05",
-    title: "Embedded Stripe checkout + subscription lifecycle",
-    body: "Subscribing to a tier now opens an embedded Stripe checkout. New subscriptions, upgrades/downgrades (immediate + prorated) and cancellations (access until period end, then revoked) are all wired up via Stripe webhooks.",
-  },
-  {
-    date: "2026-05",
-    title: "Launch",
-    body: "Printreon opens to creators with full creator/member/admin dashboards, file uploads, tier memberships, posts, comments, DMs, bundles, promo codes, wishlists and print log.",
-  },
-];
+type Entry = {
+  id: string;
+  title: string;
+  body: string;
+  entry_date: string;
+};
 
 export const Route = createFileRoute("/changelog")({
-  head: () => ({ meta: [{ title: "Changelog — Printreon" }, { name: "description", content: "What's new in Printreon." }] }),
-  component: () => (
+  head: () => ({
+    meta: [
+      { title: "Changelog — Printreon" },
+      { name: "description", content: "Every new feature, fix and improvement shipped on Printreon." },
+      { property: "og:title", content: "Changelog — Printreon" },
+      { property: "og:description", content: "Every new feature, fix and improvement shipped on Printreon." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: ChangelogPage,
+});
+
+function ChangelogPage() {
+  const [items, setItems] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("changelog_entries")
+      .select("id,title,body,entry_date")
+      .eq("is_published", true)
+      .order("entry_date", { ascending: false })
+      .then(({ data }) => {
+        setItems((data as Entry[]) ?? []);
+        setLoading(false);
+      });
+  }, []);
+
+  return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <div className="container-page max-w-3xl py-16">
         <h1 className="text-4xl font-bold text-ink">Changelog</h1>
-        <ul className="mt-8 space-y-6">
-          {items.map((i) => (
-            <li key={i.date} className="card-soft">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary">{i.date}</p>
-              <h2 className="mt-1 text-lg font-bold text-ink">{i.title}</h2>
-              <p className="mt-2 text-ink-soft">{i.body}</p>
-            </li>
-          ))}
-        </ul>
+        <p className="mt-3 text-ink-soft">What's new on Printreon.</p>
+        {loading ? (
+          <p className="mt-8 text-sm text-ink-soft">Loading…</p>
+        ) : items.length === 0 ? (
+          <p className="mt-8 text-sm text-ink-soft">No entries yet — check back soon.</p>
+        ) : (
+          <ul className="mt-8 space-y-6">
+            {items.map((i) => (
+              <li key={i.id} className="card-soft">
+                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                  {new Date(i.entry_date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+                </p>
+                <h2 className="mt-1 text-lg font-bold text-ink">{i.title}</h2>
+                <p className="mt-2 whitespace-pre-wrap text-ink-soft">{i.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <SiteFooter />
     </div>
-  ),
-});
+  );
+}
