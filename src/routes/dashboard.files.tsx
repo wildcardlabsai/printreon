@@ -89,9 +89,9 @@ function FilesPage() {
     if (!user || !creator) return;
     setThumbBusyId(f.id);
     try {
-      const { data: signed, error } = await supabase.storage.from("files").createSignedUrl(f.file_url, 300);
-      if (error || !signed) throw new Error("Could not read the stored file");
-      const blob = await fetch(signed.signedUrl).then((r) => r.blob());
+      const { url } = await previewFn({ data: { fileId: f.id } });
+      if (!url) throw new Error("Could not read the stored file");
+      const blob = await fetch(url).then((r) => r.blob());
       if (blob.size > MAX_PREVIEW_BYTES) throw new Error("File is too large to render previews");
       const asFile = new File([blob], `${f.slug}.${f.file_type ?? "stl"}`);
       const { blobs, stats } = await renderThumbnails(asFile, 3);
