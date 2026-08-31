@@ -29,19 +29,35 @@ export const Route = createFileRoute("/me/receipts")({
 function Receipts() {
   const { user } = useAuth();
   const [rows, setRows] = useState<any[] | null>(null);
+  const [commercialCreators, setCommercialCreators] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("downloads")
       .select(
-        "id, downloaded_at, creator_files(title, is_free, tier_required_id), creator_profiles(display_name, slug)"
+        "id, downloaded_at, creator_id, creator_files(title, is_free, tier_required_id), creator_profiles(display_name, slug)"
       )
       .eq("user_id", user.id)
       .order("downloaded_at", { ascending: false })
       .limit(200)
       .then(({ data }) => setRows(data ?? []));
+
+    // Live check: which creators currently grant this member commercial rights.
+    supabase
+      .from("subscriptions")
+      .select("creator_id, status, creator_tiers(commercial_licence)")
+      .eq("user_id", user.id)
+      .in("status", ["active", "trialing"])
+      .then(({ data }) => {
+        const set = new Set<string>();
+        (data ?? []).forEach((s: any) => {
+          if (s.creator_tiers?.commercial_licence) set.add(s.creator_id);
+        });
+        setCommercialCreators(set);
+      });
   }, [user]);
+
 
   return (
     <div>
