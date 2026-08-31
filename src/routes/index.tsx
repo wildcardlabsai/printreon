@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, PARTNER } from "@/lib/site";
@@ -27,14 +27,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Printreon | STL Membership Platform for 3D Print Creators" },
-      { name: "description", content: `${SITE_DESCRIPTION} Invite-only beta now open.` },
+      { name: "description", content: `${SITE_DESCRIPTION} The beta is live — join free or apply to be a creator.` },
       { property: "og:title", content: "Printreon — STL Memberships for 3D Print Creators" },
-      { property: "og:description", content: `${SITE_DESCRIPTION} Founding creators lock in higher payouts for life.` },
+      { property: "og:description", content: `${SITE_DESCRIPTION} The beta is live: browse creators free, or apply to open your creator page.` },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Printreon — STL Memberships for 3D Print Creators" },
-      { name: "twitter:description", content: "Sell STL, 3MF and printable files through monthly memberships. Invite-only beta for founding 3D print creators." },
+      { name: "twitter:description", content: "Sell STL, 3MF and printable files through monthly memberships. The Printreon beta is live for supporters and creators." },
+
       {
         "script:ld+json": {
           "@context": "https://schema.org",
