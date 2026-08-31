@@ -57,6 +57,13 @@
       "when": 1788192916907,
       "tag": "0007_admin_cron_jobs_service_role_only",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788204059768,
+      "tag": "0008_create_newsletter_subscribers",
+      "breakpoints": true
     }
   ]
 }
