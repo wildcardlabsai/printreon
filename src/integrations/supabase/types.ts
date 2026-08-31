@@ -1928,6 +1928,13 @@ export type Database = {
           schedule: string
         }[]
       }
+      check_invite_code: {
+        Args: { p_code: string }
+        Returns: {
+          reason: string
+          valid: boolean
+        }[]
+      }
       generate_beta_referral_code: { Args: never; Returns: string }
       get_beta_referral_stats: {
         Args: { _code: string }
