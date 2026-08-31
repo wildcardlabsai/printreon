@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut } from "lucide-react";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NAV_LINKS = [
   { id: "features", label: "Features" },
@@ -16,7 +24,14 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isCreator, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    setMenuOpen(false);
+    await signOut();
+    navigate({ to: "/", replace: true });
+  };
+
 
   const scrollTo = (id: string) => {
     setMenuOpen(false);
