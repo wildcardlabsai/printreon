@@ -43,13 +43,14 @@ function ForCreators() {
 
         <div className="mt-16 rounded-3xl border border-border bg-surface p-8">
           <span className="eyebrow">// Quality standards</span>
-          <h2 className="mt-4 text-2xl font-bold text-ink">We're strict, on purpose.</h2>
+          <h2 className="mt-4 text-2xl font-bold text-ink">Printable, or it doesn't go live.</h2>
           <p className="mt-2 max-w-2xl text-sm text-ink-soft">
-            Raw, unedited AI mesh dumps are prohibited. Every upload runs an automatic mesh sanity check, and your first
-            files are reviewed by a human before they go live. Print your model and attach a photo to earn the
-            <strong className="text-ink"> Print-Tested</strong> badge; no printer of your own? Publish as
-            <strong className="text-ink"> Digital Sculpt</strong> as long as the geometry is watertight and slicer-scaled.
-            Used AI anywhere? Refine it by hand and disclose it as <strong className="text-ink">AI-Assisted</strong>.
+            Every upload runs an automatic mesh sanity check, and your first files are reviewed by a human before they
+            go live. Print your model and attach a photo to earn the <strong className="text-ink">Print-Tested</strong>{" "}
+            badge; no printer of your own? Publish as <strong className="text-ink">Digital Sculpt</strong> as long as the
+            geometry is watertight and slicer-scaled. Used AI anywhere? That's allowed — disclose it as{" "}
+            <strong className="text-ink">AI-Assisted</strong>. We'd rather you refined the mesh by hand, and if the model
+            is essentially straight AI output you'll need to print it and attach the photo before it can be published.
           </p>
           <Link to="/legal/terms" hash="quality" className="mt-4 inline-block text-sm text-primary underline underline-offset-4">Read the full quality &amp; AI policy</Link>
         </div>
