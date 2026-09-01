@@ -184,11 +184,13 @@ export function SiteHeader() {
                 </div>
               ) : (
                 <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
-                  <SheetClose asChild>
-                    <Link to="/explore" className="rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-secondary">
-                      Explore creators
-                    </Link>
-                  </SheetClose>
+                  {discoveryEnabled && (
+                    <SheetClose asChild>
+                      <Link to="/explore" className="rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-secondary">
+                        Explore creators
+                      </Link>
+                    </SheetClose>
+                  )}
                   <SheetClose asChild>
                     <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-11 w-full text-sm">
                       Create free account
