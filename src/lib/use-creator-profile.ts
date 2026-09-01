@@ -6,7 +6,7 @@ import { useAuth } from "./auth-context";
 // internal financial metadata). The owner reads them via a security definer
 // RPC scoped to auth.uid().
 const CREATOR_COLUMNS =
-  "id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, created_at, updated_at";
+  "id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, trusted_at, created_at, updated_at";
 
 export function useCreatorProfile() {
   const { user, loading } = useAuth();

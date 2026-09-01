@@ -6,10 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
-import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders } from "lucide-react";
+import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails } from "@/lib/mesh-preview";
+import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails, qualityFlags, CREATION_METHODS, type MeshStats } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
+import { CreationMethodBadge, PrintVerifiedBadge, ReviewStatusBadge } from "@/components/QualityBadges";
 
 import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
 
@@ -22,6 +23,9 @@ function slugify(s: string) {
 }
 
 const ACCEPTED = ".stl,.3mf,.obj,.zip,.step,.stp,.gcode,.lys,.chitubox,.ctb,.pdf,.png,.jpg,.jpeg";
+
+const FILE_COLUMNS =
+  "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at";
 
 function FilesPage() {
   const { user } = useAuth();
@@ -47,15 +51,18 @@ function FilesPage() {
   const [supports, setSupports] = useState<"" | "yes" | "no">("");
   const [settingsOpenId, setSettingsOpenId] = useState<string | null>(null);
 
+  // disclosure + automatic mesh checks
+  const [creationMethod, setCreationMethod] = useState<string>("");
+  const [aiNote, setAiNote] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [check, setCheck] = useState<{ blobs: Blob[]; stats: MeshStats; flags: string[]; fatal: string | null } | null>(null);
 
   const refresh = async () => {
     if (!creator) return;
     const [{ data: f }, { data: t }] = await Promise.all([
       supabase
         .from("creator_files")
-        .select(
-          "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count"
-        )
+        .select(FILE_COLUMNS)
         .eq("creator_id", creator.id)
         .order("created_at", { ascending: false }),
       supabase.from("creator_tiers").select("*").eq("creator_id", creator.id).order("price"),
@@ -65,6 +72,27 @@ function FilesPage() {
   };
 
   useEffect(() => { refresh(); }, [creator]);
+
+  // Run the mesh sanity checks as soon as a file is picked.
+  const onPick = async (f: File | null) => {
+    setPickedFile(f);
+    setCheck(null);
+    if (!f || !canPreview(f.name)) return;
+    if (f.size > MAX_PREVIEW_BYTES) return;
+    setChecking(true);
+    try {
+      const { blobs, stats } = await renderThumbnails(f, 3);
+      const flags = qualityFlags(stats, f.size);
+      const fatal = blobs.length === 0
+        ? "We couldn't render this model — it may be corrupt."
+        : flags.find((x) => x.includes("no usable geometry")) ?? null;
+      setCheck({ blobs, stats, flags, fatal });
+    } catch (e: any) {
+      setCheck({ blobs: [], stats: { dimX: 0, dimY: 0, dimZ: 0, triangleCount: 0 }, flags: [], fatal: e?.message ?? "This file could not be opened as a 3D model." });
+    } finally {
+      setChecking(false);
+    }
+  };
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
@@ -111,6 +139,7 @@ function FilesPage() {
         dim_y: stats.dimY,
         dim_z: stats.dimZ,
         triangle_count: stats.triangleCount,
+        quality_flags: qualityFlags(stats, Number(f.file_size ?? 0)),
       }).eq("id", f.id);
       toast.success("Previews generated");
       await refresh();
@@ -122,7 +151,11 @@ function FilesPage() {
   };
 
   const upload = async () => {
-    if (!user || !creator || !pickedFile || !title) return;
+    if (!user || !creator || !pickedFile || !title || !creationMethod) return;
+    if (check?.fatal) {
+      toast.error(check.fatal);
+      return;
+    }
     setBusy(true);
     setProgress("Uploading…");
     try {
@@ -152,31 +185,29 @@ function FilesPage() {
         print_time_minutes: printTime ? Number(printTime) : null,
         recommended_printer: printer || null,
         supports_required: supports === "" ? null : supports === "yes",
-
+        creation_method: creationMethod,
+        ai_disclosure_note: creationMethod === "hand" ? null : (aiNote || null),
+        quality_flags: check?.flags ?? [],
+        ...(check?.stats
+          ? { dim_x: check.stats.dimX, dim_y: check.stats.dimY, dim_z: check.stats.dimZ, triangle_count: check.stats.triangleCount }
+          : {}),
       }).select("id").single();
       if (insErr) throw insErr;
 
-      // Auto-generate thumbnails + mesh metadata in the browser (best effort).
-      if (inserted && canPreview(pickedFile.name) && pickedFile.size <= MAX_PREVIEW_BYTES) {
+      // Upload the thumbnails rendered during the file check (best effort).
+      if (inserted && check && check.blobs.length > 0) {
         try {
-          setProgress("Rendering previews…");
-          const { blobs, stats } = await renderThumbnails(pickedFile, 3);
+          setProgress("Saving previews…");
           const urls: string[] = [];
-          for (let i = 0; i < blobs.length; i++) {
+          for (let i = 0; i < check.blobs.length; i++) {
             const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
             const { error: thumbErr } = await supabase.storage
               .from("previews")
-              .upload(thumbPath, blobs[i], { contentType: "image/webp", upsert: true });
+              .upload(thumbPath, check.blobs[i], { contentType: "image/webp", upsert: true });
             if (thumbErr) continue;
             urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
           }
-          await supabase.from("creator_files").update({
-            preview_images: urls,
-            dim_x: stats.dimX,
-            dim_y: stats.dimY,
-            dim_z: stats.dimZ,
-            triangle_count: stats.triangleCount,
-          }).eq("id", inserted.id);
+          await supabase.from("creator_files").update({ preview_images: urls }).eq("id", inserted.id);
         } catch {
           // previews are optional — the upload itself succeeded
         }
@@ -185,6 +216,7 @@ function FilesPage() {
       toast.success("File uploaded — review and publish below");
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       setMaterial(""); setLayerHeight(""); setInfill(""); setPrintTime(""); setPrinter(""); setSupports("");
+      setCreationMethod(""); setAiNote(""); setCheck(null);
 
       if (inputRef.current) inputRef.current.value = "";
       await refresh();
@@ -196,9 +228,20 @@ function FilesPage() {
   const notify = useServerFn(notifyOnPublish);
   const togglePublish = async (f: any) => {
     const willPublish = !f.is_published;
-    const { error } = await supabase.from("creator_files").update({ is_published: willPublish }).eq("id", f.id);
+    if (willPublish && !f.creation_method) {
+      return toast.error("Set how this model was made before publishing.");
+    }
+    const { data: updated, error } = await supabase
+      .from("creator_files")
+      .update({ is_published: willPublish })
+      .eq("id", f.id)
+      .select("is_published, review_status")
+      .maybeSingle();
     if (error) return toast.error(error.message);
-    if (willPublish) {
+
+    if (willPublish && updated && !updated.is_published) {
+      toast.success("Sent for review — we check the first few files from every new creator.");
+    } else if (willPublish) {
       try {
         const r = await notify({ data: { kind: "file", itemId: f.id } });
         if (r.notified > 0) toast.success(`Published — notified ${r.notified} ${r.notified === 1 ? "person" : "people"}`);
@@ -206,6 +249,34 @@ function FilesPage() {
       } catch { toast.success("Published"); }
     }
     await refresh();
+  };
+
+  // Print-verified photo
+  const [verifyBusyId, setVerifyBusyId] = useState<string | null>(null);
+  const uploadPrintProof = async (f: any, photo: File) => {
+    if (!user || !creator) return;
+    setVerifyBusyId(f.id);
+    try {
+      const ext = photo.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const path = `${user.id}/${creator.id}/verify-${f.id}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("previews").upload(path, photo, {
+        contentType: photo.type || "image/jpeg",
+        upsert: true,
+      });
+      if (upErr) throw upErr;
+      const url = supabase.storage.from("previews").getPublicUrl(path).data.publicUrl + `?v=${Date.now()}`;
+      const { error } = await supabase.from("creator_files").update({
+        print_verified_image_url: url,
+        print_verified_at: new Date().toISOString(),
+      }).eq("id", f.id);
+      if (error) throw error;
+      toast.success("Print verified — buyers will see the badge and your photo");
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not save the photo");
+    } finally {
+      setVerifyBusyId(null);
+    }
   };
 
   const remove = async (f: any) => {
@@ -219,11 +290,18 @@ function FilesPage() {
     await refresh();
   };
 
+  const untrusted = creator && !(creator as any).trusted_at;
+
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       <div className="card-soft lg:col-span-1">
         <h2 className="text-lg font-bold text-ink">Upload a new file</h2>
         <p className="mt-1 text-sm text-ink-soft">STL, 3MF, OBJ, ZIP and more — up to 200MB.</p>
+        {untrusted && (
+          <p className="mt-3 rounded-lg bg-secondary p-3 text-xs text-ink-soft">
+            You're new here, so your first 3 published files get a quick human review before they go live. After that everything publishes instantly.
+          </p>
+        )}
         <div className="mt-4 space-y-3">
           <Field label="Title">
             <input value={title} onChange={(e) => setTitle(e.target.value)} className={inp} />
@@ -262,6 +340,25 @@ function FilesPage() {
               </select>
             </Field>
           )}
+
+          <div className="rounded-xl border border-border p-3">
+            <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">How was this made?</div>
+            <p className="mt-1 text-xs text-ink-soft">Required. Buyers see this on the file — undisclosed AI use can get your file removed.</p>
+            <div className="mt-3">
+              <select value={creationMethod} onChange={(e) => setCreationMethod(e.target.value)} className={inp}>
+                <option value="">Choose one…</option>
+                {CREATION_METHODS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+            </div>
+            {creationMethod && creationMethod !== "hand" && (
+              <div className="mt-3">
+                <Field label="What did you clean up or retopologise?">
+                  <textarea value={aiNote} onChange={(e) => setAiNote(e.target.value)} rows={2} className={inp} placeholder="Generated the base shape, then remeshed, hollowed and test-printed it." />
+                </Field>
+              </div>
+            )}
+          </div>
+
           <div className="rounded-xl border border-border p-3">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Recommended print settings</div>
             <p className="mt-1 text-xs text-ink-soft">Optional — shown on the file card so buyers know how you printed it.</p>
@@ -296,14 +393,35 @@ function FilesPage() {
               ref={inputRef}
               type="file"
               accept={ACCEPTED}
-              onChange={(e) => setPickedFile(e.target.files?.[0] ?? null)}
+              onChange={(e) => onPick(e.target.files?.[0] ?? null)}
               className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground"
             />
             {pickedFile && <div className="mt-1 text-xs text-ink-soft">{pickedFile.name} ({(pickedFile.size / 1024 / 1024).toFixed(2)} MB)</div>}
           </Field>
-          <button onClick={upload} disabled={busy || !title || !pickedFile} className="btn-primary w-full">
+
+          {checking && (
+            <div className="flex items-center gap-2 text-xs text-ink-soft"><Loader2 className="h-4 w-4 animate-spin" />Checking the model…</div>
+          )}
+          {check?.fatal && (
+            <div className="rounded-lg bg-destructive/10 p-3 text-xs font-semibold text-destructive">{check.fatal}</div>
+          )}
+          {check && !check.fatal && check.flags.length > 0 && (
+            <div className="rounded-lg bg-amber-500/10 p-3 text-xs text-amber-800">
+              <div className="mb-1 flex items-center gap-1 font-bold"><AlertTriangle className="h-3.5 w-3.5" />Worth a second look</div>
+              <ul className="list-disc space-y-0.5 pl-4">{check.flags.map((f) => <li key={f}>{f}</li>)}</ul>
+              <p className="mt-1.5">You can still upload, but this file will be reviewed before it goes live.</p>
+            </div>
+          )}
+          {check && !check.fatal && check.flags.length === 0 && (
+            <div className="rounded-lg bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-700">
+              Model looks good — {check.stats.dimX} × {check.stats.dimY} × {check.stats.dimZ} mm, {check.stats.triangleCount.toLocaleString()} triangles.
+            </div>
+          )}
+
+          <button onClick={upload} disabled={busy || checking || !title || !pickedFile || !creationMethod || !!check?.fatal} className="btn-primary w-full">
             {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{progress || "Working…"}</> : <><Upload className="mr-2 h-4 w-4" />Upload file</>}
           </button>
+          {!creationMethod && pickedFile && <p className="text-xs text-ink-soft">Choose how this model was made to continue.</p>}
         </div>
       </div>
 
@@ -321,6 +439,7 @@ function FilesPage() {
               const thumb = Array.isArray(f.preview_images) && f.preview_images.length > 0
                 ? (typeof f.preview_images[0] === "string" ? f.preview_images[0] : f.preview_images[0]?.url)
                 : null;
+              const flags: string[] = Array.isArray(f.quality_flags) ? f.quality_flags : [];
               return (
               <li key={f.id} className="card-soft flex flex-wrap items-center gap-4">
                 {thumb ? (
@@ -336,13 +455,16 @@ function FilesPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold text-ink truncate">{f.title}</h3>
                     {f.is_published ? (
                       <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">LIVE</span>
                     ) : (
                       <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-ink-soft">DRAFT</span>
                     )}
+                    <ReviewStatusBadge status={f.review_status} />
+                    <CreationMethodBadge method={f.creation_method} />
+                    <PrintVerifiedBadge verifiedAt={f.print_verified_at} />
                     {f.is_free ? (
                       <span className="inline-flex items-center gap-1 text-xs text-emerald-600"><Unlock className="h-3 w-3" />Free</span>
                     ) : (
@@ -354,6 +476,29 @@ function FilesPage() {
                     {f.dim_x != null && <> · {f.dim_x} × {f.dim_y} × {f.dim_z} mm</>}
                     {f.triangle_count != null && <> · {Number(f.triangle_count).toLocaleString()} tris</>}
                   </div>
+                  {flags.length > 0 && (
+                    <div className="mt-1 text-xs text-amber-700">{flags.join(" ")}</div>
+                  )}
+                  {f.review_status === "rejected" && f.review_notes && (
+                    <div className="mt-1 text-xs text-destructive">Reviewer: {f.review_notes}</div>
+                  )}
+                  {!f.creation_method && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-xs text-ink-soft">How was this made?</span>
+                      <select
+                        defaultValue=""
+                        onChange={async (e) => {
+                          if (!e.target.value) return;
+                          await supabase.from("creator_files").update({ creation_method: e.target.value }).eq("id", f.id);
+                          await refresh();
+                        }}
+                        className="rounded-lg border border-input bg-background px-2 py-1 text-xs"
+                      >
+                        <option value="">Choose…</option>
+                        {CREATION_METHODS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   {f.file_type && canPreview(f.file_type) && (
@@ -366,10 +511,19 @@ function FilesPage() {
                       </button>
                     </>
                   )}
+                  <label className="btn-ghost h-9 cursor-pointer px-3" title={f.print_verified_at ? "Replace print photo" : "Add a photo of the real print"}>
+                    {verifyBusyId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => { const p = e.target.files?.[0]; if (p) uploadPrintProof(f, p); e.target.value = ""; }}
+                    />
+                  </label>
                   <button onClick={() => setSettingsOpenId(settingsOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Recommended print settings">
                     <Sliders className="h-4 w-4" />
                   </button>
-                  <button onClick={() => togglePublish(f)} className="btn-ghost h-9 px-3">
+                  <button onClick={() => togglePublish(f)} disabled={f.review_status === "pending"} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
                   <button onClick={() => remove(f)} className="btn-ghost h-9 px-3 text-destructive hover:bg-destructive/10">

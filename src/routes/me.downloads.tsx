@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
 import { getFileDownloadUrl, getFilePreviewUrl } from "@/functions/downloads.functions";
+import { submitPrintReport } from "@/functions/quality.functions";
 import { canPreview } from "@/lib/mesh-preview";
 import { STLViewerModal } from "@/components/STLViewer";
-import { Download, Loader2, Box } from "lucide-react";
+import { Download, Loader2, Box, ThumbsUp, ThumbsDown } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me/downloads")({
@@ -107,6 +108,7 @@ function DownloadsPage() {
                 <button disabled={busyId === d.file_id} onClick={() => redownload(d.file_id)} className="btn-ghost h-8 px-3 text-xs">
                   {busyId === d.file_id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
                 </button>
+                <PrintOutcome fileId={d.file_id} />
               </td>
             </tr>
             );
@@ -117,5 +119,37 @@ function DownloadsPage() {
         <STLViewerModal open url={preview.url} title={preview.title} fileType={preview.fileType} onClose={() => setPreview(null)} />
       )}
     </div>
+  );
+}
+
+function PrintOutcome({ fileId }: { fileId: string }) {
+  const report = useServerFn(submitPrintReport);
+  const [done, setDone] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const send = async (outcome: "success" | "failed") => {
+    setBusy(true);
+    try {
+      await report({ data: { fileId, outcome } });
+      setDone(outcome);
+      toast.success(outcome === "success" ? "Thanks — logged as a good print" : "Thanks — the creator will see this");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not save your report");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (done) return <span className="ml-1 text-xs text-ink-soft">{done === "success" ? "Printed fine" : "Reported"}</span>;
+
+  return (
+    <span className="ml-1 inline-flex items-center gap-1">
+      <button disabled={busy} onClick={() => send("success")} className="btn-ghost h-8 px-2 text-xs" title="It printed fine">
+        <ThumbsUp className="h-3 w-3" />
+      </button>
+      <button disabled={busy} onClick={() => send("failed")} className="btn-ghost h-8 px-2 text-xs text-destructive" title="It didn't print">
+        <ThumbsDown className="h-3 w-3" />
+      </button>
+    </span>
   );
 }

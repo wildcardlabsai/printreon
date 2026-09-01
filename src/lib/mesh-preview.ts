@@ -26,6 +26,48 @@ export interface MeshStats {
   triangleCount: number;
 }
 
+/**
+ * Cheap sanity checks on a parsed mesh. Returns human-readable flags —
+ * an empty array means the model looks plausible.
+ */
+export function qualityFlags(stats: MeshStats, fileSizeBytes?: number): string[] {
+  const flags: string[] = [];
+  const dims = [stats.dimX, stats.dimY, stats.dimZ];
+  const maxDim = Math.max(...dims);
+  const minDim = Math.min(...dims);
+
+  if (stats.triangleCount <= 0 || maxDim <= 0) {
+    flags.push("The model contains no usable geometry.");
+    return flags;
+  }
+  if (stats.triangleCount < 100) {
+    flags.push(`Only ${stats.triangleCount} triangles — this looks like an empty or placeholder mesh.`);
+  }
+  if (maxDim < 1) {
+    flags.push("The model is under 1mm across — check the export scale.");
+  }
+  if (maxDim > 1000) {
+    flags.push("The model is over 1000mm across — check the export scale.");
+  }
+  if (minDim <= 0.001) {
+    flags.push("The model is completely flat on one axis.");
+  }
+  if (fileSizeBytes && fileSizeBytes > 5 * 1024 * 1024 && stats.triangleCount < 5000) {
+    flags.push("File size doesn't match the geometry — it may contain junk data.");
+  }
+  return flags;
+}
+
+export const CREATION_METHODS = [
+  { value: "hand", label: "Modelled by hand", short: "Hand-modelled" },
+  { value: "ai_assisted", label: "AI-assisted (AI used for concept or parts)", short: "AI-assisted" },
+  { value: "ai_generated", label: "AI-generated (text or image to 3D)", short: "AI-generated" },
+] as const;
+
+export function creationMethodLabel(value: string | null | undefined): string | null {
+  return CREATION_METHODS.find((m) => m.value === value)?.short ?? null;
+}
+
 export interface LoadedModel {
   /** three.js Object3D containing the mesh(es), centred at the origin. */
   object: any;
