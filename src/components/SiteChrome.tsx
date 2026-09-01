@@ -5,6 +5,7 @@ import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
