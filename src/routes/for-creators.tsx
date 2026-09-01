@@ -32,7 +32,7 @@ function ForCreators() {
             { title: "Bundles & promo codes", desc: "Run launches, sales and bundles without duct-taping third-party tools." },
             { title: "Creator analytics", desc: "Revenue, MRR, downloads, conversion and follower-to-sub data." },
             { title: "Honest quality badges", desc: "Print-Tested, Digital Sculpt or AI-Assisted on every file — so buyers trust what they download." },
-            { title: "A hard line on AI slop", desc: "Raw text-to-3D dumps are banned and mesh-checked out. Your work isn't buried under unprintable junk." },
+            { title: "No untested AI dumps", desc: "AI is allowed but must be disclosed, and unrefined AI models need a real print photo. Your work isn't buried under unprintable junk." },
           ].map((f) => (
             <div key={f.title} className="card-soft">
               <h2 className="text-lg font-bold text-ink">{f.title}</h2>
