@@ -138,9 +138,11 @@ function Hero() {
             <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-12 px-6 text-base">
               Create your free account
             </Link>
-            <Link to="/explore" className="btn-ghost h-12 px-6 text-base">
-              Browse creators
-            </Link>
+            {discoveryEnabled && (
+              <Link to="/explore" className="btn-ghost h-12 px-6 text-base">
+                Browse creators
+              </Link>
+            )}
             <button
               onClick={() => document.getElementById("beta-access")?.scrollIntoView({ behavior: "smooth" })}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline"
