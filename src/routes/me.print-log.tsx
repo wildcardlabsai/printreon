@@ -20,7 +20,16 @@ function PrintLogPage() {
   const load = async () => {
     if (!user) return;
     const { data } = await supabase.from("print_log").select("*, creator_files(title)").eq("user_id", user.id).order("created_at", { ascending: false });
-    setItems(data ?? []);
+    // The print-log bucket is private: photo_url stores the object path and we
+    // sign it for the owner. Legacy rows may still hold a full public URL.
+    const withPhotos = await Promise.all(
+      (data ?? []).map(async (i: any) => {
+        if (!i.photo_url || i.photo_url.startsWith("http")) return { ...i, photo_src: i.photo_url };
+        const { data: signed } = await supabase.storage.from("print-log").createSignedUrl(i.photo_url, 3600);
+        return { ...i, photo_src: signed?.signedUrl ?? null };
+      }),
+    );
+    setItems(withPhotos);
     const { data: dl } = await supabase.from("downloads").select("file_id, creator_files(id,title,creator_id)").eq("user_id", user.id).limit(50);
     setFiles((dl ?? []).filter((d: any) => d.creator_files));
   };
