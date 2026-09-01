@@ -71,6 +71,13 @@
       "when": 1788213210228,
       "tag": "0009_launch_security_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788254288823,
+      "tag": "0010_lock_down_spoofable_inserts",
+      "breakpoints": true
     }
   ]
 }
