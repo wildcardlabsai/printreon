@@ -360,15 +360,19 @@ function FilesPage() {
             </div>
             {creationMethod === "ai_assisted" && (
               <div className="mt-3">
-                <Field label="What did you repair, retopologise or rescale?">
-                  <textarea value={aiNote} onChange={(e) => setAiNote(e.target.value)} rows={2} className={inp} placeholder="Generated the base shape, then remeshed, fixed non-manifold edges, hollowed it and rescaled to mm." />
+                <Field label="How was AI used, and what did you do to the mesh?">
+                  <textarea value={aiNote} onChange={(e) => setAiNote(e.target.value)} rows={2} className={inp} placeholder="Generated the base shape, then remeshed, fixed non-manifold edges, hollowed it and rescaled to mm — or: straight AI output, printed on a P1S (photo attached)." />
                 </Field>
+                <p className="mt-1 text-xs text-ink-soft">
+                  AI is allowed but discouraged. If you didn't refine the mesh by hand, print it and attach a photo of
+                  the real print before publishing.
+                </p>
               </div>
             )}
             <label className="mt-3 flex items-start gap-2 text-xs text-ink-soft">
               <input type="checkbox" checked={noRawAi} onChange={(e) => setNoRawAi(e.target.checked)} className="mt-0.5" />
               <span>
-                I confirm this is not a raw, unedited AI export. The mesh is watertight, free of inverted normals and correctly scaled for slicers.
+                I confirm this file is watertight, free of inverted normals and correctly scaled for slicers — and that if AI was used, I've either refined it by hand or printed it myself.
               </span>
             </label>
           </div>
