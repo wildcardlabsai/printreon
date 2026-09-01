@@ -15,7 +15,7 @@ function Creators() {
   const setPublished = useServerFn(adminSetPublished);
 
   const refresh = async () => {
-    const { data } = await supabase.from("creator_profiles").select("*").order("created_at", { ascending: false }).limit(500);
+    const { data } = await supabase.from("creator_profiles").select("id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, created_at, updated_at").order("created_at", { ascending: false }).limit(500);
     setRows(data ?? []);
   };
   useEffect(() => { refresh(); }, []);

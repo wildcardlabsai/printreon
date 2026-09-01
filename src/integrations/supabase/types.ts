@@ -1935,6 +1935,10 @@ export type Database = {
           valid: boolean
         }[]
       }
+      comment_parent_matches: {
+        Args: { _creator_id: string; _parent_id: string; _parent_type: string }
+        Returns: boolean
+      }
       generate_beta_referral_code: { Args: never; Returns: string }
       get_beta_referral_stats: {
         Args: { _code: string }
@@ -1950,6 +1954,13 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      my_payout_info: {
+        Args: never
+        Returns: {
+          connected_account_id: string
+          payout_status: string
+        }[]
       }
       submit_beta_preregistration: {
         Args: { payload: Json }

@@ -59,7 +59,7 @@ function CreatorOnboarding() {
   // Load existing creator profile if any
   useEffect(() => {
     if (!user) return;
-    supabase.from("creator_profiles").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
+    supabase.from("creator_profiles").select("id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, created_at, updated_at").eq("user_id", user.id).maybeSingle().then(({ data }) => {
       if (data) {
         setCreatorId(data.id);
         setDisplayName(data.display_name);
