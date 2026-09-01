@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Compass, Download, Heart, Sparkles, Palette, ArrowRight, Library } from "lucide-react";
@@ -70,8 +71,12 @@ function MemberOverview() {
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Link to="/explore" className="card-soft block hover:border-primary">
           <Compass className="h-6 w-6 text-primary" />
-          <h3 className="mt-3 text-lg font-bold text-ink">Discover creators</h3>
-          <p className="mt-1 text-sm text-ink-soft">Find designers building exactly what you want to print.</p>
+          <h3 className="mt-3 text-lg font-bold text-ink">{discoveryEnabled ? "Discover creators" : "Creators coming soon"}</h3>
+          <p className="mt-1 text-sm text-ink-soft">
+            {discoveryEnabled
+              ? "Find designers building exactly what you want to print."
+              : "We're onboarding the first wave of designers — join the waitlist to hear first."}
+          </p>
         </Link>
         {!isCreator && (
           <Link to="/onboarding/creator" className="card-soft block hover:border-primary">

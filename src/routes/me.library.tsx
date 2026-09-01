@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
@@ -106,7 +107,11 @@ function LibraryPage() {
         title="No creator files yet"
         description="Once you subscribe to a creator, every file they publish shows up here — ready to preview and download."
       >
-        <Link to="/explore" className="btn-primary inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        {discoveryEnabled ? (
+          <Link to="/explore" className="btn-primary inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        ) : (
+          <Link to="/explore" className="btn-primary inline-flex">Creators coming soon — join the waitlist <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        )}
       </EmptyState>
     );
   }

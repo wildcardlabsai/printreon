@@ -5,6 +5,7 @@ import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Logo } from "./Logo";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ export function SiteHeader() {
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isCreator, isAdmin, signOut } = useAuth();
+  const discoveryEnabled = useDiscoveryEnabled();
 
   const handleSignOut = async () => {
     setMenuOpen(false);
@@ -59,7 +61,9 @@ export function SiteHeader() {
 
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
-          <Link to="/explore" className="font-semibold text-ink hover:text-primary transition">Explore creators</Link>
+          {discoveryEnabled && (
+            <Link to="/explore" className="font-semibold text-ink hover:text-primary transition">Explore creators</Link>
+          )}
           {NAV_LINKS.map((link) => (
             <button key={link.id} onClick={() => scrollTo(link.id)} className="hover:text-ink transition">
               {link.label}
@@ -180,11 +184,13 @@ export function SiteHeader() {
                 </div>
               ) : (
                 <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
-                  <SheetClose asChild>
-                    <Link to="/explore" className="rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-secondary">
-                      Explore creators
-                    </Link>
-                  </SheetClose>
+                  {discoveryEnabled && (
+                    <SheetClose asChild>
+                      <Link to="/explore" className="rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-secondary">
+                        Explore creators
+                      </Link>
+                    </SheetClose>
+                  )}
                   <SheetClose asChild>
                     <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-11 w-full text-sm">
                       Create free account

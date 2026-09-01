@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Compass, Heart } from "lucide-react";
@@ -36,7 +37,11 @@ function FollowingPage() {
       <div className="card-soft text-center">
         <Compass className="mx-auto h-10 w-10 text-primary" />
         <h3 className="mt-3 text-xl font-bold text-ink">Not following anyone yet</h3>
-        <Link to="/explore" className="btn-primary mt-5 inline-flex">Discover creators</Link>
+        {discoveryEnabled ? (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Discover creators</Link>
+        ) : (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Creators coming soon — join the waitlist</Link>
+        )}
       </div>
     );
   }

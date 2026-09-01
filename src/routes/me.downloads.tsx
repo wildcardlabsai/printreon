@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
@@ -62,7 +63,11 @@ function DownloadsPage() {
         <Download className="mx-auto h-10 w-10 text-primary" />
         <h3 className="mt-3 text-xl font-bold text-ink">No downloads yet</h3>
         <p className="mt-1 text-ink-soft">Subscribe to a creator and grab their files anytime.</p>
-        <Link to="/explore" className="btn-primary mt-5 inline-flex">Find creators</Link>
+        {discoveryEnabled ? (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Find creators</Link>
+        ) : (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Creators coming soon — join the waitlist</Link>
+        )}
       </div>
     );
   }
