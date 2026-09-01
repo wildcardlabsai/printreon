@@ -70,6 +70,7 @@ function Landing() {
       <Marquee />
       <div id="features" />
       <BuiltFor />
+      <QualityStandards />
       <WhyPrintreonExists />
       <PullQuote />
       <HowItWorks />
@@ -274,6 +275,54 @@ function BuiltFor() {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* --------------------------- QUALITY STANDARDS --------------------------- */
+
+function QualityStandards() {
+  const badges = [
+    { title: "Print-Tested", desc: "The creator physically printed it and attached a photo of the real print.", tone: "border-primary/40 bg-primary/5" },
+    { title: "Digital Sculpt", desc: "Hand-crafted digitally, watertight (manifold) and scaled for slicers — not yet test-printed.", tone: "border-border bg-surface" },
+    { title: "AI-Assisted", desc: "AI base, then manually retopologised, repaired and refined. Disclosed up front.", tone: "border-border bg-surface" },
+  ];
+  return (
+    <section id="quality" className="container-wide py-24">
+      <div className="grid gap-10 md:grid-cols-12 md:items-end">
+        <div className="md:col-span-6">
+          <span className="eyebrow">// Quality standards</span>
+          <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
+            No AI slop. <span className="text-primary">Ever.</span>
+          </h2>
+        </div>
+        <p className="md:col-span-6 text-lg text-ink-soft">
+          Raw text-to-3D and image-to-3D dumps are banned outright. Every file is mesh-checked on upload,
+          every creator's first drops are human-reviewed, and every file carries an honest badge so you know
+          exactly what you're downloading.
+        </p>
+      </div>
+
+      <div className="mt-14 grid gap-5 md:grid-cols-3">
+        {badges.map((b) => (
+          <div key={b.title} className={`rounded-2xl border p-6 ${b.tone}`}>
+            <span className="inline-flex rounded-full bg-ink px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wide text-background">
+              {b.title}
+            </span>
+            <p className="mt-4 text-sm text-ink-soft">{b.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
+        <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Automatic mesh sanity checks on every upload</span>
+        <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> First files from new creators reviewed by a human</span>
+        <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Buyers report whether a model actually printed</span>
+      </div>
+      <p className="mt-4 text-sm text-ink-soft">
+        Badge fraud is a suspendable offence — read the{" "}
+        <Link to="/legal/terms" hash="quality" className="text-primary underline underline-offset-4">quality &amp; AI policy</Link>.
+      </p>
     </section>
   );
 }
