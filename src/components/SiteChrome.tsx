@@ -61,7 +61,9 @@ export function SiteHeader() {
 
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">
-          <Link to="/explore" className="font-semibold text-ink hover:text-primary transition">Explore creators</Link>
+          {discoveryEnabled && (
+            <Link to="/explore" className="font-semibold text-ink hover:text-primary transition">Explore creators</Link>
+          )}
           {NAV_LINKS.map((link) => (
             <button key={link.id} onClick={() => scrollTo(link.id)} className="hover:text-ink transition">
               {link.label}
