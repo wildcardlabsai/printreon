@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { PageHeader, EmptyState, StatusBadge } from "@/components/admin/AdminUI";
-import { CreationMethodBadge, ReviewStatusBadge } from "@/components/QualityBadges";
+import { FileBadge, ReviewStatusBadge } from "@/components/QualityBadges";
 import { listFilesForReview, reviewFile } from "@/functions/quality.functions";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ function STLLibrary() {
     const { data } = await supabase
       .from("creator_files")
       .select(
-        "id, title, slug, category, file_type, file_size, is_free, tier_required_id, is_published, status, download_count, takedown_at, created_at, creator_id, creation_method, review_status, creator_profiles(display_name, slug)"
+        "id, title, slug, category, file_type, file_size, is_free, tier_required_id, is_published, status, download_count, takedown_at, created_at, creator_id, creation_method, print_verified_at, review_status, creator_profiles(display_name, slug)"
       )
       .order("created_at", { ascending: false })
       .limit(500);
@@ -108,7 +108,7 @@ function STLLibrary() {
                 <tr key={f.id} className="border-t border-border">
                   <td className="px-3 py-2 font-semibold">{f.title}</td>
                   <td className="px-3 py-2 text-xs">{f.creator_profiles?.display_name ?? "—"}</td>
-                  <td className="px-3 py-2 text-xs"><CreationMethodBadge method={f.creation_method} /></td>
+                  <td className="px-3 py-2 text-xs"><FileBadge file={f} /></td>
                   <td className="px-3 py-2 text-xs">{f.is_free ? "free" : f.tier_required_id ? "tier" : "members"}</td>
                   <td className="px-3 py-2 font-mono text-xs">{f.download_count}</td>
                   <td className="px-3 py-2">
@@ -158,7 +158,7 @@ function ReviewCard({ file, onDecide }: { file: any; onDecide: (d: "approve" | "
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-bold text-ink">{file.title}</h3>
           <ReviewStatusBadge status={file.review_status} />
-          <CreationMethodBadge method={file.creation_method} />
+          <FileBadge file={file} />
         </div>
         <div className="mt-1 text-xs text-ink-soft">
           {file.creator_profiles?.display_name ?? "—"}

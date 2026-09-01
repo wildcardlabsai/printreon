@@ -22,7 +22,7 @@ export const listFilesForReview = createServerFn({ method: "POST" })
     const { data, error } = await supabaseAdmin
       .from("creator_files")
       .select(
-        "id, title, slug, category, file_type, file_size, creation_method, ai_disclosure_note, quality_flags, review_status, review_notes, preview_images, dim_x, dim_y, dim_z, triangle_count, created_at, creator_id, creator_profiles(display_name, slug, trusted_at)"
+        "id, title, slug, category, file_type, file_size, creation_method, print_verified_at, raw_ai_confirmed_at, ai_disclosure_note, quality_flags, review_status, review_notes, preview_images, dim_x, dim_y, dim_z, triangle_count, created_at, creator_id, creator_profiles(display_name, slug, trusted_at)"
       )
       .in("review_status", ["pending", "flagged"])
       .order("created_at", { ascending: true })

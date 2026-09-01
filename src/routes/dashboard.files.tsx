@@ -231,7 +231,7 @@ function FilesPage() {
   const togglePublish = async (f: any) => {
     const willPublish = !f.is_published;
     if (willPublish && !f.creation_method) {
-      return toast.error("Set how this model was made before publishing.");
+      return toast.error("Choose a badge (Digital Sculpt or AI-Assisted) before publishing.");
     }
     const { data: updated, error } = await supabase
       .from("creator_files")
@@ -272,7 +272,7 @@ function FilesPage() {
         print_verified_at: new Date().toISOString(),
       }).eq("id", f.id);
       if (error) throw error;
-      toast.success("Print verified — buyers will see the badge and your photo");
+      toast.success("Print-Tested — buyers now see the badge and your photo");
       await refresh();
     } catch (e: any) {
       toast.error(e?.message ?? "Could not save the photo");
@@ -527,7 +527,7 @@ function FilesPage() {
                       </button>
                     </>
                   )}
-                  <label className="btn-ghost h-9 cursor-pointer px-3" title={f.print_verified_at ? "Replace print photo" : "Add a photo of the real print"}>
+                  <label className="btn-ghost h-9 cursor-pointer px-3" title={f.print_verified_at ? "Replace print photo" : "Add a photo of the real print to earn Print-Tested"}>
                     {verifyBusyId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
                     <input
                       type="file"
