@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useServerFn } from "@tanstack/react-start";
@@ -56,7 +57,11 @@ function SubsPage() {
         <Heart className="mx-auto h-10 w-10 text-primary" />
         <h3 className="mt-3 text-xl font-bold text-ink">No subscriptions yet</h3>
         <p className="mt-1 text-ink-soft">Find creators worth supporting and unlock their files.</p>
-        <Link to="/explore" className="btn-primary mt-5 inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        {discoveryEnabled ? (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Explore creators <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        ) : (
+          <Link to="/explore" className="btn-primary mt-5 inline-flex">Creators coming soon — join the waitlist <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        )}
       </div>
     );
   }
