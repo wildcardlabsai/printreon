@@ -57,7 +57,7 @@ export function BadgeLegend({ className = "" }: { className?: string }) {
     <p className={`text-xs text-ink-soft ${className}`}>
       <strong className="text-ink">Print-Tested</strong> — physically printed by the creator ·{" "}
       <strong className="text-ink">Digital Sculpt</strong> — hand-crafted, watertight, slicer-ready ·{" "}
-      <strong className="text-ink">AI-Assisted</strong> — AI base, manually retopologised and repaired. Raw AI exports aren't allowed.
+      <strong className="text-ink">AI-Assisted</strong> — AI used in the process, disclosed up front. Unrefined AI files must be Print-Tested first.
     </p>
   );
 }

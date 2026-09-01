@@ -72,9 +72,9 @@ export const CREATION_METHODS = [
   },
   {
     value: "ai_assisted",
-    label: "AI-Assisted — AI base, refined by hand",
+    label: "AI-Assisted — AI used somewhere in the process",
     short: "AI-Assisted",
-    help: "Developed with 3D AI tools, then retopologised, repaired and refined manually. Raw, unedited AI exports are not allowed.",
+    help: "Developed with 3D AI tools. If you refined it by hand (retopology, repair, rescale), say so below. If it's essentially straight AI output, you must physically print it and attach a photo before publishing.",
   },
 ] as const;
 

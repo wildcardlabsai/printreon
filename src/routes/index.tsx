@@ -285,7 +285,7 @@ function QualityStandards() {
   const badges = [
     { title: "Print-Tested", desc: "The creator physically printed it and attached a photo of the real print.", tone: "border-primary/40 bg-primary/5" },
     { title: "Digital Sculpt", desc: "Hand-crafted digitally, watertight (manifold) and scaled for slicers — not yet test-printed.", tone: "border-border bg-surface" },
-    { title: "AI-Assisted", desc: "AI base, then manually retopologised, repaired and refined. Disclosed up front.", tone: "border-border bg-surface" },
+    { title: "AI-Assisted", desc: "AI was used somewhere in the process — disclosed up front, refined by hand or proven with a real print.", tone: "border-border bg-surface" },
   ];
   return (
     <section id="quality" className="container-wide py-24">
@@ -293,13 +293,14 @@ function QualityStandards() {
         <div className="md:col-span-6">
           <span className="eyebrow">// Quality standards</span>
           <h2 className="mt-5 text-4xl font-bold text-ink md:text-5xl">
-            No AI slop. <span className="text-primary">Ever.</span>
+            Files that <span className="text-primary">actually print.</span>
           </h2>
         </div>
         <p className="md:col-span-6 text-lg text-ink-soft">
-          Raw text-to-3D and image-to-3D dumps are banned outright. Every file is mesh-checked on upload,
-          every creator's first drops are human-reviewed, and every file carries an honest badge so you know
-          exactly what you're downloading.
+          We discourage leaning on AI, but we don't ban it — plenty of AI-assisted models print fine. Use it and
+          you disclose it, and if a model is essentially straight AI output you have to print it and show the photo
+          first. Every file is mesh-checked on upload, first drops are human-reviewed, and every file carries an
+          honest badge.
         </p>
       </div>
 

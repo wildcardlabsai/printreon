@@ -201,17 +201,18 @@ function CreatorOnboarding() {
                 <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
                   <div className="text-xs font-bold uppercase tracking-wide text-ink">Quality standards</div>
                   <p className="mt-2 text-sm text-ink-soft">
-                    Printreon bans raw AI slop. Every file you publish must be manually repaired, watertight (manifold)
-                    and scaled for slicers, and must carry an honest badge: <strong className="text-ink">Print-Tested</strong>,{" "}
-                    <strong className="text-ink">Digital Sculpt</strong> or <strong className="text-ink">AI-Assisted</strong>.
-                    Your first files are reviewed by a human before they go live.
+                    Every file you publish must be watertight (manifold), scaled for slicers and carry an honest badge:{" "}
+                    <strong className="text-ink">Print-Tested</strong>, <strong className="text-ink">Digital Sculpt</strong> or{" "}
+                    <strong className="text-ink">AI-Assisted</strong>. AI is allowed but discouraged — disclose it, and if a
+                    model is essentially straight AI output, print it and attach a photo before publishing. Your first files
+                    are reviewed by a human before they go live.
                   </p>
                   <label className="mt-3 flex items-start gap-2 text-sm text-ink-soft">
                     <input type="checkbox" checked={acceptQuality} onChange={(e) => setAcceptQuality(e.target.checked)} className="mt-1" />
                     <span>
                       I agree to the{" "}
-                      <Link to="/legal/terms" hash="quality" className="text-primary underline underline-offset-4">quality &amp; AI policy</Link>{" "}
-                      and won't publish raw, unedited AI output or falsify a badge.
+                      <Link to="/legal/terms" hash="quality" className="text-primary underline underline-offset-4">quality &amp; AI policy</Link>:
+                      I'll disclose AI use, won't publish untested AI output, and won't falsify a badge.
                     </span>
                   </label>
                 </div>

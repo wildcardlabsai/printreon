@@ -20,7 +20,7 @@ export const Route = createFileRoute("/legal/terms")({
       { title: "Terms of Service & Creator Agreement — Printreon" },
       { name: "description", content: "Printreon's Terms of Service and Creator Agreement: badge system, AI policy, licensing, fees, payouts and DMCA." },
       { property: "og:title", content: "Terms of Service & Creator Agreement — Printreon" },
-      { property: "og:description", content: "The rules for creators and supporters on Printreon, including our quality standards and strict ban on raw AI mesh dumps." },
+      { property: "og:description", content: "The rules for creators and supporters on Printreon, including our quality standards, badge system and AI disclosure policy." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -124,8 +124,8 @@ function TermsPage() {
                 for slicers, but has not yet been physically test-printed.
               </li>
               <li>
-                <strong>AI-Assisted</strong> — the model was developed using 3D AI generation tools and subsequently
-                retopologised, repaired and refined manually.
+                <strong>AI-Assisted</strong> — 3D AI generation tools were used at any point in the model's creation,
+                whether or not the mesh was subsequently refined by hand.
               </li>
             </ul>
             <p>
@@ -134,11 +134,27 @@ function TermsPage() {
             </p>
           </Sub>
 
-          <Sub title="B. Strict prohibition on raw AI mesh dumps">
+          <Sub title="B. Use of AI generation tools">
             <p>
-              Direct, unedited or automated outputs from text-to-3D or image-to-3D AI software ("Raw AI Output") are
-              strictly prohibited on Printreon. Any file published on the Platform must undergo manual mesh repair,
-              retopology, manifold verification and scale optimisation.
+              Printreon discourages reliance on AI generation tools, but does not prohibit them. Many AI-assisted models
+              print perfectly well, and Creators are free to use AI as part of their workflow provided the result meets
+              our file-integrity standards and is disclosed with the <strong>AI-Assisted</strong> badge.
+            </p>
+            <p>Where AI has been used, one of the following must be true before a file is published:</p>
+            <ul>
+              <li>
+                <strong>Manually refined.</strong> The mesh has undergone manual repair, retopology, manifold
+                verification and scale optimisation; or
+              </li>
+              <li>
+                <strong>Proven in the real world.</strong> The model has been physically 3D printed by the Creator and a
+                photograph of the finished print is attached, earning the <strong>Print-Tested</strong> badge.
+              </li>
+            </ul>
+            <p>
+              Publishing direct, unedited output from text-to-3D or image-to-3D software that has neither been refined
+              nor test-printed ("Untested AI Output") is not permitted. Such files may be removed, and repeated
+              breaches may result in account suspension.
             </p>
           </Sub>
 
