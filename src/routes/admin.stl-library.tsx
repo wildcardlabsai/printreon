@@ -33,7 +33,7 @@ function STLLibrary() {
   const refreshQueue = async () => {
     setLoadingQueue(true);
     try {
-      const r = await listQueue({ data: {} } as any);
+      const r = await listQueue(undefined as any);
       setQueue(r.files ?? []);
     } catch (e: any) {
       toast.error(e?.message ?? "Could not load the review queue");
