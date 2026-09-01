@@ -51,6 +51,7 @@ function CreatorOnboarding() {
   const [fileCategory, setFileCategory] = useState("Miniatures");
   const [fileIsFree, setFileIsFree] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [acceptQuality, setAcceptQuality] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", search: { mode: "signup", as: "creator" } });
@@ -90,6 +91,7 @@ function CreatorOnboarding() {
         display_name: displayName,
         slug: finalSlug,
         short_intro: shortIntro,
+        quality_standards_accepted_at: new Date().toISOString(),
       };
       if (creatorId) {
         const { error } = await supabase.from("creator_profiles").update(payload).eq("id", creatorId);
@@ -196,7 +198,24 @@ function CreatorOnboarding() {
                   <Field label="URL slug"><div className="flex items-stretch overflow-hidden rounded-lg border border-input"><span className="bg-secondary px-3 py-2 text-sm text-ink-soft">printreon.com/c/</span><input value={slug} onChange={(e) => setSlug(slugify(e.target.value))} className="flex-1 bg-background px-3 py-2 text-sm outline-none" /></div></Field>
                   <Field label="Short intro (one line)"><input value={shortIntro} onChange={(e) => setShortIntro(e.target.value)} maxLength={120} className={input} /></Field>
                 </div>
-                <Footer onNext={saveStep1} disabled={!displayName || busy} />
+                <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <div className="text-xs font-bold uppercase tracking-wide text-ink">Quality standards</div>
+                  <p className="mt-2 text-sm text-ink-soft">
+                    Printreon bans raw AI slop. Every file you publish must be manually repaired, watertight (manifold)
+                    and scaled for slicers, and must carry an honest badge: <strong className="text-ink">Print-Tested</strong>,{" "}
+                    <strong className="text-ink">Digital Sculpt</strong> or <strong className="text-ink">AI-Assisted</strong>.
+                    Your first files are reviewed by a human before they go live.
+                  </p>
+                  <label className="mt-3 flex items-start gap-2 text-sm text-ink-soft">
+                    <input type="checkbox" checked={acceptQuality} onChange={(e) => setAcceptQuality(e.target.checked)} className="mt-1" />
+                    <span>
+                      I agree to the{" "}
+                      <Link to="/legal/terms" hash="quality" className="text-primary underline underline-offset-4">quality &amp; AI policy</Link>{" "}
+                      and won't publish raw, unedited AI output or falsify a badge.
+                    </span>
+                  </label>
+                </div>
+                <Footer onNext={saveStep1} disabled={!displayName || !acceptQuality || busy} />
               </>
             )}
             {step === 2 && (
