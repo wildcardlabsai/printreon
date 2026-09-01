@@ -440,7 +440,7 @@ function FilesPage() {
             {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{progress || "Working…"}</> : <><Upload className="mr-2 h-4 w-4" />Upload file</>}
           </button>
           {pickedFile && !creationMethod && <p className="text-xs text-ink-soft">Choose a badge to continue.</p>}
-          {pickedFile && creationMethod && !noRawAi && <p className="text-xs text-ink-soft">Confirm the file isn't a raw AI export to continue.</p>}
+          {pickedFile && creationMethod && !noRawAi && <p className="text-xs text-ink-soft">Tick the quality confirmation to continue.</p>}
         </div>
       </div>
 
