@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, PARTNER } from "@/lib/site";
 import heroImg from "@/assets/hero-dashboard-preview.png";
 import previewCube from "@/assets/demo-preview-cube.jpg";
@@ -93,6 +94,7 @@ function Landing() {
 /* ------------------------------- HERO ------------------------------- */
 
 function Hero() {
+  const discoveryEnabled = useDiscoveryEnabled();
   return (
     <section className="facet-bg relative overflow-hidden">
       {/* Blueprint grid background */}
@@ -831,6 +833,7 @@ function FAQ() {
 /* ------------------------------ FINAL CTA ------------------------------ */
 
 function FinalCTA() {
+  const discoveryEnabled = useDiscoveryEnabled();
   return (
     <section className="container-wide py-16 md:py-24">
       <div className="relative overflow-hidden rounded-3xl bg-ink p-10 text-center md:p-20 grain-overlay">
@@ -855,9 +858,11 @@ function FinalCTA() {
             <Link to="/auth" search={{ mode: "signup" }} className="btn-primary h-12 px-6 text-base">
               Create free account
             </Link>
-            <Link to="/explore" className="btn-ghost h-12 border border-background/20 px-6 text-base text-background hover:bg-background/10">
-              Explore creators
-            </Link>
+            {discoveryEnabled && (
+              <Link to="/explore" className="btn-ghost h-12 border border-background/20 px-6 text-base text-background hover:bg-background/10">
+                Explore creators
+              </Link>
+            )}
           </div>
 
         </div>
