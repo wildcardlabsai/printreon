@@ -1,31 +1,64 @@
-import { BadgeCheck, Bot, Hand, Sparkles } from "lucide-react";
-import { creationMethodLabel } from "@/lib/mesh-preview";
+import { BadgeCheck, Bot, Hand } from "lucide-react";
+import { fileBadge } from "@/lib/mesh-preview";
 
-export function CreationMethodBadge({ method, className = "" }: { method: string | null | undefined; className?: string }) {
-  const label = creationMethodLabel(method);
-  if (!label) return null;
-  const Icon = method === "hand" ? Hand : method === "ai_assisted" ? Sparkles : Bot;
-  const tone =
-    method === "hand"
-      ? "bg-emerald-500/12 text-emerald-700"
-      : method === "ai_assisted"
-        ? "bg-amber-500/15 text-amber-700"
-        : "bg-secondary text-ink-soft";
+const TONE: Record<string, string> = {
+  print_tested: "bg-primary/12 text-primary",
+  digital_sculpt: "bg-emerald-500/12 text-emerald-700",
+  ai_assisted: "bg-amber-500/15 text-amber-800",
+};
+
+const ICON = {
+  print_tested: BadgeCheck,
+  digital_sculpt: Hand,
+  ai_assisted: Bot,
+} as const;
+
+/**
+ * The single badge shown for a file: Print-Tested (a real print photo is
+ * attached), otherwise Digital Sculpt or AI-Assisted.
+ */
+export function FileBadge({
+  file,
+  className = "",
+}: {
+  file: { creation_method?: string | null; print_verified_at?: string | null };
+  className?: string;
+}) {
+  const badge = fileBadge(file);
+  if (!badge) return null;
+  const Icon = ICON[badge.key];
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${tone} ${className}`}>
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${TONE[badge.key]} ${className}`}>
       <Icon className="h-3 w-3" />
-      {label}
+      {badge.label}
     </span>
   );
 }
 
+/** Origin badge only — used where the print status is shown separately. */
+export function CreationMethodBadge({
+  method,
+  className = "",
+}: {
+  method: string | null | undefined;
+  className?: string;
+}) {
+  return <FileBadge file={{ creation_method: method }} className={className} />;
+}
+
 export function PrintVerifiedBadge({ verifiedAt, className = "" }: { verifiedAt?: string | null; className?: string }) {
   if (!verifiedAt) return null;
+  return <FileBadge file={{ print_verified_at: verifiedAt }} className={className} />;
+}
+
+/** One-line explainer buyers can read next to a grid of files. */
+export function BadgeLegend({ className = "" }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full bg-primary/12 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary ${className}`}>
-      <BadgeCheck className="h-3 w-3" />
-      Print verified
-    </span>
+    <p className={`text-xs text-ink-soft ${className}`}>
+      <strong className="text-ink">Print-Tested</strong> — physically printed by the creator ·{" "}
+      <strong className="text-ink">Digital Sculpt</strong> — hand-crafted, watertight, slicer-ready ·{" "}
+      <strong className="text-ink">AI-Assisted</strong> — AI base, manually retopologised and repaired. Raw AI exports aren't allowed.
+    </p>
   );
 }
 
