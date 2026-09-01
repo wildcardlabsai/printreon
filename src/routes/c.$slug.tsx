@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag, Box } from "lucide-react";
+import { CreationMethodBadge, PrintVerifiedBadge } from "@/components/QualityBadges";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
@@ -94,7 +95,7 @@ function CreatorPage() {
       setCreator(cp);
       const [{ data: t }, { data: f }, { data: p }] = await Promise.all([
         supabase.from("creator_tiers").select("*").eq("creator_id", cp.id).eq("is_active", true).order("price"),
-        supabase.from("creator_files").select("id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, status, version, dim_x, dim_y, dim_z, triangle_count").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
+        supabase.from("creator_files").select("id, creator_id, title, slug, description, creation_method, ai_disclosure_note, print_verified_at, print_verified_image_url, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, status, version, dim_x, dim_y, dim_z, triangle_count").eq("creator_id", cp.id).eq("is_published", true).order("created_at", { ascending: false }),
         supabase.from("creator_posts").select("*").eq("creator_id", cp.id).eq("status", "published").order("published_at", { ascending: false }).limit(10),
       ]);
       setTiers(t ?? []);
@@ -391,6 +392,11 @@ function CreatorPage() {
                   )}
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <CreationMethodBadge method={f.creation_method} />
+                  <PrintVerifiedBadge verifiedAt={f.print_verified_at} />
+                </div>
+                {f.ai_disclosure_note && <p className="mt-1 text-xs text-ink-soft">{f.ai_disclosure_note}</p>}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink-soft">
                   {f.dim_x != null && <span className="rounded-full bg-secondary px-2 py-0.5">{f.dim_x} × {f.dim_y} × {f.dim_z} mm</span>}
                 </div>
