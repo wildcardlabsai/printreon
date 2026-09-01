@@ -92,6 +92,13 @@
       "when": 1788254665631,
       "tag": "0012_set_search_path_touch_updated_at",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1788255041024,
+      "tag": "0013_security_fixes_column_and_function_exposure",
+      "breakpoints": true
     }
   ]
 }
