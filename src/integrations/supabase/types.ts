@@ -569,6 +569,7 @@ export type Database = {
           print_verified_at: string | null
           print_verified_image_url: string | null
           quality_flags: Json
+          raw_ai_confirmed_at: string | null
           recommended_printer: string | null
           review_notes: string | null
           review_status: string
@@ -613,6 +614,7 @@ export type Database = {
           print_verified_at?: string | null
           print_verified_image_url?: string | null
           quality_flags?: Json
+          raw_ai_confirmed_at?: string | null
           recommended_printer?: string | null
           review_notes?: string | null
           review_status?: string
@@ -657,6 +659,7 @@ export type Database = {
           print_verified_at?: string | null
           print_verified_image_url?: string | null
           quality_flags?: Json
+          raw_ai_confirmed_at?: string | null
           recommended_printer?: string | null
           review_notes?: string | null
           review_status?: string
@@ -769,6 +772,7 @@ export type Database = {
           platform_fee_percentage: number | null
           printables_url: string | null
           profile_image_url: string | null
+          quality_standards_accepted_at: string | null
           short_intro: string | null
           slug: string
           suspended_at: string | null
@@ -796,6 +800,7 @@ export type Database = {
           platform_fee_percentage?: number | null
           printables_url?: string | null
           profile_image_url?: string | null
+          quality_standards_accepted_at?: string | null
           short_intro?: string | null
           slug: string
           suspended_at?: string | null
@@ -823,6 +828,7 @@ export type Database = {
           platform_fee_percentage?: number | null
           printables_url?: string | null
           profile_image_url?: string | null
+          quality_standards_accepted_at?: string | null
           short_intro?: string | null
           slug?: string
           suspended_at?: string | null

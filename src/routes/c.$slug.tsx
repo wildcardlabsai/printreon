@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Heart, Lock, Download, Globe, Instagram, Youtube, Loader2, MessageSquare, Bookmark, Share2, Flag, Box } from "lucide-react";
-import { CreationMethodBadge, PrintVerifiedBadge } from "@/components/QualityBadges";
+import { FileBadge } from "@/components/QualityBadges";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { SubscribeCheckoutModal } from "@/components/SubscribeCheckoutModal";
 import { toast } from "sonner";
@@ -393,8 +393,7 @@ function CreatorPage() {
                 </div>
                 {f.category && <p className="mt-1 text-xs text-ink-soft">{f.category}</p>}
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <CreationMethodBadge method={f.creation_method} />
-                  <PrintVerifiedBadge verifiedAt={f.print_verified_at} />
+                  <FileBadge file={f} />
                 </div>
                 {f.ai_disclosure_note && <p className="mt-1 text-xs text-ink-soft">{f.ai_disclosure_note}</p>}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink-soft">

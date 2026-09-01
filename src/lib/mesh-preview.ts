@@ -58,14 +58,60 @@ export function qualityFlags(stats: MeshStats, fileSizeBytes?: number): string[]
   return flags;
 }
 
+/**
+ * The badge system defined in the Terms of Service.
+ * "Print-Tested" is not selectable — it is earned by attaching a photo of the
+ * real print, so it lives on `print_verified_at`, not `creation_method`.
+ */
 export const CREATION_METHODS = [
-  { value: "hand", label: "Modelled by hand", short: "Hand-modelled" },
-  { value: "ai_assisted", label: "AI-assisted (AI used for concept or parts)", short: "AI-assisted" },
-  { value: "ai_generated", label: "AI-generated (text or image to 3D)", short: "AI-generated" },
+  {
+    value: "digital_sculpt",
+    label: "Digital Sculpt — hand-crafted digitally",
+    short: "Digital Sculpt",
+    help: "Modelled by hand, watertight (manifold), and scaled for slicers. Not yet physically test-printed.",
+  },
+  {
+    value: "ai_assisted",
+    label: "AI-Assisted — AI base, refined by hand",
+    short: "AI-Assisted",
+    help: "Developed with 3D AI tools, then retopologised, repaired and refined manually. Raw, unedited AI exports are not allowed.",
+  },
 ] as const;
 
+/** Legacy values stored before the badge system was aligned to the Terms. */
+const LEGACY_METHOD_MAP: Record<string, string> = {
+  hand: "digital_sculpt",
+  ai_generated: "ai_assisted",
+};
+
+/** Normalise any stored value to a current badge value. */
+export function normaliseCreationMethod(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return LEGACY_METHOD_MAP[value] ?? value;
+}
+
+/** True when the stored value predates the current badge system. */
+export function isLegacyCreationMethod(value: string | null | undefined): boolean {
+  return !!value && value in LEGACY_METHOD_MAP;
+}
+
 export function creationMethodLabel(value: string | null | undefined): string | null {
-  return CREATION_METHODS.find((m) => m.value === value)?.short ?? null;
+  const v = normaliseCreationMethod(value);
+  return CREATION_METHODS.find((m) => m.value === v)?.short ?? null;
+}
+
+/**
+ * The badge shown publicly: a print photo upgrades any file to Print-Tested.
+ */
+export function fileBadge(file: { creation_method?: string | null; print_verified_at?: string | null }): {
+  key: "print_tested" | "digital_sculpt" | "ai_assisted";
+  label: string;
+} | null {
+  if (file.print_verified_at) return { key: "print_tested", label: "Print-Tested" };
+  const v = normaliseCreationMethod(file.creation_method);
+  if (v === "digital_sculpt") return { key: "digital_sculpt", label: "Digital Sculpt" };
+  if (v === "ai_assisted") return { key: "ai_assisted", label: "AI-Assisted" };
+  return null;
 }
 
 export interface LoadedModel {

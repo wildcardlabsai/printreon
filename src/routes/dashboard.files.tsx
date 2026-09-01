@@ -8,9 +8,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
 import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails, qualityFlags, CREATION_METHODS, type MeshStats } from "@/lib/mesh-preview";
+import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails, qualityFlags, CREATION_METHODS, isLegacyCreationMethod, type MeshStats } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
-import { CreationMethodBadge, PrintVerifiedBadge, ReviewStatusBadge } from "@/components/QualityBadges";
+import { FileBadge, ReviewStatusBadge } from "@/components/QualityBadges";
 
 import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
 
@@ -25,7 +25,7 @@ function slugify(s: string) {
 const ACCEPTED = ".stl,.3mf,.obj,.zip,.step,.stp,.gcode,.lys,.chitubox,.ctb,.pdf,.png,.jpg,.jpeg";
 
 const FILE_COLUMNS =
-  "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at";
+  "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at, raw_ai_confirmed_at";
 
 function FilesPage() {
   const { user } = useAuth();
@@ -54,6 +54,7 @@ function FilesPage() {
   // disclosure + automatic mesh checks
   const [creationMethod, setCreationMethod] = useState<string>("");
   const [aiNote, setAiNote] = useState("");
+  const [noRawAi, setNoRawAi] = useState(false);
   const [checking, setChecking] = useState(false);
   const [check, setCheck] = useState<{ blobs: Blob[]; stats: MeshStats; flags: string[]; fatal: string | null } | null>(null);
 
@@ -151,7 +152,7 @@ function FilesPage() {
   };
 
   const upload = async () => {
-    if (!user || !creator || !pickedFile || !title || !creationMethod) return;
+    if (!user || !creator || !pickedFile || !title || !creationMethod || !noRawAi) return;
     if (check?.fatal) {
       toast.error(check.fatal);
       return;
@@ -186,7 +187,8 @@ function FilesPage() {
         recommended_printer: printer || null,
         supports_required: supports === "" ? null : supports === "yes",
         creation_method: creationMethod,
-        ai_disclosure_note: creationMethod === "hand" ? null : (aiNote || null),
+        ai_disclosure_note: creationMethod === "ai_assisted" ? (aiNote || null) : null,
+        raw_ai_confirmed_at: new Date().toISOString(),
         quality_flags: check?.flags ?? [],
         ...(check?.stats
           ? { dim_x: check.stats.dimX, dim_y: check.stats.dimY, dim_z: check.stats.dimZ, triangle_count: check.stats.triangleCount }
@@ -216,7 +218,7 @@ function FilesPage() {
       toast.success("File uploaded — review and publish below");
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       setMaterial(""); setLayerHeight(""); setInfill(""); setPrintTime(""); setPrinter(""); setSupports("");
-      setCreationMethod(""); setAiNote(""); setCheck(null);
+      setCreationMethod(""); setAiNote(""); setNoRawAi(false); setCheck(null);
 
       if (inputRef.current) inputRef.current.value = "";
       await refresh();
@@ -229,7 +231,7 @@ function FilesPage() {
   const togglePublish = async (f: any) => {
     const willPublish = !f.is_published;
     if (willPublish && !f.creation_method) {
-      return toast.error("Set how this model was made before publishing.");
+      return toast.error("Choose a badge (Digital Sculpt or AI-Assisted) before publishing.");
     }
     const { data: updated, error } = await supabase
       .from("creator_files")
@@ -270,7 +272,7 @@ function FilesPage() {
         print_verified_at: new Date().toISOString(),
       }).eq("id", f.id);
       if (error) throw error;
-      toast.success("Print verified — buyers will see the badge and your photo");
+      toast.success("Print-Tested — buyers now see the badge and your photo");
       await refresh();
     } catch (e: any) {
       toast.error(e?.message ?? "Could not save the photo");
@@ -342,21 +344,33 @@ function FilesPage() {
           )}
 
           <div className="rounded-xl border border-border p-3">
-            <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">How was this made?</div>
-            <p className="mt-1 text-xs text-ink-soft">Required. Buyers see this on the file — undisclosed AI use can get your file removed.</p>
+            <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Badge &amp; disclosure</div>
+            <p className="mt-1 text-xs text-ink-soft">
+              Required. Buyers see this badge on your file. Add a photo of the real print afterwards to upgrade it to{" "}
+              <strong className="text-ink">Print-Tested</strong>.
+            </p>
             <div className="mt-3">
               <select value={creationMethod} onChange={(e) => setCreationMethod(e.target.value)} className={inp}>
-                <option value="">Choose one…</option>
+                <option value="">Choose a badge…</option>
                 {CREATION_METHODS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
+              {creationMethod && (
+                <p className="mt-1.5 text-xs text-ink-soft">{CREATION_METHODS.find((m) => m.value === creationMethod)?.help}</p>
+              )}
             </div>
-            {creationMethod && creationMethod !== "hand" && (
+            {creationMethod === "ai_assisted" && (
               <div className="mt-3">
-                <Field label="What did you clean up or retopologise?">
-                  <textarea value={aiNote} onChange={(e) => setAiNote(e.target.value)} rows={2} className={inp} placeholder="Generated the base shape, then remeshed, hollowed and test-printed it." />
+                <Field label="What did you repair, retopologise or rescale?">
+                  <textarea value={aiNote} onChange={(e) => setAiNote(e.target.value)} rows={2} className={inp} placeholder="Generated the base shape, then remeshed, fixed non-manifold edges, hollowed it and rescaled to mm." />
                 </Field>
               </div>
             )}
+            <label className="mt-3 flex items-start gap-2 text-xs text-ink-soft">
+              <input type="checkbox" checked={noRawAi} onChange={(e) => setNoRawAi(e.target.checked)} className="mt-0.5" />
+              <span>
+                I confirm this is not a raw, unedited AI export. The mesh is watertight, free of inverted normals and correctly scaled for slicers.
+              </span>
+            </label>
           </div>
 
           <div className="rounded-xl border border-border p-3">
@@ -418,10 +432,11 @@ function FilesPage() {
             </div>
           )}
 
-          <button onClick={upload} disabled={busy || checking || !title || !pickedFile || !creationMethod || !!check?.fatal} className="btn-primary w-full">
+          <button onClick={upload} disabled={busy || checking || !title || !pickedFile || !creationMethod || !noRawAi || !!check?.fatal} className="btn-primary w-full">
             {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{progress || "Working…"}</> : <><Upload className="mr-2 h-4 w-4" />Upload file</>}
           </button>
-          {!creationMethod && pickedFile && <p className="text-xs text-ink-soft">Choose how this model was made to continue.</p>}
+          {pickedFile && !creationMethod && <p className="text-xs text-ink-soft">Choose a badge to continue.</p>}
+          {pickedFile && creationMethod && !noRawAi && <p className="text-xs text-ink-soft">Confirm the file isn't a raw AI export to continue.</p>}
         </div>
       </div>
 
@@ -463,8 +478,7 @@ function FilesPage() {
                       <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-ink-soft">DRAFT</span>
                     )}
                     <ReviewStatusBadge status={f.review_status} />
-                    <CreationMethodBadge method={f.creation_method} />
-                    <PrintVerifiedBadge verifiedAt={f.print_verified_at} />
+                    <FileBadge file={f} />
                     {f.is_free ? (
                       <span className="inline-flex items-center gap-1 text-xs text-emerald-600"><Unlock className="h-3 w-3" />Free</span>
                     ) : (
@@ -482,9 +496,11 @@ function FilesPage() {
                   {f.review_status === "rejected" && f.review_notes && (
                     <div className="mt-1 text-xs text-destructive">Reviewer: {f.review_notes}</div>
                   )}
-                  {!f.creation_method && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <span className="text-xs text-ink-soft">How was this made?</span>
+                  {(!f.creation_method || isLegacyCreationMethod(f.creation_method)) && (
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span className="text-xs text-ink-soft">
+                        {f.creation_method ? "Confirm this file's badge under the new standards:" : "Which badge applies?"}
+                      </span>
                       <select
                         defaultValue=""
                         onChange={async (e) => {
@@ -511,7 +527,7 @@ function FilesPage() {
                       </button>
                     </>
                   )}
-                  <label className="btn-ghost h-9 cursor-pointer px-3" title={f.print_verified_at ? "Replace print photo" : "Add a photo of the real print"}>
+                  <label className="btn-ghost h-9 cursor-pointer px-3" title={f.print_verified_at ? "Replace print photo" : "Add a photo of the real print to earn Print-Tested"}>
                     {verifyBusyId === f.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
                     <input
                       type="file"
