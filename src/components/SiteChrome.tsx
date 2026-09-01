@@ -27,6 +27,7 @@ export function SiteHeader() {
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isCreator, isAdmin, signOut } = useAuth();
+  const discoveryEnabled = useDiscoveryEnabled();
 
   const handleSignOut = async () => {
     setMenuOpen(false);
