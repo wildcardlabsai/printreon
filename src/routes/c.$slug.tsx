@@ -89,7 +89,7 @@ function CreatorPage() {
 
   useEffect(() => {
     (async () => {
-      const { data: cp } = await supabase.from("creator_profiles").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
+      const { data: cp } = await supabase.from("creator_profiles").select("id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, created_at, updated_at").eq("slug", slug).eq("is_published", true).maybeSingle();
       if (!cp) { setNotFoundFlag(true); return; }
       setCreator(cp);
       const [{ data: t }, { data: f }, { data: p }] = await Promise.all([
