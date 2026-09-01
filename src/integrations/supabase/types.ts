@@ -544,9 +544,11 @@ export type Database = {
       }
       creator_files: {
         Row: {
+          ai_disclosure_note: string | null
           bundle_id: string | null
           category: string | null
           created_at: string
+          creation_method: string | null
           creator_id: string
           description: string | null
           dim_x: number | null
@@ -564,7 +566,14 @@ export type Database = {
           material: string | null
           preview_images: Json
           print_time_minutes: number | null
+          print_verified_at: string | null
+          print_verified_image_url: string | null
+          quality_flags: Json
           recommended_printer: string | null
+          review_notes: string | null
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
           scheduled_at: string | null
           slug: string
           status: string
@@ -579,9 +588,11 @@ export type Database = {
           version: number
         }
         Insert: {
+          ai_disclosure_note?: string | null
           bundle_id?: string | null
           category?: string | null
           created_at?: string
+          creation_method?: string | null
           creator_id: string
           description?: string | null
           dim_x?: number | null
@@ -599,7 +610,14 @@ export type Database = {
           material?: string | null
           preview_images?: Json
           print_time_minutes?: number | null
+          print_verified_at?: string | null
+          print_verified_image_url?: string | null
+          quality_flags?: Json
           recommended_printer?: string | null
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheduled_at?: string | null
           slug: string
           status?: string
@@ -614,9 +632,11 @@ export type Database = {
           version?: number
         }
         Update: {
+          ai_disclosure_note?: string | null
           bundle_id?: string | null
           category?: string | null
           created_at?: string
+          creation_method?: string | null
           creator_id?: string
           description?: string | null
           dim_x?: number | null
@@ -634,7 +654,14 @@ export type Database = {
           material?: string | null
           preview_images?: Json
           print_time_minutes?: number | null
+          print_verified_at?: string | null
+          print_verified_image_url?: string | null
+          quality_flags?: Json
           recommended_printer?: string | null
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheduled_at?: string | null
           slug?: string
           status?: string
@@ -747,6 +774,7 @@ export type Database = {
           suspended_at: string | null
           suspension_reason: string | null
           tiktok_url: string | null
+          trusted_at: string | null
           updated_at: string
           user_id: string
           website_url: string | null
@@ -773,6 +801,7 @@ export type Database = {
           suspended_at?: string | null
           suspension_reason?: string | null
           tiktok_url?: string | null
+          trusted_at?: string | null
           updated_at?: string
           user_id: string
           website_url?: string | null
@@ -799,6 +828,7 @@ export type Database = {
           suspended_at?: string | null
           suspension_reason?: string | null
           tiktok_url?: string | null
+          trusted_at?: string | null
           updated_at?: string
           user_id?: string
           website_url?: string | null
@@ -1110,6 +1140,54 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      file_print_reports: {
+        Row: {
+          created_at: string
+          creator_id: string
+          file_id: string
+          id: string
+          note: string | null
+          outcome: string
+          photo_url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          file_id: string
+          id?: string
+          note?: string | null
+          outcome: string
+          photo_url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          file_id?: string
+          id?: string
+          note?: string | null
+          outcome?: string
+          photo_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "file_print_reports_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "file_print_reports_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "creator_files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       file_versions: {
         Row: {
@@ -1938,6 +2016,15 @@ export type Database = {
       comment_parent_matches: {
         Args: { _creator_id: string; _parent_id: string; _parent_type: string }
         Returns: boolean
+      }
+      file_quality_stats: {
+        Args: { _file_id: string }
+        Returns: {
+          failures: number
+          success_rate: number
+          successes: number
+          total: number
+        }[]
       }
       generate_beta_referral_code: { Args: never; Returns: string }
       get_beta_referral_stats: {
