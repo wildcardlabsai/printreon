@@ -78,6 +78,20 @@
       "when": 1788254288823,
       "tag": "0010_lock_down_spoofable_inserts",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1788254604281,
+      "tag": "0011_restrict_follower_reaction_reads",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1788254665631,
+      "tag": "0012_set_search_path_touch_updated_at",
+      "breakpoints": true
     }
   ]
 }
