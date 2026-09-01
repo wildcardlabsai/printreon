@@ -43,7 +43,7 @@ function PrintLogPage() {
       const path = `${user.id}/${Date.now()}_${form.photo.name}`;
       const { error } = await supabase.storage.from("print-log").upload(path, form.photo);
       if (error) return toast.error(error.message);
-      photoUrl = supabase.storage.from("print-log").getPublicUrl(path).data.publicUrl;
+      photoUrl = path;
     }
     const file = files.find((f) => f.creator_files?.id === form.file_id);
     const { error } = await supabase.from("print_log").insert({
@@ -75,7 +75,7 @@ function PrintLogPage() {
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           {items.map((i) => (
             <div key={i.id} className="card-soft">
-              {i.photo_url && <img src={i.photo_url} alt="" className="aspect-square w-full rounded-lg object-cover" />}
+              {i.photo_src && <img src={i.photo_src} alt="" className="aspect-square w-full rounded-lg object-cover" />}
               <p className="mt-2 font-semibold text-ink">{i.creator_files?.title}</p>
               <p className="text-xs text-ink-soft">★ {i.rating}/5</p>
               {i.notes && <p className="mt-1 text-sm text-ink-soft">{i.notes}</p>}
