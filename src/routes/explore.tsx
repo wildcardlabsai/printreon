@@ -88,12 +88,44 @@ function Explore() {
     else { toast.success("You're on the list."); setEmail(""); }
   };
 
+  const comingSoonPanel = (
+    <div className="mt-10 rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-soft)]">
+      <Sparkles className="mx-auto h-10 w-10 text-primary" />
+      <h2 className="mt-4 text-2xl font-bold text-ink">Printreon is opening for creators soon.</h2>
+      <p className="mx-auto mt-2 max-w-md text-ink-soft">
+        We're onboarding the first wave of 3D printing designers. Join the waitlist to be notified when new creators go live.
+      </p>
+      <form onSubmit={joinWaitlist} className="mx-auto mt-6 flex max-w-md gap-2">
+        <input type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary" />
+        <button className="btn-primary"><Mail className="mr-2 h-4 w-4" />Join waitlist</button>
+      </form>
+      <p className="mt-6 text-sm text-ink-soft">
+        Are you a creator? <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="font-semibold text-primary">Start your page →</Link>
+      </p>
+    </div>
+  );
+
+  if (!discoveryEnabled) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <section className="container-page py-14">
+          <h1 className="text-4xl font-bold text-ink md:text-5xl">Creators coming soon</h1>
+          <p className="mt-3 max-w-xl text-ink-soft">We're onboarding the first wave of 3D printing designers. Join the waitlist and we'll tell you the moment new creators go live.</p>
+          {comingSoonPanel}
+        </section>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <section className="container-page py-14">
         <h1 className="text-4xl font-bold text-ink md:text-5xl">Explore creators</h1>
         <p className="mt-3 max-w-xl text-ink-soft">Discover 3D printing designers selling STL, 3MF and printable files through monthly memberships.</p>
+
 
         <div className="mt-6 max-w-md">
           <label htmlFor="creator-search" className="sr-only">Search creators</label>
