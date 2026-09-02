@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { Sparkles, Mail, Star } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ interface Creator {
 }
 
 function Explore() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const [allCreators, setAllCreators] = useState<Creator[] | null>(null);
   const [featured, setFeatured] = useState<any[]>([]);
   const [fileCounts, setFileCounts] = useState<Record<string, number>>({});
