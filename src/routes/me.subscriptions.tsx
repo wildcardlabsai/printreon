@@ -15,6 +15,7 @@ export const Route = createFileRoute("/me/subscriptions")({
 });
 
 function SubsPage() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const { user } = useAuth();
   const [subs, setSubs] = useState<any[] | null>(null);
   const cancel = useServerFn(cancelSubscription);

@@ -17,6 +17,7 @@ export const Route = createFileRoute("/me/library")({
 });
 
 function LibraryPage() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const { user } = useAuth();
   const [creators, setCreators] = useState<any[] | null>(null);
   const [files, setFiles] = useState<any[]>([]);

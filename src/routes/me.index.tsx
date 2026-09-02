@@ -10,6 +10,7 @@ export const Route = createFileRoute("/me/")({
 });
 
 function MemberOverview() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const { user, isCreator } = useAuth();
   const [stats, setStats] = useState({ subs: 0, downloads: 0, following: 0 });
 

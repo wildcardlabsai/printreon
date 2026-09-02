@@ -16,6 +16,7 @@ export const Route = createFileRoute("/me/downloads")({
 });
 
 function DownloadsPage() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const { user } = useAuth();
   const [items, setItems] = useState<any[] | null>(null);
   const downloadFn = useServerFn(getFileDownloadUrl);

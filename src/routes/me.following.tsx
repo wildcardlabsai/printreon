@@ -11,6 +11,7 @@ export const Route = createFileRoute("/me/following")({
 });
 
 function FollowingPage() {
+  const discoveryEnabled = useDiscoveryEnabled();
   const { user } = useAuth();
   const [items, setItems] = useState<any[] | null>(null);
 
