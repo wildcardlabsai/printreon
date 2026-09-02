@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -8,20 +8,29 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const DISCOVERY_MIN_CREATORS = 6;
 
-export function usePublishedCreatorCount() {
-  return useQuery({
-    queryKey: ["published-creator-count"],
-    staleTime: 5 * 60 * 1000,
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("creator_profiles")
-        .select("id", { count: "exact", head: true })
-        .eq("is_published", true)
-        .is("suspended_at", null);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
+let cachedCount: number | null = null;
+
+export function usePublishedCreatorCount(): number | null {
+  const [count, setCount] = useState<number | null>(cachedCount);
+
+  useEffect(() => {
+    if (cachedCount !== null) return;
+    let active = true;
+    supabase
+      .from("creator_profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("is_published", true)
+      .is("suspended_at", null)
+      .then(({ count: c }) => {
+        cachedCount = c ?? 0;
+        if (active) setCount(cachedCount);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return count;
 }
 
 /**
@@ -29,6 +38,6 @@ export function usePublishedCreatorCount() {
  * hidden so links never flash in and then disappear.
  */
 export function useDiscoveryEnabled(): boolean {
-  const { data } = usePublishedCreatorCount();
-  return (data ?? 0) >= DISCOVERY_MIN_CREATORS;
+  const count = usePublishedCreatorCount();
+  return (count ?? 0) >= DISCOVERY_MIN_CREATORS;
 }
