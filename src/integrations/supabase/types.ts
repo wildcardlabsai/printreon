@@ -555,6 +555,7 @@ export type Database = {
           dim_y: number | null
           dim_z: number | null
           download_count: number
+          file_hash: string | null
           file_size: number | null
           file_type: string | null
           file_url: string | null
@@ -600,6 +601,7 @@ export type Database = {
           dim_y?: number | null
           dim_z?: number | null
           download_count?: number
+          file_hash?: string | null
           file_size?: number | null
           file_type?: string | null
           file_url?: string | null
@@ -645,6 +647,7 @@ export type Database = {
           dim_y?: number | null
           dim_z?: number | null
           download_count?: number
+          file_hash?: string | null
           file_size?: number | null
           file_type?: string | null
           file_url?: string | null
@@ -1369,6 +1372,85 @@ export type Database = {
           },
         ]
       }
+      licences: {
+        Row: {
+          created_at: string
+          creator_id: string
+          creator_name: string
+          id: string
+          issued_at: string
+          licence_number: string
+          licensee_email: string | null
+          licensee_name: string | null
+          revoked_at: string | null
+          revoked_reason: string | null
+          status: string
+          subscription_id: string | null
+          terms: Json
+          tier_id: string
+          tier_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          creator_name: string
+          id?: string
+          issued_at?: string
+          licence_number?: string
+          licensee_email?: string | null
+          licensee_name?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          status?: string
+          subscription_id?: string | null
+          terms?: Json
+          tier_id: string
+          tier_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          creator_name?: string
+          id?: string
+          issued_at?: string
+          licence_number?: string
+          licensee_email?: string | null
+          licensee_name?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          status?: string
+          subscription_id?: string | null
+          terms?: Json
+          tier_id?: string
+          tier_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licences_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licences_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licences_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
@@ -2033,6 +2115,7 @@ export type Database = {
         }[]
       }
       generate_beta_referral_code: { Args: never; Returns: string }
+      generate_licence_number: { Args: never; Returns: string }
       get_beta_referral_stats: {
         Args: { _code: string }
         Returns: {

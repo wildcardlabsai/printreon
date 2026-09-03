@@ -113,6 +113,13 @@
       "when": 1788259706526,
       "tag": "0015_quality_standards_confirmations",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1788467388976,
+      "tag": "0016_licences_and_file_versioning",
+      "breakpoints": true
     }
   ]
 }
