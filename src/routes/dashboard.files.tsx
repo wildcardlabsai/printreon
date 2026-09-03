@@ -473,16 +473,30 @@ function FilesPage() {
             </div>
           </div>
 
-          <Field label="File">
+          <Field label="File(s)">
             <input
               ref={inputRef}
               type="file"
+              multiple
               accept={ACCEPTED}
-              onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+              onChange={(e) => onPick(e.target.files)}
               className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground"
             />
             {pickedFile && <div className="mt-1 text-xs text-ink-soft">{pickedFile.name} ({(pickedFile.size / 1024 / 1024).toFixed(2)} MB)</div>}
+            {queue.length > 0 && (
+              <div className="mt-1 text-xs text-ink-soft">
+                + {queue.length} more queued — each becomes its own draft, titled from the filename, sharing the
+                settings above.
+              </div>
+            )}
+            {duplicateOf && (
+              <div className="mt-2 rounded-lg bg-amber-500/10 p-2 text-xs text-amber-800">
+                This looks identical to your existing file “{duplicateOf}”. Upload a new version of that file instead
+                if it's an update.
+              </div>
+            )}
           </Field>
+
 
           {checking && (
             <div className="flex items-center gap-2 text-xs text-ink-soft"><Loader2 className="h-4 w-4 animate-spin" />Checking the model…</div>
