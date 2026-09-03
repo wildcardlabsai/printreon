@@ -54,15 +54,16 @@ function About() {
           <PartnerStrip variant="compact" />
         </div>
         <p className="mt-3 text-ink-soft">
-          Together we connect designers and makers across the entire print workflow — from the file you
-          publish on Printreon to the print sitting on someone's bed.
+          Together we cover the whole print workflow, from the file you publish on Printreon to the
+          print sitting on someone's bed.
         </p>
 
         <h2 className="mt-12 text-2xl font-bold text-ink">Mission</h2>
         <p className="mt-3 text-ink-soft">
-          Give every 3D creator a fair, predictable monthly income — without giving up control of their
-          files, audience, or brand.
+          Give every 3D creator a fair, predictable monthly income, without giving up control of their
+          files, audience or brand.
         </p>
+
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="card-soft !p-4">
