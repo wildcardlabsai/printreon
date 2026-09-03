@@ -87,12 +87,25 @@ function LibraryPage() {
     return (paidPriceByCreator.get(f.creator_id) ?? 0) >= required;
   };
 
+  const isNew = (f: any) => !!lastSeen && new Date(f.created_at).getTime() > lastSeen;
+  const isUpdated = (f: any) =>
+    !!lastSeen &&
+    Number(f.version ?? 1) > 1 &&
+    !!f.updated_at &&
+    new Date(f.updated_at).getTime() > lastSeen &&
+    !isNew(f);
+
   const q = query.trim().toLowerCase();
-  const shown = files.filter(
-    (f) =>
-      (activeCreator === "all" || f.creator_id === activeCreator) &&
-      (!q || f.title.toLowerCase().includes(q) || (f.category ?? "").toLowerCase().includes(q))
-  );
+  const shown = files.filter((f) => {
+    if (activeCreator !== "all" && f.creator_id !== activeCreator) return false;
+    if (q && !f.title.toLowerCase().includes(q) && !(f.category ?? "").toLowerCase().includes(q)) return false;
+    if (filter === "new" && !isNew(f) && !isUpdated(f)) return false;
+    if (filter === "unlocked" && !unlocked(f)) return false;
+    if (filter === "3d" && !canPreview(f.file_type)) return false;
+    return true;
+  });
+  const newCount = files.filter((f) => isNew(f) || isUpdated(f)).length;
+
 
   const download = async (f: any) => {
     setBusyId(f.id);
