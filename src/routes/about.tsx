@@ -27,27 +27,27 @@ function About() {
         <span className="eyebrow">// About</span>
         <h1 className="mt-4 text-4xl font-bold text-ink md:text-5xl">About Printreon</h1>
         <p className="mt-6 text-lg text-ink-soft">
-          Printreon is the membership platform purpose-built for 3D printing creators —
-          STL designers, miniature sculptors, cosplay makers, functional-print designers and print farms.
+          Printreon is a membership platform for 3D printing creators. STL designers, miniature
+          sculptors, cosplay makers, functional-print designers and print farms.
         </p>
         <p className="mt-4 text-ink-soft">
-          Patreon was never built for STL files. We are. Native uploads for .stl, .3mf, .obj and .zip,
-          tier-gated downloads, lead magnets, growth tools, and analytics that 3D creators actually need.
+          Native uploads for .stl, .3mf, .obj and .zip, tier-gated downloads, free lead-magnet files,
+          and analytics built around a file library rather than a video feed.
         </p>
 
         <h2 className="mt-12 text-2xl font-bold text-ink">Why we built this</h2>
         <p className="mt-3 text-ink-soft">
-          Every general-purpose membership platform treats a 3D model the same way it treats a podcast
-          episode or a blog post — as a generic attachment. It isn't. A file needs a viewer, not just a
-          download link. A tier needs to gate a .zip the same way it gates a .stl. A creator needs payouts
-          that land in days, not the 60-day holds video platforms are built around.
+          Most membership platforms treat a 3D model like any other attachment. A printable file needs
+          more than that. It needs a viewer, a tier that gates a .zip the same way it gates a .stl, and
+          payouts that arrive in days rather than sitting behind a two-month hold.
         </p>
         <p className="mt-3 text-ink-soft">
-          We kept hearing the same workaround from designers: Drive links pasted into Discord, tier gating
-          held together with spreadsheets, no real way to license a file for commercial print farms versus
-          hobbyists. So we built the platform we wished existed — STL-native from day one, with the
-          payments, licensing, and community tools this economy actually runs on.
+          Designers kept describing the same workaround: Drive links pasted into Discord, tier gating
+          held together with spreadsheets, and no clean way to licence a file for a commercial print
+          farm as opposed to a hobbyist. So we built the thing we wanted to use. STL-native from day
+          one, with the payments, licensing and community tools this work actually runs on.
         </p>
+
 
         <h2 className="mt-12 text-2xl font-bold text-ink">Our partner</h2>
         <div className="mt-4">
