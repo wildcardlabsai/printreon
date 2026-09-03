@@ -128,6 +128,7 @@ function LicencesPage() {
             <table className="w-full text-sm">
               <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-ink-soft">
                 <tr>
+                  <th className="px-4 py-3">Licence no.</th>
                   <th className="px-4 py-3">Member</th>
                   <th className="px-4 py-3">Tier</th>
                   <th className="px-4 py-3">Status</th>
@@ -138,11 +139,13 @@ function LicencesPage() {
               <tbody>
                 {issued.map((r) => (
                   <tr key={r.subscriptionId} className="border-b border-border/60 last:border-0">
+                    <td className="px-4 py-3 font-mono text-xs text-ink-soft">{r.licenceNumber ?? "—"}</td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-ink">{r.memberName}</div>
                       <div className="text-xs text-ink-soft">{r.memberEmail}</div>
                     </td>
                     <td className="px-4 py-3 text-ink-soft">{r.tierName}</td>
+
                     <td className="px-4 py-3 text-ink-soft">
                       {r.cancelAtPeriodEnd ? `${r.status} · cancelling` : r.status}
                     </td>
