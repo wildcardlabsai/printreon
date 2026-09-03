@@ -362,7 +362,7 @@ function Money() {
 
 function PricingAndFaq() {
   return (
-    <section className="container-wide py-16 md:py-20">
+    <section id="pricing" className="container-wide py-16 md:py-20">
       <div className="grid gap-12 md:grid-cols-12">
         <div className="md:col-span-5">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Pricing</h2>
