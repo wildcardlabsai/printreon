@@ -18,7 +18,6 @@ import {
 
 const NAV_LINKS = [
   { id: "features", label: "How it works" },
-  { id: "pricing", label: "Pricing" },
   { id: "apply", label: "Apply" },
 ] as const;
 

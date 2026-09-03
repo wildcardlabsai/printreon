@@ -337,7 +337,7 @@ function Money() {
   return (
     <section className="border-y border-border bg-ink py-14 text-background">
       <div className="container-wide">
-        <h2 className="text-2xl font-bold md:text-3xl">The money part</h2>
+        <h2 className="text-2xl font-bold text-background md:text-3xl">The money part</h2>
         <p className="mt-3 max-w-xl text-background/70">
           You are paid by Stripe, not by us. We take a cut of paid subscriptions and nothing else.
         </p>
