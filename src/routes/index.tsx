@@ -466,13 +466,83 @@ function Money() {
             </div>
           ))}
         </dl>
-        <p className="mt-8 text-sm text-background/50">
+        <EarningsCalculator />
+        <p className="mt-6 text-sm text-background/50">
           Stripe's own processing fee applies on top, the same as it would anywhere else.
         </p>
       </div>
     </section>
   );
 }
+
+/** Simple worked example so the 10% fee has a number attached to it. */
+function EarningsCalculator() {
+  const [supporters, setSupporters] = useState(100);
+  const [price, setPrice] = useState(5);
+
+  const { gross, fee, net } = useMemo(() => {
+    const g = supporters * price;
+    const f = g * 0.1;
+    return { gross: g, fee: f, net: g - f };
+  }, [supporters, price]);
+
+  return (
+    <div className="mt-10 rounded-2xl border border-background/15 bg-background/5 p-5 md:p-6">
+      <h3 className="font-mono text-xs uppercase tracking-widest text-background/50">
+        What that looks like
+      </h3>
+      <div className="mt-4 grid gap-6 md:grid-cols-2 md:items-center">
+        <div className="space-y-5">
+          <label className="block">
+            <span className="flex items-baseline justify-between text-sm text-background/70">
+              Supporters <span className="font-bold text-background">{supporters}</span>
+            </span>
+            <input
+              type="range"
+              min={10}
+              max={1000}
+              step={10}
+              value={supporters}
+              onChange={(e) => setSupporters(Number(e.target.value))}
+              className="mt-2 w-full accent-primary"
+              aria-label="Number of supporters"
+            />
+          </label>
+          <label className="block">
+            <span className="flex items-baseline justify-between text-sm text-background/70">
+              Monthly price <span className="font-bold text-background">£{price}</span>
+            </span>
+            <input
+              type="range"
+              min={1}
+              max={30}
+              step={1}
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              className="mt-2 w-full accent-primary"
+              aria-label="Monthly tier price in pounds"
+            />
+          </label>
+        </div>
+        <div className="rounded-xl bg-background/10 p-5">
+          <p className="text-sm text-background/60">
+            £{gross.toLocaleString()} a month collected
+          </p>
+          <p className="mt-1 text-sm text-background/60">
+            minus £{fee.toLocaleString()} platform fee
+          </p>
+          <p className="mt-3 text-3xl font-bold text-background">
+            £{net.toLocaleString()} <span className="text-base font-semibold text-background/60">to you</span>
+          </p>
+          <p className="mt-2 text-xs text-background/50">
+            Before Stripe's processing fee. Illustrative only.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 /* ----------------------------- 6. PRICING + FAQ --------------------------- */
 
