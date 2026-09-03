@@ -165,46 +165,65 @@ function Hero() {
   return (
     <section className="facet-bg relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 blueprint-grid opacity-50" aria-hidden />
-      <div className="container-wide relative grid gap-12 py-16 md:grid-cols-12 md:items-center md:py-20">
+      <div className="container-wide relative grid gap-10 py-12 md:grid-cols-12 md:items-center md:gap-12 md:py-20">
         <div className="md:col-span-6">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-soft">
-            BATCH 001 <span className="text-primary">///</span> BETA OPEN <span className="text-primary">///</span> INVITE ONLY
-          </p>
-
-          <h1 className="mt-5 text-[38px] font-bold leading-[1.05] text-ink md:text-[58px]">
+          <h1 className="text-[32px] font-bold leading-[1.06] text-ink sm:text-[38px] md:text-[58px]">
             A membership home for 3D print creators.
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-ink-soft">
-            Set your tiers, upload your STL, 3MF, OBJ and ZIP files, and let supporters pay you monthly
-            for access. Printreon handles the page, the paywall, the file delivery and the payouts.
+          <p className="mt-4 max-w-lg text-base text-ink-soft md:text-lg">
+            Monthly memberships for people who design printable models. Set your tiers, upload your
+            STL, 3MF, OBJ and ZIP files, and let supporters pay you every month for access.
           </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <a href="#apply" className="btn-primary h-12 px-6 text-base">
-              Apply as a creator
-            </a>
-            {discoveryEnabled ? (
-              <Link to="/explore" className="btn-ghost h-12 px-6 text-base">
-                Browse creators
-              </Link>
-            ) : (
-              <Link to="/auth" search={{ mode: "signup" }} className="btn-ghost h-12 px-6 text-base">
-                Create a free account
-              </Link>
-            )}
+
+          {/* On phones the product shot comes before the detail, so the first scroll shows the app. */}
+          <div className="mt-7 md:hidden">
+            <MockStudioOverview />
           </div>
-          <p className="mt-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card/70 p-4">
+              <h2 className="text-sm font-bold text-ink">You design models</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                Get a creator page, tiers, a gated file library and Stripe payouts.
+              </p>
+              <a href="#apply" className="btn-primary mt-3 h-11 w-full px-5 text-sm">
+                Apply as a creator
+              </a>
+            </div>
+            <div className="rounded-2xl border border-border bg-card/70 p-4">
+              <h2 className="text-sm font-bold text-ink">You print them</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                Subscribe to the designers you like and download their files any time.
+              </p>
+              {discoveryEnabled ? (
+                <Link to="/explore" className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
+                  Browse creators
+                </Link>
+              ) : (
+                <Link to="/auth" search={{ mode: "signup" }} className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
+                  Create a free account
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
             10% platform fee · Stripe payouts · Free to open a page
           </p>
         </div>
 
-        <div className="md:col-span-6">
+        <div className="hidden md:col-span-6 md:block">
           <MockStudioOverview />
+          <p className="mt-3 text-center font-mono text-[11px] uppercase tracking-widest text-ink-soft">
+            Creator dashboard
+          </p>
         </div>
 
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------ 2. THE PRODUCT ---------------------------- */
 
