@@ -92,11 +92,24 @@ function FilesPage() {
 
   useEffect(() => { refresh(); }, [creator]);
 
-  // Run the mesh sanity checks as soon as a file is picked.
-  const onPick = async (f: File | null) => {
+  // Run the mesh sanity checks as soon as a file is picked. Extra files are
+  // queued and uploaded as their own drafts after the first one.
+  const onPick = async (list: FileList | null) => {
+    const picked = list ? Array.from(list) : [];
+    const f = picked[0] ?? null;
     setPickedFile(f);
+    setQueue(picked.slice(1));
     setCheck(null);
-    if (!f || !canPreview(f.name)) return;
+    setDuplicateOf(null);
+    if (!f) return;
+
+    const hash = await hashFile(f);
+    if (hash) {
+      const dupe = files.find((x) => x.file_hash && x.file_hash === hash);
+      if (dupe) setDuplicateOf(dupe.title);
+    }
+
+    if (!canPreview(f.name)) return;
     if (f.size > MAX_PREVIEW_BYTES) return;
     setChecking(true);
     try {
@@ -112,6 +125,7 @@ function FilesPage() {
       setChecking(false);
     }
   };
+
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
