@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 
 const STEPS = [
-  { n: "01", title: "Set up your page", desc: "Display name, slug, banner, tiers and pricing — live in minutes." },
+  { n: "01", title: "Set up your page", desc: "Display name, slug, banner, tiers and pricing. Live in minutes." },
   { n: "02", title: "Upload your files", desc: "STL, 3MF, OBJ or ZIP, gated to whichever tier you choose." },
   { n: "03", title: "Get paid monthly", desc: "Stripe Connect handles billing, taxes and payouts to your bank." },
 ] as const;
@@ -19,20 +19,20 @@ function ForCreators() {
       <div className="container-page py-16">
         <span className="eyebrow">// For creators</span>
         <h1 className="mt-4 text-4xl font-bold text-ink md:text-5xl">For 3D print creators.</h1>
-        <p className="mt-4 max-w-2xl text-ink-soft">Native STL, 3MF, OBJ and ZIP support. Tiered memberships. Built-in growth loops. Everything you'd hack onto Patreon — built in by default.</p>
+        <p className="mt-4 max-w-2xl text-ink-soft">Native STL, 3MF, OBJ and ZIP support, tiered memberships and protected downloads. The things you would otherwise bolt onto Patreon are built in here.</p>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {[
             { title: "Tiered memberships", desc: "Unlimited tiers with their own price and gated benefits." },
             { title: "Native STL / 3MF / OBJ / ZIP", desc: "Real 3D-aware uploads with previews, tags and tier-gated downloads." },
             { title: "Embedded Stripe checkout", desc: "Subscribers check out without ever leaving your page." },
-            { title: "Stripe Connect payouts", desc: "Money lands in your own bank account. We take a small platform fee per paid subscription." },
+            { title: "Stripe Connect payouts", desc: "Money lands in your own bank account. Printreon keeps 10% of paid subscription revenue." },
             { title: "Auto-emails on new drops", desc: "Subscribers and followers get an email the moment you publish a new file or post." },
-            { title: "Posts, comments & DMs", desc: "Build a real community around your prints — not just a paywall." },
+            { title: "Posts, comments & DMs", desc: "Posts, threaded comments and direct messages, so the page is more than a paywall." },
             { title: "Bundles & promo codes", desc: "Run launches, sales and bundles without duct-taping third-party tools." },
             { title: "Creator analytics", desc: "Revenue, MRR, downloads, conversion and follower-to-sub data." },
-            { title: "Honest quality badges", desc: "Print-Tested, Digital Sculpt or AI-Assisted on every file — so buyers trust what they download." },
-            { title: "No untested AI dumps", desc: "AI is allowed but must be disclosed, and unrefined AI models need a real print photo. Your work isn't buried under unprintable junk." },
+            { title: "Honest quality badges", desc: "Print-Tested, Digital Sculpt or AI-Assisted on every file, so buyers know what they are downloading." },
+            { title: "No untested AI dumps", desc: "AI is allowed but must be disclosed, and unrefined AI models need a real print photo before publishing." },
           ].map((f) => (
             <div key={f.title} className="card-soft">
               <h2 className="text-lg font-bold text-ink">{f.title}</h2>
@@ -48,7 +48,7 @@ function ForCreators() {
             Every upload runs an automatic mesh sanity check, and your first files are reviewed by a human before they
             go live. Print your model and attach a photo to earn the <strong className="text-ink">Print-Tested</strong>{" "}
             badge; no printer of your own? Publish as <strong className="text-ink">Digital Sculpt</strong> as long as the
-            geometry is watertight and slicer-scaled. Used AI anywhere? That's allowed — disclose it as{" "}
+            geometry is watertight and slicer-scaled. Used AI anywhere? That's allowed. Disclose it as{" "}
             <strong className="text-ink">AI-Assisted</strong>. We'd rather you refined the mesh by hand, and if the model
             is essentially straight AI output you'll need to print it and attach the photo before it can be published.
           </p>
@@ -72,7 +72,7 @@ function ForCreators() {
         <div className="mt-16 flex flex-col items-start gap-4 rounded-3xl border border-primary/20 bg-primary/5 p-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-bold text-ink">Founding creators keep higher payouts for life.</h2>
-            <p className="mt-1 max-w-lg text-sm text-ink-soft">Creators accepted into the beta permanently lock in a reduced platform fee — before the doors open to everyone else.</p>
+            <p className="mt-1 max-w-lg text-sm text-ink-soft">Creators accepted into the beta permanently lock in a reduced platform fee, before the doors open to everyone else.</p>
           </div>
           <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary shrink-0">Start as a creator</Link>
         </div>
