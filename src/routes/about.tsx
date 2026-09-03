@@ -85,8 +85,9 @@ function About() {
 
         <div className="mt-12 flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-6">
           <p className="text-sm text-ink-soft">
-            We're accepting founding-creator applications now — <b className="font-semibold text-ink">300+ creators</b> already on the list.
+            Founding-creator applications are open. The beta is invite-only, so places go out in batches.
           </p>
+
           <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary ml-auto">Start as a creator</Link>
         </div>
       </article>
