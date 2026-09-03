@@ -6,13 +6,15 @@ import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
-import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle } from "lucide-react";
+import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle, History } from "lucide-react";
 import { toast } from "sonner";
 import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails, qualityFlags, CREATION_METHODS, isLegacyCreationMethod, type MeshStats } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { FileBadge, ReviewStatusBadge } from "@/components/QualityBadges";
+import { publishFileVersion, listFileVersions, type FileVersionRow } from "@/functions/versions.functions";
 
 import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
+
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
