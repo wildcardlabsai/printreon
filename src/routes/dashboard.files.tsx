@@ -747,6 +747,124 @@ function FilesPage() {
   );
 }
 
+/** Upload a replacement file with a changelog, and show the revision history. */
+function VersionPanel({
+  file,
+  userId,
+  creatorId,
+  onDone,
+}: {
+  file: any;
+  userId: string;
+  creatorId: string;
+  onDone: () => void | Promise<void>;
+}) {
+  const [history, setHistory] = useState<FileVersionRow[] | null>(null);
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [changelog, setChangelog] = useState("");
+  const [notify, setNotify] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const loadVersions = useServerFn(listFileVersions);
+  const publishVersion = useServerFn(publishFileVersion);
+
+  useEffect(() => {
+    loadVersions({ data: { fileId: file.id } })
+      .then(setHistory)
+      .catch(() => setHistory([]));
+  }, [file.id]);
+
+  const submit = async () => {
+    if (!newFile || changelog.trim().length < 3) return;
+    setSaving(true);
+    try {
+      const ext = newFile.name.split(".").pop()?.toLowerCase() ?? "bin";
+      const path = `${userId}/${creatorId}/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("files").upload(path, newFile, {
+        contentType: newFile.type || "application/octet-stream",
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      const res = await publishVersion({
+        data: {
+          fileId: file.id,
+          filePath: path,
+          fileSize: newFile.size,
+          fileType: ext,
+          changelog: changelog.trim(),
+          notify,
+        },
+      });
+      toast.success(
+        res.notified > 0 ? `Now on v${res.version} — notified ${res.notified} supporter(s)` : `Now on v${res.version}`,
+      );
+      setNewFile(null);
+      setChangelog("");
+      const rows = await loadVersions({ data: { fileId: file.id } });
+      setHistory(rows);
+      await onDone();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not publish the new version");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-border p-3">
+      <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Versions</div>
+      <p className="mt-1 text-xs text-ink-soft">
+        Upload a fix or improvement here instead of creating a duplicate file. Existing download links keep working and
+        supporters can be told what changed.
+      </p>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <Field label="Replacement file">
+          <input
+            type="file"
+            accept={ACCEPTED}
+            onChange={(e) => setNewFile(e.target.files?.[0] ?? null)}
+            className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-2 file:text-xs file:font-semibold"
+          />
+        </Field>
+        <Field label="What changed?">
+          <input
+            value={changelog}
+            onChange={(e) => setChangelog(e.target.value)}
+            placeholder="Thickened the base, fixed non-manifold edges"
+            className={inp}
+          />
+        </Field>
+      </div>
+      <label className="mt-2 flex items-center gap-2 text-xs text-ink-soft">
+        <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+        Notify everyone who already downloaded this file
+      </label>
+      <button onClick={submit} disabled={saving || !newFile || changelog.trim().length < 3} className="btn-primary mt-3 h-9 px-4 text-sm">
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : `Publish v${Number(file.version ?? 1) + 1}`}
+      </button>
+
+      <div className="mt-4">
+        <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">History</div>
+        {history === null ? (
+          <p className="mt-2 text-xs text-ink-soft">Loading…</p>
+        ) : history.length === 0 ? (
+          <p className="mt-2 text-xs text-ink-soft">No revisions yet — this is v{file.version ?? 1}.</p>
+        ) : (
+          <ul className="mt-2 space-y-1 text-xs text-ink-soft">
+            {history.map((h) => (
+              <li key={h.id}>
+                <span className="font-semibold text-ink">v{h.version}</span> · {new Date(h.createdAt).toLocaleDateString()} ·{" "}
+                {h.changelog ?? "No notes"}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 function PrintSettingsEditor({ file, onSaved }: { file: any; onSaved: () => void | Promise<void> }) {
   const [material, setMaterial] = useState(file.material ?? "");
   const [layerHeight, setLayerHeight] = useState(file.layer_height_mm ?? "");
