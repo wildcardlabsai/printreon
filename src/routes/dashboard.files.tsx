@@ -700,6 +700,9 @@ function FilesPage() {
                   <button onClick={() => setSettingsOpenId(settingsOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Recommended print settings">
                     <Sliders className="h-4 w-4" />
                   </button>
+                  <button onClick={() => setVersionOpenId(versionOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Versions">
+                    <History className="mr-1 h-4 w-4" />v{f.version ?? 1}
+                  </button>
                   <button onClick={() => togglePublish(f)} disabled={f.review_status === "pending"} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
@@ -707,13 +710,22 @@ function FilesPage() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                {settingsOpenId !== f.id && <PrintSettingsChips settings={f} className="w-full" />}
+                {settingsOpenId !== f.id && versionOpenId !== f.id && <PrintSettingsChips settings={f} className="w-full" />}
                 {settingsOpenId === f.id && (
                   <PrintSettingsEditor
                     file={f}
                     onSaved={async () => { setSettingsOpenId(null); await refresh(); }}
                   />
                 )}
+                {versionOpenId === f.id && user && creator && (
+                  <VersionPanel
+                    file={f}
+                    userId={user.id}
+                    creatorId={creator.id}
+                    onDone={async () => { await refresh(); }}
+                  />
+                )}
+
               </li>
 
               );
