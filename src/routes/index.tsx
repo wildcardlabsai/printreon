@@ -588,11 +588,29 @@ function PricingAndFaq() {
   );
 }
 
+/** Collapsed on phones so the section stays scannable, open on desktop. */
+function Faq() {
+  const isDesktop = useIsDesktop();
+  return (
+    <div className="mt-6 divide-y divide-border border-y border-border">
+      {FAQ_ITEMS.map((f) => (
+        <details key={f.q} open={isDesktop} className="group py-4 md:py-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-ink md:cursor-default">
+            {f.q}
+            <span className="font-mono text-primary transition-transform group-open:rotate-45 md:hidden">+</span>
+          </summary>
+          <p className="mt-2 text-sm text-ink-soft">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 /* --------------------------------- 7. APPLY ------------------------------- */
 
 function Apply() {
   return (
-    <section id="apply" className="border-t border-border bg-surface py-16 md:py-20">
+    <section id="apply" className="border-t border-border bg-surface py-14 md:py-20">
       <div className="container-wide grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-5">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Apply for the beta</h2>
@@ -600,7 +618,22 @@ function Apply() {
             Printreon is small and invite-only while we get it right. Tell us what you make and we
             will send an invite when there is room. Supporters can join the list too.
           </p>
+          <ul className="mt-6 space-y-3 text-sm text-ink-soft">
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              We read applications weekly and invite in batches.
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              Invited creators get a setup link and keep the founding-creator fee.
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              We only email you about Printreon. Unsubscribe any time.
+            </li>
+          </ul>
         </div>
+
         <div className="md:col-span-7">
           <WaitlistForm />
         </div>
