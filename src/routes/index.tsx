@@ -56,7 +56,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}/og-image.jpg` },
+      { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
       { name: "twitter:card", content: "summary_large_image" },
+
       { name: "twitter:title", content: "Printreon — Sell STL Files by Monthly Membership" },
       {
         name: "twitter:description",
