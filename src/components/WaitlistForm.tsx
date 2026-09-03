@@ -358,8 +358,21 @@ export function WaitlistForm({
         <p className="text-sm text-destructive">{message}</p>
       )}
       <p className={`text-xs ${isDark ? "text-background/60" : "text-ink-soft"}`}>
-        Founding creators lock in higher payouts for life. No spam — we only email you about Printreon.
+        Applications are reviewed weekly and invites go out in batches. Founding creators lock in
+        higher payouts for life. No spam — we only email you about Printreon.
       </p>
+      <p className={`text-xs ${isDark ? "text-background/50" : "text-ink-soft"}`}>
+        By applying you agree to our{" "}
+        <Link to="/legal/terms" className="underline underline-offset-2 hover:text-primary">
+          terms
+        </Link>{" "}
+        and, as a creator, the{" "}
+        <Link to="/legal/creator-agreement" className="underline underline-offset-2 hover:text-primary">
+          creator agreement
+        </Link>
+        .
+      </p>
+
     </form>
   );
 }
