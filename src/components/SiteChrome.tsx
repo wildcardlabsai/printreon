@@ -52,13 +52,11 @@ export function SiteHeader() {
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Logo />
-          <span className="hidden items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary sm:inline-flex font-mono">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
-            </span>
-            Beta · live now
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+            <span className="hidden lg:inline">BUILD 0.9 <span className="text-primary">///</span> </span>
+            BETA OPEN
           </span>
+
 
         </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-soft md:flex">

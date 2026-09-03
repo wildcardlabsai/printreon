@@ -202,33 +202,15 @@ function TheProduct() {
         </div>
 
         <div className="md:col-span-7">
-          <div className="grid grid-cols-2 gap-4">
-            <figure className="col-span-2 overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewHero}
-                alt="Creator file library preview inside Printreon"
-                className="h-56 w-full object-cover md:h-72"
-                loading="lazy"
-              />
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewCube}
-                alt="Preview thumbnail of a printable STL model"
-                className="h-40 w-full object-cover"
-                loading="lazy"
-              />
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewBundle}
-                alt="Preview thumbnail of a bundled set of printable files"
-                className="h-40 w-full object-cover"
-                loading="lazy"
-              />
-            </figure>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <MockFileLibrary />
+            </div>
+            <MockTiers />
+            <MockSupporterLibrary />
           </div>
         </div>
+
       </div>
     </section>
   );
