@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { useDiscoveryEnabled } from "@/lib/use-discovery";
