@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { PageHeader, StatCard, EmptyState, StatusBadge } from "@/components/admin/AdminUI";
-import { adminNewsletterList, adminNewsletterSetStatus } from "@/functions/inbox.functions";
+import { adminNewsletterList, adminNewsletterSetStatus, adminNewsletterResendWelcome } from "@/functions/inbox.functions";
 
 export const Route = createFileRoute("/admin/newsletter")({
   head: () => ({ meta: [{ title: "Newsletter — Printreon Admin" }, { name: "robots", content: "noindex, nofollow" }] }),
@@ -15,6 +15,8 @@ type Filter = "all" | "subscribed" | "unsubscribed";
 function AdminNewsletter() {
   const list = useServerFn(adminNewsletterList);
   const setStatus = useServerFn(adminNewsletterSetStatus);
+  const resendWelcome = useServerFn(adminNewsletterResendWelcome);
+  const [busy, setBusy] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
   const [data, setData] = useState<{ rows: any[]; tally: Record<string, number> } | null>(null);
 
@@ -67,11 +69,11 @@ function AdminNewsletter() {
       </div>
 
       <div className="mt-4 rounded-lg border border-border bg-card p-4 text-sm text-ink-soft">
-        <strong className="text-ink">Sending updates:</strong> the built-in email system is for one-trigger,
-        one-recipient email (invites, receipts, notifications) and deliberately won't send campaigns to a
-        list — mixing broadcasts with account email damages your domain's deliverability. Export this list
-        into a dedicated newsletter tool (Beehiiv, Mailchimp, Loops) and send from a separate subdomain such
-        as <code>news.printreon.com</code>.
+        <strong className="text-ink">Sending updates:</strong> everyone here gets an automatic welcome email
+        from Printreon when they subscribe, and you can resend it from any row. Broadcast campaigns are a
+        different job. Sending a blast down the same pipe as invites and password resets damages
+        deliverability for both, so export this list into a dedicated newsletter tool (Beehiiv, Mailchimp,
+        Loops) and send it from a separate subdomain such as <code>news.printreon.com</code>.
       </div>
 
       <div className="my-5 flex gap-2">
@@ -113,7 +115,26 @@ function AdminNewsletter() {
                   <td className="p-3">{r.name ?? "—"}</td>
                   <td className="p-3 text-ink-soft">{r.source ?? "site"}</td>
                   <td className="p-3"><StatusBadge status={r.status} /></td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right space-x-2">
+                    <button
+                      disabled={busy === r.id}
+                      className="rounded-md bg-secondary px-3 py-1 text-xs font-medium disabled:opacity-40"
+                      onClick={async () => {
+                        setBusy(r.id);
+                        try {
+                          const res: any = await resendWelcome({ data: { id: r.id } });
+                          if (res?.sent) toast.success(`Welcome email sent to ${r.email}`);
+                          else if (res?.reason === "recipient_suppressed") toast.warning("Blocked: that address has unsubscribed or bounced.");
+                          else toast.warning("The email did not send.");
+                        } catch (e: any) {
+                          toast.error(e?.message ?? "Send failed");
+                        } finally {
+                          setBusy(null);
+                        }
+                      }}
+                    >
+                      {busy === r.id ? "Sending…" : "Resend welcome"}
+                    </button>
                     <button
                       className="rounded-md bg-secondary px-3 py-1 text-xs font-medium"
                       onClick={async () => {
