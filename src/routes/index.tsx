@@ -335,22 +335,22 @@ const FIGURES = [
 
 function Money() {
   return (
-    <section className="border-y border-border bg-ink py-14 text-cream">
+    <section className="border-y border-border bg-ink py-14 text-background">
       <div className="container-wide">
         <h2 className="text-2xl font-bold md:text-3xl">The money part</h2>
-        <p className="mt-3 max-w-xl text-cream/70">
+        <p className="mt-3 max-w-xl text-background/70">
           You are paid by Stripe, not by us. We take a cut of paid subscriptions and nothing else.
         </p>
         <dl className="mt-9 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {FIGURES.map((f) => (
             <div key={f.k}>
-              <dt className="font-mono text-xs uppercase tracking-widest text-cream/50">{f.k}</dt>
+              <dt className="font-mono text-xs uppercase tracking-widest text-background/50">{f.k}</dt>
               <dd className="mt-2 text-2xl font-bold">{f.v}</dd>
-              <p className="mt-1 text-sm text-cream/60">{f.note}</p>
+              <p className="mt-1 text-sm text-background/60">{f.note}</p>
             </div>
           ))}
         </dl>
-        <p className="mt-8 text-sm text-cream/50">
+        <p className="mt-8 text-sm text-background/50">
           Stripe's own processing fee applies on top, the same as it would anywhere else.
         </p>
       </div>
