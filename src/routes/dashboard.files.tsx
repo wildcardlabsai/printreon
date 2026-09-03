@@ -6,13 +6,15 @@ import { useAuth } from "@/lib/auth-context";
 import { useCreatorProfile } from "@/lib/use-creator-profile";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyOnPublish } from "@/functions/notify.functions";
-import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle } from "lucide-react";
+import { Upload, Trash2, Eye, EyeOff, Lock, Unlock, FileBox, Loader2, Box, Image as ImageIcon, Sliders, Camera, AlertTriangle, History } from "lucide-react";
 import { toast } from "sonner";
 import { canPreview, MAX_PREVIEW_BYTES, renderThumbnails, qualityFlags, CREATION_METHODS, isLegacyCreationMethod, type MeshStats } from "@/lib/mesh-preview";
 import { STLViewerModal, PrintSettingsChips } from "@/components/STLViewer";
 import { FileBadge, ReviewStatusBadge } from "@/components/QualityBadges";
+import { publishFileVersion, listFileVersions, type FileVersionRow } from "@/functions/versions.functions";
 
 import { getFilePreviewUrl, deleteCreatorFile } from "@/functions/downloads.functions";
+
 
 export const Route = createFileRoute("/dashboard/files")({
   component: FilesPage,
@@ -24,8 +26,19 @@ function slugify(s: string) {
 
 const ACCEPTED = ".stl,.3mf,.obj,.zip,.step,.stp,.gcode,.lys,.chitubox,.ctb,.pdf,.png,.jpg,.jpeg";
 
+/** SHA-256 of the file contents, used to spot re-uploads of the same model. */
+async function hashFile(f: File): Promise<string | null> {
+  try {
+    const buf = await f.arrayBuffer();
+    const digest = await crypto.subtle.digest("SHA-256", buf);
+    return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  } catch {
+    return null;
+  }
+}
+
 const FILE_COLUMNS =
-  "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at, raw_ai_confirmed_at";
+  "id, creator_id, title, slug, description, file_type, file_size, file_hash, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at, raw_ai_confirmed_at";
 
 function FilesPage() {
   const { user } = useAuth();
@@ -35,6 +48,11 @@ function FilesPage() {
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [queue, setQueue] = useState<File[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [versionOpenId, setVersionOpenId] = useState<string | null>(null);
+  const [duplicateOf, setDuplicateOf] = useState<string | null>(null);
+
 
   // form
   const [title, setTitle] = useState("");
@@ -74,11 +92,24 @@ function FilesPage() {
 
   useEffect(() => { refresh(); }, [creator]);
 
-  // Run the mesh sanity checks as soon as a file is picked.
-  const onPick = async (f: File | null) => {
+  // Run the mesh sanity checks as soon as a file is picked. Extra files are
+  // queued and uploaded as their own drafts after the first one.
+  const onPick = async (list: FileList | null) => {
+    const picked = list ? Array.from(list) : [];
+    const f = picked[0] ?? null;
     setPickedFile(f);
+    setQueue(picked.slice(1));
     setCheck(null);
-    if (!f || !canPreview(f.name)) return;
+    setDuplicateOf(null);
+    if (!f) return;
+
+    const hash = await hashFile(f);
+    if (hash) {
+      const dupe = files.find((x) => x.file_hash && x.file_hash === hash);
+      if (dupe) setDuplicateOf(dupe.title);
+    }
+
+    if (!canPreview(f.name)) return;
     if (f.size > MAX_PREVIEW_BYTES) return;
     setChecking(true);
     try {
@@ -94,6 +125,7 @@ function FilesPage() {
       setChecking(false);
     }
   };
+
 
   // 3D preview
   const previewFn = useServerFn(getFilePreviewUrl);
@@ -151,6 +183,71 @@ function FilesPage() {
     }
   };
 
+  /** Uploads one file + its metadata as a draft. Returns the new row id. */
+  const uploadOne = async (
+    f: File,
+    fileTitle: string,
+    rendered: { blobs: Blob[]; stats: MeshStats; flags: string[] } | null,
+  ) => {
+    if (!user || !creator) return null;
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "bin";
+    const path = `${user.id}/${creator.id}/${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("files").upload(path, f, {
+      contentType: f.type || "application/octet-stream",
+      upsert: false,
+    });
+    if (upErr) throw upErr;
+
+    const hash = await hashFile(f);
+    const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
+      creator_id: creator.id,
+      title: fileTitle,
+      slug: slugify(fileTitle) + "-" + Math.random().toString(36).slice(2, 6),
+      description,
+      category,
+      is_free: isFree,
+      is_published: false,
+      tier_required_id: tierRequired || null,
+      file_url: path,
+      file_type: ext,
+      file_size: f.size,
+      file_hash: hash,
+      material: material || null,
+      layer_height_mm: layerHeight ? Number(layerHeight) : null,
+      infill_percent: infill ? Number(infill) : null,
+      print_time_minutes: printTime ? Number(printTime) : null,
+      recommended_printer: printer || null,
+      supports_required: supports === "" ? null : supports === "yes",
+      creation_method: creationMethod,
+      ai_disclosure_note: creationMethod === "ai_assisted" ? (aiNote || null) : null,
+      raw_ai_confirmed_at: new Date().toISOString(),
+      quality_flags: rendered?.flags ?? [],
+      ...(rendered?.stats
+        ? { dim_x: rendered.stats.dimX, dim_y: rendered.stats.dimY, dim_z: rendered.stats.dimZ, triangle_count: rendered.stats.triangleCount }
+        : {}),
+    }).select("id").single();
+    if (insErr) throw insErr;
+
+    // Upload the thumbnails rendered during the file check (best effort).
+    if (inserted && rendered && rendered.blobs.length > 0) {
+      try {
+        const urls: string[] = [];
+        for (let i = 0; i < rendered.blobs.length; i++) {
+          const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
+          const { error: thumbErr } = await supabase.storage
+            .from("previews")
+            .upload(thumbPath, rendered.blobs[i], { contentType: "image/webp", upsert: true });
+          if (thumbErr) continue;
+          urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+        }
+        await supabase.from("creator_files").update({ preview_images: urls }).eq("id", inserted.id);
+      } catch {
+        // previews are optional — the upload itself succeeded
+      }
+    }
+    return inserted?.id ?? null;
+  };
+
   const upload = async () => {
     if (!user || !creator || !pickedFile || !title || !creationMethod || !noRawAi) return;
     if (check?.fatal) {
@@ -160,65 +257,34 @@ function FilesPage() {
     setBusy(true);
     setProgress("Uploading…");
     try {
-      const ext = pickedFile.name.split(".").pop()?.toLowerCase() ?? "bin";
-      const path = `${user.id}/${creator.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("files").upload(path, pickedFile, {
-        contentType: pickedFile.type || "application/octet-stream",
-        upsert: false,
-      });
-      if (upErr) throw upErr;
-      setProgress("Saving…");
-      const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
-        creator_id: creator.id,
-        title,
-        slug: slugify(title) + "-" + Math.random().toString(36).slice(2, 6),
-        description,
-        category,
-        is_free: isFree,
-        is_published: false,
-        tier_required_id: tierRequired || null,
-        file_url: path,
-        file_type: ext,
-        file_size: pickedFile.size,
-        material: material || null,
-        layer_height_mm: layerHeight ? Number(layerHeight) : null,
-        infill_percent: infill ? Number(infill) : null,
-        print_time_minutes: printTime ? Number(printTime) : null,
-        recommended_printer: printer || null,
-        supports_required: supports === "" ? null : supports === "yes",
-        creation_method: creationMethod,
-        ai_disclosure_note: creationMethod === "ai_assisted" ? (aiNote || null) : null,
-        raw_ai_confirmed_at: new Date().toISOString(),
-        quality_flags: check?.flags ?? [],
-        ...(check?.stats
-          ? { dim_x: check.stats.dimX, dim_y: check.stats.dimY, dim_z: check.stats.dimZ, triangle_count: check.stats.triangleCount }
-          : {}),
-      }).select("id").single();
-      if (insErr) throw insErr;
+      await uploadOne(pickedFile, title, check ? { blobs: check.blobs, stats: check.stats, flags: check.flags } : null);
 
-      // Upload the thumbnails rendered during the file check (best effort).
-      if (inserted && check && check.blobs.length > 0) {
-        try {
-          setProgress("Saving previews…");
-          const urls: string[] = [];
-          for (let i = 0; i < check.blobs.length; i++) {
-            const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
-            const { error: thumbErr } = await supabase.storage
-              .from("previews")
-              .upload(thumbPath, check.blobs[i], { contentType: "image/webp", upsert: true });
-            if (thumbErr) continue;
-            urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+      // Queued extras become their own drafts, titled from the filename.
+      for (let i = 0; i < queue.length; i++) {
+        const f = queue[i];
+        setProgress(`Uploading ${i + 2} of ${queue.length + 1}…`);
+        let rendered: { blobs: Blob[]; stats: MeshStats; flags: string[] } | null = null;
+        if (canPreview(f.name) && f.size <= MAX_PREVIEW_BYTES) {
+          try {
+            const { blobs, stats } = await renderThumbnails(f, 3);
+            rendered = { blobs, stats, flags: qualityFlags(stats, f.size) };
+          } catch {
+            rendered = null;
           }
-          await supabase.from("creator_files").update({ preview_images: urls }).eq("id", inserted.id);
-        } catch {
-          // previews are optional — the upload itself succeeded
         }
+        const base = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+        await uploadOne(f, base || f.name, rendered);
       }
 
-      toast.success("File uploaded — review and publish below");
+      toast.success(
+        queue.length > 0
+          ? `${queue.length + 1} files uploaded — review and publish below`
+          : "File uploaded — review and publish below",
+      );
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       setMaterial(""); setLayerHeight(""); setInfill(""); setPrintTime(""); setPrinter(""); setSupports("");
       setCreationMethod(""); setAiNote(""); setNoRawAi(false); setCheck(null);
+      setQueue([]); setDuplicateOf(null);
 
       if (inputRef.current) inputRef.current.value = "";
       await refresh();
@@ -226,6 +292,7 @@ function FilesPage() {
       toast.error(e?.message ?? "Upload failed");
     } finally { setBusy(false); setProgress(""); }
   };
+
 
   const notify = useServerFn(notifyOnPublish);
   const togglePublish = async (f: any) => {
@@ -292,7 +359,41 @@ function FilesPage() {
     await refresh();
   };
 
+  // Bulk actions on the selected files.
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const bulkUpdate = async (patch: Record<string, any>) => {
+    if (selected.length === 0) return;
+    setBulkBusy(true);
+    const { error } = await (supabase.from("creator_files") as any).update(patch).in("id", selected);
+
+    setBulkBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Updated ${selected.length} ${selected.length === 1 ? "file" : "files"}`);
+    setSelected([]);
+    await refresh();
+  };
+
+  const bulkDelete = async () => {
+    if (selected.length === 0) return;
+    if (!confirm(`Delete ${selected.length} file(s)? This is permanent.`)) return;
+    setBulkBusy(true);
+    let failed = 0;
+    for (const id of selected) {
+      try {
+        await deleteFileFn({ data: { fileId: id } });
+      } catch {
+        failed++;
+      }
+    }
+    setBulkBusy(false);
+    if (failed) toast.error(`${failed} file(s) could not be deleted`);
+    else toast.success("Deleted");
+    setSelected([]);
+    await refresh();
+  };
+
   const untrusted = creator && !(creator as any).trusted_at;
+
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
@@ -406,16 +507,30 @@ function FilesPage() {
             </div>
           </div>
 
-          <Field label="File">
+          <Field label="File(s)">
             <input
               ref={inputRef}
               type="file"
+              multiple
               accept={ACCEPTED}
-              onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+              onChange={(e) => onPick(e.target.files)}
               className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground"
             />
             {pickedFile && <div className="mt-1 text-xs text-ink-soft">{pickedFile.name} ({(pickedFile.size / 1024 / 1024).toFixed(2)} MB)</div>}
+            {queue.length > 0 && (
+              <div className="mt-1 text-xs text-ink-soft">
+                + {queue.length} more queued — each becomes its own draft, titled from the filename, sharing the
+                settings above.
+              </div>
+            )}
+            {duplicateOf && (
+              <div className="mt-2 rounded-lg bg-amber-500/10 p-2 text-xs text-amber-800">
+                This looks identical to your existing file “{duplicateOf}”. Upload a new version of that file instead
+                if it's an update.
+              </div>
+            )}
           </Field>
+
 
           {checking && (
             <div className="flex items-center gap-2 text-xs text-ink-soft"><Loader2 className="h-4 w-4 animate-spin" />Checking the model…</div>
@@ -445,7 +560,41 @@ function FilesPage() {
       </div>
 
       <div className="lg:col-span-2">
-        <h2 className="text-lg font-bold text-ink">Your library ({files.length})</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-bold text-ink">Your library ({files.length})</h2>
+          {files.length > 0 && (
+            <button
+              onClick={() => setSelected(selected.length === files.length ? [] : files.map((f) => f.id))}
+              className="btn-ghost h-8 px-3 text-xs"
+            >
+              {selected.length === files.length ? "Clear selection" : "Select all"}
+            </button>
+          )}
+        </div>
+
+        {selected.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
+            <span className="text-sm font-semibold text-ink">{selected.length} selected</span>
+            <button onClick={() => bulkUpdate({ is_published: true })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Publish</button>
+            <button onClick={() => bulkUpdate({ is_published: false })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Unpublish</button>
+            <button onClick={() => bulkUpdate({ is_free: true, tier_required_id: null })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Make free</button>
+            <button onClick={() => bulkUpdate({ is_free: false })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Make locked</button>
+            <select
+              defaultValue=""
+              onChange={(e) => { if (e.target.value) { bulkUpdate({ is_free: false, tier_required_id: e.target.value === "any" ? null : e.target.value }); e.target.value = ""; } }}
+              className="h-8 rounded-lg border border-input bg-background px-2 text-xs"
+            >
+              <option value="">Set tier…</option>
+              <option value="any">Any tier</option>
+              {tiers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+            <button onClick={bulkDelete} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs text-destructive hover:bg-destructive/10">
+              Delete
+            </button>
+            {bulkBusy && <Loader2 className="h-4 w-4 animate-spin text-ink-soft" />}
+          </div>
+        )}
+
         {files.length === 0 ? (
           <EmptyState
             icon={FileBox}
@@ -461,6 +610,14 @@ function FilesPage() {
               const flags: string[] = Array.isArray(f.quality_flags) ? f.quality_flags : [];
               return (
               <li key={f.id} className="card-soft flex flex-wrap items-center gap-4">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(f.id)}
+                  onChange={(e) => setSelected((s) => (e.target.checked ? [...s, f.id] : s.filter((id) => id !== f.id)))}
+                  aria-label={`Select ${f.title}`}
+                  className="h-4 w-4 flex-shrink-0"
+                />
+
                 {thumb ? (
                   <img
                     src={thumb}
@@ -543,6 +700,9 @@ function FilesPage() {
                   <button onClick={() => setSettingsOpenId(settingsOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Recommended print settings">
                     <Sliders className="h-4 w-4" />
                   </button>
+                  <button onClick={() => setVersionOpenId(versionOpenId === f.id ? null : f.id)} className="btn-ghost h-9 px-3" title="Versions">
+                    <History className="mr-1 h-4 w-4" />v{f.version ?? 1}
+                  </button>
                   <button onClick={() => togglePublish(f)} disabled={f.review_status === "pending"} className="btn-ghost h-9 px-3">
                     {f.is_published ? <><EyeOff className="mr-1 h-4 w-4" />Unpublish</> : <><Eye className="mr-1 h-4 w-4" />Publish</>}
                   </button>
@@ -550,13 +710,22 @@ function FilesPage() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                {settingsOpenId !== f.id && <PrintSettingsChips settings={f} className="w-full" />}
+                {settingsOpenId !== f.id && versionOpenId !== f.id && <PrintSettingsChips settings={f} className="w-full" />}
                 {settingsOpenId === f.id && (
                   <PrintSettingsEditor
                     file={f}
                     onSaved={async () => { setSettingsOpenId(null); await refresh(); }}
                   />
                 )}
+                {versionOpenId === f.id && user && creator && (
+                  <VersionPanel
+                    file={f}
+                    userId={user.id}
+                    creatorId={creator.id}
+                    onDone={async () => { await refresh(); }}
+                  />
+                )}
+
               </li>
 
               );
@@ -577,6 +746,124 @@ function FilesPage() {
     </div>
   );
 }
+
+/** Upload a replacement file with a changelog, and show the revision history. */
+function VersionPanel({
+  file,
+  userId,
+  creatorId,
+  onDone,
+}: {
+  file: any;
+  userId: string;
+  creatorId: string;
+  onDone: () => void | Promise<void>;
+}) {
+  const [history, setHistory] = useState<FileVersionRow[] | null>(null);
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [changelog, setChangelog] = useState("");
+  const [notify, setNotify] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const loadVersions = useServerFn(listFileVersions);
+  const publishVersion = useServerFn(publishFileVersion);
+
+  useEffect(() => {
+    loadVersions({ data: { fileId: file.id } })
+      .then(setHistory)
+      .catch(() => setHistory([]));
+  }, [file.id]);
+
+  const submit = async () => {
+    if (!newFile || changelog.trim().length < 3) return;
+    setSaving(true);
+    try {
+      const ext = newFile.name.split(".").pop()?.toLowerCase() ?? "bin";
+      const path = `${userId}/${creatorId}/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("files").upload(path, newFile, {
+        contentType: newFile.type || "application/octet-stream",
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      const res = await publishVersion({
+        data: {
+          fileId: file.id,
+          filePath: path,
+          fileSize: newFile.size,
+          fileType: ext,
+          changelog: changelog.trim(),
+          notify,
+        },
+      });
+      toast.success(
+        res.notified > 0 ? `Now on v${res.version} — notified ${res.notified} supporter(s)` : `Now on v${res.version}`,
+      );
+      setNewFile(null);
+      setChangelog("");
+      const rows = await loadVersions({ data: { fileId: file.id } });
+      setHistory(rows);
+      await onDone();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not publish the new version");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-border p-3">
+      <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Versions</div>
+      <p className="mt-1 text-xs text-ink-soft">
+        Upload a fix or improvement here instead of creating a duplicate file. Existing download links keep working and
+        supporters can be told what changed.
+      </p>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <Field label="Replacement file">
+          <input
+            type="file"
+            accept={ACCEPTED}
+            onChange={(e) => setNewFile(e.target.files?.[0] ?? null)}
+            className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-2 file:text-xs file:font-semibold"
+          />
+        </Field>
+        <Field label="What changed?">
+          <input
+            value={changelog}
+            onChange={(e) => setChangelog(e.target.value)}
+            placeholder="Thickened the base, fixed non-manifold edges"
+            className={inp}
+          />
+        </Field>
+      </div>
+      <label className="mt-2 flex items-center gap-2 text-xs text-ink-soft">
+        <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+        Notify everyone who already downloaded this file
+      </label>
+      <button onClick={submit} disabled={saving || !newFile || changelog.trim().length < 3} className="btn-primary mt-3 h-9 px-4 text-sm">
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : `Publish v${Number(file.version ?? 1) + 1}`}
+      </button>
+
+      <div className="mt-4">
+        <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">History</div>
+        {history === null ? (
+          <p className="mt-2 text-xs text-ink-soft">Loading…</p>
+        ) : history.length === 0 ? (
+          <p className="mt-2 text-xs text-ink-soft">No revisions yet — this is v{file.version ?? 1}.</p>
+        ) : (
+          <ul className="mt-2 space-y-1 text-xs text-ink-soft">
+            {history.map((h) => (
+              <li key={h.id}>
+                <span className="font-semibold text-ink">v{h.version}</span> · {new Date(h.createdAt).toLocaleDateString()} ·{" "}
+                {h.changelog ?? "No notes"}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 function PrintSettingsEditor({ file, onSaved }: { file: any; onSaved: () => void | Promise<void> }) {
   const [material, setMaterial] = useState(file.material ?? "");

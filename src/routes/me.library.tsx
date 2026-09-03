@@ -23,12 +23,26 @@ function LibraryPage() {
   const [files, setFiles] = useState<any[]>([]);
   const [activeCreator, setActiveCreator] = useState<string>("all");
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "new" | "unlocked" | "3d">("all");
+  const [lastSeen, setLastSeen] = useState<number | null>(null);
 
   const downloadFn = useServerFn(getFileDownloadUrl);
   const previewFn = useServerFn(getFilePreviewUrl);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [previewBusyId, setPreviewBusyId] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
+
+  // Remember when this member last opened their library so we can flag new and
+  // updated files. Read once, then stamp the current visit.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("printreon:library-seen");
+      setLastSeen(raw ? Number(raw) : null);
+      localStorage.setItem("printreon:library-seen", String(Date.now()));
+    } catch {
+      setLastSeen(null);
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +61,7 @@ function LibraryPage() {
       const ids = list.map((s: any) => s.creator_id);
       const { data: f } = await supabase
         .from("creator_files")
-        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, material, layer_height_mm, infill_percent, print_time_minutes, recommended_printer, supports_required, creator_id, created_at, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
+        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, material, layer_height_mm, infill_percent, print_time_minutes, recommended_printer, supports_required, creator_id, created_at, updated_at, version, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
         .in("creator_id", ids)
         .eq("is_published", true)
         .is("takedown_at", null)
@@ -56,6 +70,7 @@ function LibraryPage() {
       setFiles(f ?? []);
     })();
   }, [user]);
+
 
   const paidPriceByCreator = useMemo(() => {
     const m = new Map<string, number>();
@@ -72,12 +87,25 @@ function LibraryPage() {
     return (paidPriceByCreator.get(f.creator_id) ?? 0) >= required;
   };
 
+  const isNew = (f: any) => !!lastSeen && new Date(f.created_at).getTime() > lastSeen;
+  const isUpdated = (f: any) =>
+    !!lastSeen &&
+    Number(f.version ?? 1) > 1 &&
+    !!f.updated_at &&
+    new Date(f.updated_at).getTime() > lastSeen &&
+    !isNew(f);
+
   const q = query.trim().toLowerCase();
-  const shown = files.filter(
-    (f) =>
-      (activeCreator === "all" || f.creator_id === activeCreator) &&
-      (!q || f.title.toLowerCase().includes(q) || (f.category ?? "").toLowerCase().includes(q))
-  );
+  const shown = files.filter((f) => {
+    if (activeCreator !== "all" && f.creator_id !== activeCreator) return false;
+    if (q && !f.title.toLowerCase().includes(q) && !(f.category ?? "").toLowerCase().includes(q)) return false;
+    if (filter === "new" && !isNew(f) && !isUpdated(f)) return false;
+    if (filter === "unlocked" && !unlocked(f)) return false;
+    if (filter === "3d" && !canPreview(f.file_type)) return false;
+    return true;
+  });
+  const newCount = files.filter((f) => isNew(f) || isUpdated(f)).length;
+
 
   const download = async (f: any) => {
     setBusyId(f.id);
@@ -154,6 +182,24 @@ function LibraryPage() {
         ))}
       </div>
 
+      <div className="mt-3 flex flex-wrap gap-2">
+        {([
+          ["all", "All files"],
+          ["new", newCount > 0 ? `New & updated (${newCount})` : "New & updated"],
+          ["unlocked", "Ready to download"],
+          ["3d", "3D previewable"],
+        ] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setFilter(key)}
+            className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${filter === key ? "border-ink bg-ink text-background" : "border-border text-ink-soft hover:text-ink"}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+
       {shown.length === 0 ? (
         <div className="card-soft mt-6 text-center text-ink-soft">No files match that filter yet.</div>
       ) : (
@@ -173,8 +219,14 @@ function LibraryPage() {
                   {canPreview(f.file_type) && (
                     <span className="absolute right-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-bold text-ink">3D</span>
                   )}
+                  {(isNew(f) || isUpdated(f)) && (
+                    <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground">
+                      {isNew(f) ? "NEW" : `UPDATED v${f.version}`}
+                    </span>
+                  )}
                 </div>
                 <h3 className="mt-3 font-semibold text-ink line-clamp-1">{f.title}</h3>
+
                 <Link to="/c/$slug" params={{ slug: f.creator_profiles?.slug ?? "" }} className="text-xs text-primary hover:underline">
                   {f.creator_profiles?.display_name}
                 </Link>
