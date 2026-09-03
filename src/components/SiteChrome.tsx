@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NAV_LINKS = [
-  { id: "features", label: "Features" },
-  { id: "founder-benefits", label: "Founder Benefits" },
-  { id: "beta-access", label: "Become a Creator" },
+  { id: "features", label: "How it works" },
+  { id: "apply", label: "Pricing" },
+  { id: "apply", label: "Apply" },
 ] as const;
+
 
 export function SiteHeader() {
   const navigate = useNavigate();
