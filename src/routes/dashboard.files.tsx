@@ -183,6 +183,71 @@ function FilesPage() {
     }
   };
 
+  /** Uploads one file + its metadata as a draft. Returns the new row id. */
+  const uploadOne = async (
+    f: File,
+    fileTitle: string,
+    rendered: { blobs: Blob[]; stats: MeshStats; flags: string[] } | null,
+  ) => {
+    if (!user || !creator) return null;
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "bin";
+    const path = `${user.id}/${creator.id}/${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("files").upload(path, f, {
+      contentType: f.type || "application/octet-stream",
+      upsert: false,
+    });
+    if (upErr) throw upErr;
+
+    const hash = await hashFile(f);
+    const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
+      creator_id: creator.id,
+      title: fileTitle,
+      slug: slugify(fileTitle) + "-" + Math.random().toString(36).slice(2, 6),
+      description,
+      category,
+      is_free: isFree,
+      is_published: false,
+      tier_required_id: tierRequired || null,
+      file_url: path,
+      file_type: ext,
+      file_size: f.size,
+      file_hash: hash,
+      material: material || null,
+      layer_height_mm: layerHeight ? Number(layerHeight) : null,
+      infill_percent: infill ? Number(infill) : null,
+      print_time_minutes: printTime ? Number(printTime) : null,
+      recommended_printer: printer || null,
+      supports_required: supports === "" ? null : supports === "yes",
+      creation_method: creationMethod,
+      ai_disclosure_note: creationMethod === "ai_assisted" ? (aiNote || null) : null,
+      raw_ai_confirmed_at: new Date().toISOString(),
+      quality_flags: rendered?.flags ?? [],
+      ...(rendered?.stats
+        ? { dim_x: rendered.stats.dimX, dim_y: rendered.stats.dimY, dim_z: rendered.stats.dimZ, triangle_count: rendered.stats.triangleCount }
+        : {}),
+    }).select("id").single();
+    if (insErr) throw insErr;
+
+    // Upload the thumbnails rendered during the file check (best effort).
+    if (inserted && rendered && rendered.blobs.length > 0) {
+      try {
+        const urls: string[] = [];
+        for (let i = 0; i < rendered.blobs.length; i++) {
+          const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
+          const { error: thumbErr } = await supabase.storage
+            .from("previews")
+            .upload(thumbPath, rendered.blobs[i], { contentType: "image/webp", upsert: true });
+          if (thumbErr) continue;
+          urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+        }
+        await supabase.from("creator_files").update({ preview_images: urls }).eq("id", inserted.id);
+      } catch {
+        // previews are optional — the upload itself succeeded
+      }
+    }
+    return inserted?.id ?? null;
+  };
+
   const upload = async () => {
     if (!user || !creator || !pickedFile || !title || !creationMethod || !noRawAi) return;
     if (check?.fatal) {
@@ -192,65 +257,34 @@ function FilesPage() {
     setBusy(true);
     setProgress("Uploading…");
     try {
-      const ext = pickedFile.name.split(".").pop()?.toLowerCase() ?? "bin";
-      const path = `${user.id}/${creator.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("files").upload(path, pickedFile, {
-        contentType: pickedFile.type || "application/octet-stream",
-        upsert: false,
-      });
-      if (upErr) throw upErr;
-      setProgress("Saving…");
-      const { data: inserted, error: insErr } = await supabase.from("creator_files").insert({
-        creator_id: creator.id,
-        title,
-        slug: slugify(title) + "-" + Math.random().toString(36).slice(2, 6),
-        description,
-        category,
-        is_free: isFree,
-        is_published: false,
-        tier_required_id: tierRequired || null,
-        file_url: path,
-        file_type: ext,
-        file_size: pickedFile.size,
-        material: material || null,
-        layer_height_mm: layerHeight ? Number(layerHeight) : null,
-        infill_percent: infill ? Number(infill) : null,
-        print_time_minutes: printTime ? Number(printTime) : null,
-        recommended_printer: printer || null,
-        supports_required: supports === "" ? null : supports === "yes",
-        creation_method: creationMethod,
-        ai_disclosure_note: creationMethod === "ai_assisted" ? (aiNote || null) : null,
-        raw_ai_confirmed_at: new Date().toISOString(),
-        quality_flags: check?.flags ?? [],
-        ...(check?.stats
-          ? { dim_x: check.stats.dimX, dim_y: check.stats.dimY, dim_z: check.stats.dimZ, triangle_count: check.stats.triangleCount }
-          : {}),
-      }).select("id").single();
-      if (insErr) throw insErr;
+      await uploadOne(pickedFile, title, check ? { blobs: check.blobs, stats: check.stats, flags: check.flags } : null);
 
-      // Upload the thumbnails rendered during the file check (best effort).
-      if (inserted && check && check.blobs.length > 0) {
-        try {
-          setProgress("Saving previews…");
-          const urls: string[] = [];
-          for (let i = 0; i < check.blobs.length; i++) {
-            const thumbPath = `${user.id}/${creator.id}/${inserted.id}-${i}.webp`;
-            const { error: thumbErr } = await supabase.storage
-              .from("previews")
-              .upload(thumbPath, check.blobs[i], { contentType: "image/webp", upsert: true });
-            if (thumbErr) continue;
-            urls.push(supabase.storage.from("previews").getPublicUrl(thumbPath).data.publicUrl);
+      // Queued extras become their own drafts, titled from the filename.
+      for (let i = 0; i < queue.length; i++) {
+        const f = queue[i];
+        setProgress(`Uploading ${i + 2} of ${queue.length + 1}…`);
+        let rendered: { blobs: Blob[]; stats: MeshStats; flags: string[] } | null = null;
+        if (canPreview(f.name) && f.size <= MAX_PREVIEW_BYTES) {
+          try {
+            const { blobs, stats } = await renderThumbnails(f, 3);
+            rendered = { blobs, stats, flags: qualityFlags(stats, f.size) };
+          } catch {
+            rendered = null;
           }
-          await supabase.from("creator_files").update({ preview_images: urls }).eq("id", inserted.id);
-        } catch {
-          // previews are optional — the upload itself succeeded
         }
+        const base = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+        await uploadOne(f, base || f.name, rendered);
       }
 
-      toast.success("File uploaded — review and publish below");
+      toast.success(
+        queue.length > 0
+          ? `${queue.length + 1} files uploaded — review and publish below`
+          : "File uploaded — review and publish below",
+      );
       setTitle(""); setDescription(""); setPickedFile(null); setTierRequired(""); setIsFree(false);
       setMaterial(""); setLayerHeight(""); setInfill(""); setPrintTime(""); setPrinter(""); setSupports("");
       setCreationMethod(""); setAiNote(""); setNoRawAi(false); setCheck(null);
+      setQueue([]); setDuplicateOf(null);
 
       if (inputRef.current) inputRef.current.value = "";
       await refresh();
@@ -258,6 +292,7 @@ function FilesPage() {
       toast.error(e?.message ?? "Upload failed");
     } finally { setBusy(false); setProgress(""); }
   };
+
 
   const notify = useServerFn(notifyOnPublish);
   const togglePublish = async (f: any) => {
