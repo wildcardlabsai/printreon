@@ -182,6 +182,24 @@ function LibraryPage() {
         ))}
       </div>
 
+      <div className="mt-3 flex flex-wrap gap-2">
+        {([
+          ["all", "All files"],
+          ["new", newCount > 0 ? `New & updated (${newCount})` : "New & updated"],
+          ["unlocked", "Ready to download"],
+          ["3d", "3D previewable"],
+        ] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setFilter(key)}
+            className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${filter === key ? "border-ink bg-ink text-background" : "border-border text-ink-soft hover:text-ink"}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+
       {shown.length === 0 ? (
         <div className="card-soft mt-6 text-center text-ink-soft">No files match that filter yet.</div>
       ) : (
