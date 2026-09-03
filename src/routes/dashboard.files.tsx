@@ -26,8 +26,19 @@ function slugify(s: string) {
 
 const ACCEPTED = ".stl,.3mf,.obj,.zip,.step,.stp,.gcode,.lys,.chitubox,.ctb,.pdf,.png,.jpg,.jpeg";
 
+/** SHA-256 of the file contents, used to spot re-uploads of the same model. */
+async function hashFile(f: File): Promise<string | null> {
+  try {
+    const buf = await f.arrayBuffer();
+    const digest = await crypto.subtle.digest("SHA-256", buf);
+    return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  } catch {
+    return null;
+  }
+}
+
 const FILE_COLUMNS =
-  "id, creator_id, title, slug, description, file_type, file_size, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at, raw_ai_confirmed_at";
+  "id, creator_id, title, slug, description, file_type, file_size, file_hash, preview_images, tags, category, tier_required_id, is_free, is_published, download_count, created_at, updated_at, print_time_minutes, material, supports_required, layer_height_mm, infill_percent, recommended_printer, scheduled_at, status, version, takedown_at, dim_x, dim_y, dim_z, triangle_count, creation_method, ai_disclosure_note, review_status, review_notes, quality_flags, print_verified_image_url, print_verified_at, raw_ai_confirmed_at";
 
 function FilesPage() {
   const { user } = useAuth();
@@ -37,6 +48,11 @@ function FilesPage() {
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [queue, setQueue] = useState<File[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [versionOpenId, setVersionOpenId] = useState<string | null>(null);
+  const [duplicateOf, setDuplicateOf] = useState<string | null>(null);
+
 
   // form
   const [title, setTitle] = useState("");
