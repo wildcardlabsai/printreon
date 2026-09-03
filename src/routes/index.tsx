@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { useDiscoveryEnabled } from "@/lib/use-discovery";
@@ -56,7 +58,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}/og-image.jpg` },
+      { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
       { name: "twitter:card", content: "summary_large_image" },
+
       { name: "twitter:title", content: "Printreon — Sell STL Files by Monthly Membership" },
       {
         name: "twitter:description",
@@ -96,14 +101,62 @@ function Landing() {
       <div id="features" />
       <TheProduct />
       <HowItWorks />
+      <Compare />
       <QualityBar />
       <Money />
       <PricingAndFaq />
       <Apply />
       <SiteFooter />
+      <StickyApply />
     </div>
   );
 }
+
+/** True once the viewport is at desktop width. Starts false so SSR matches mobile. */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
+/** Slim bar that appears once the hero has scrolled away, so applying is always one tap. */
+function StickyApply() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const nearBottom = y + window.innerHeight > document.body.scrollHeight - 700;
+      setShow(y > 700 && !nearBottom);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur transition-transform duration-200 md:hidden ${
+        show ? "translate-y-0" : "translate-y-full"
+      }`}
+    >
+      <div className="flex items-center gap-3 px-4 py-3">
+        <p className="min-w-0 flex-1 text-xs text-ink-soft">
+          Beta is invite-only. Batch 001 is open.
+        </p>
+        <a href="#apply" className="btn-primary h-10 shrink-0 px-4 text-sm">
+          Apply
+        </a>
+      </div>
+    </div>
+  );
+}
+
 
 /* --------------------------------- 1. HERO -------------------------------- */
 
@@ -112,46 +165,65 @@ function Hero() {
   return (
     <section className="facet-bg relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 blueprint-grid opacity-50" aria-hidden />
-      <div className="container-wide relative grid gap-12 py-16 md:grid-cols-12 md:items-center md:py-20">
+      <div className="container-wide relative grid gap-10 py-12 md:grid-cols-12 md:items-center md:gap-12 md:py-20">
         <div className="md:col-span-6">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-soft">
-            BATCH 001 <span className="text-primary">///</span> BETA OPEN <span className="text-primary">///</span> INVITE ONLY
-          </p>
-
-          <h1 className="mt-5 text-[38px] font-bold leading-[1.05] text-ink md:text-[58px]">
+          <h1 className="text-[32px] font-bold leading-[1.06] text-ink sm:text-[38px] md:text-[58px]">
             A membership home for 3D print creators.
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-ink-soft">
-            Set your tiers, upload your STL, 3MF, OBJ and ZIP files, and let supporters pay you monthly
-            for access. Printreon handles the page, the paywall, the file delivery and the payouts.
+          <p className="mt-4 max-w-lg text-base text-ink-soft md:text-lg">
+            Monthly memberships for people who design printable models. Set your tiers, upload your
+            STL, 3MF, OBJ and ZIP files, and let supporters pay you every month for access.
           </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <a href="#apply" className="btn-primary h-12 px-6 text-base">
-              Apply as a creator
-            </a>
-            {discoveryEnabled ? (
-              <Link to="/explore" className="btn-ghost h-12 px-6 text-base">
-                Browse creators
-              </Link>
-            ) : (
-              <Link to="/auth" search={{ mode: "signup" }} className="btn-ghost h-12 px-6 text-base">
-                Create a free account
-              </Link>
-            )}
+
+          {/* On phones the product shot comes before the detail, so the first scroll shows the app. */}
+          <div className="mt-7 md:hidden">
+            <MockStudioOverview />
           </div>
-          <p className="mt-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card/70 p-4">
+              <h2 className="text-sm font-bold text-ink">You design models</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                Get a creator page, tiers, a gated file library and Stripe payouts.
+              </p>
+              <a href="#apply" className="btn-primary mt-3 h-11 w-full px-5 text-sm">
+                Apply as a creator
+              </a>
+            </div>
+            <div className="rounded-2xl border border-border bg-card/70 p-4">
+              <h2 className="text-sm font-bold text-ink">You print them</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                Subscribe to the designers you like and download their files any time.
+              </p>
+              {discoveryEnabled ? (
+                <Link to="/explore" className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
+                  Browse creators
+                </Link>
+              ) : (
+                <Link to="/auth" search={{ mode: "signup" }} className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
+                  Create a free account
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
             10% platform fee · Stripe payouts · Free to open a page
           </p>
         </div>
 
-        <div className="md:col-span-6">
+        <div className="hidden md:col-span-6 md:block">
           <MockStudioOverview />
+          <p className="mt-3 text-center font-mono text-[11px] uppercase tracking-widest text-ink-soft">
+            Creator dashboard
+          </p>
         </div>
 
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------ 2. THE PRODUCT ---------------------------- */
 
@@ -202,14 +274,19 @@ function TheProduct() {
         </div>
 
         <div className="md:col-span-7">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <MockCaption label="Your file library" className="sm:col-span-2">
               <MockFileLibrary />
-            </div>
-            <MockTiers />
-            <MockSupporterLibrary />
+            </MockCaption>
+            <MockCaption label="Your tiers">
+              <MockTiers />
+            </MockCaption>
+            <MockCaption label="What a supporter sees">
+              <MockSupporterLibrary />
+            </MockCaption>
           </div>
         </div>
+
 
       </div>
     </section>
@@ -244,6 +321,67 @@ function HowItWorks() {
     </section>
   );
 }
+
+/** Labels a product mockup so it reads as a real screen rather than decoration. */
+function MockCaption({
+  label,
+  className = "",
+  children,
+}: {
+  label: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <figure className={className}>
+      {children}
+      <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-soft">
+        {label}
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ----------------------------- 3b. WHAT'S DIFFERENT ----------------------- */
+
+const DIFFERENCES = [
+  {
+    title: "Built around the file, not the post",
+    body: "Tier gating sits on the model itself, so access is decided per file rather than per announcement.",
+  },
+  {
+    title: "Previews before download",
+    body: "STL, 3MF and OBJ render in the browser, with dimensions, triangle count and your print settings attached.",
+  },
+  {
+    title: "Versions instead of duplicates",
+    body: "Upload a fix as v2 with a changelog. Links keep working and supporters get told what changed.",
+  },
+  {
+    title: "Files that stay behind the paywall",
+    body: "Private storage and short-lived signed links, not a shared drive folder that outlives the subscription.",
+  },
+] as const;
+
+function Compare() {
+  return (
+    <section className="container-wide py-16 md:py-20">
+      <span className="eyebrow">// Why not a drive folder</span>
+      <h2 className="mt-4 max-w-2xl text-3xl font-bold text-ink md:text-4xl">
+        What you get that a posts-and-links setup cannot do.
+      </h2>
+      <div className="mt-9 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        {DIFFERENCES.map((d) => (
+          <div key={d.title} className="border-l-2 border-primary/40 pl-4">
+            <h3 className="font-bold text-ink">{d.title}</h3>
+            <p className="mt-1 text-sm text-ink-soft">{d.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 
 /* ------------------------------ 4. QUALITY BAR ---------------------------- */
 
@@ -328,13 +466,83 @@ function Money() {
             </div>
           ))}
         </dl>
-        <p className="mt-8 text-sm text-background/50">
+        <EarningsCalculator />
+        <p className="mt-6 text-sm text-background/50">
           Stripe's own processing fee applies on top, the same as it would anywhere else.
         </p>
       </div>
     </section>
   );
 }
+
+/** Simple worked example so the 10% fee has a number attached to it. */
+function EarningsCalculator() {
+  const [supporters, setSupporters] = useState(100);
+  const [price, setPrice] = useState(5);
+
+  const { gross, fee, net } = useMemo(() => {
+    const g = supporters * price;
+    const f = g * 0.1;
+    return { gross: g, fee: f, net: g - f };
+  }, [supporters, price]);
+
+  return (
+    <div className="mt-10 rounded-2xl border border-background/15 bg-background/5 p-5 md:p-6">
+      <h3 className="font-mono text-xs uppercase tracking-widest text-background/50">
+        What that looks like
+      </h3>
+      <div className="mt-4 grid gap-6 md:grid-cols-2 md:items-center">
+        <div className="space-y-5">
+          <label className="block">
+            <span className="flex items-baseline justify-between text-sm text-background/70">
+              Supporters <span className="font-bold text-background">{supporters}</span>
+            </span>
+            <input
+              type="range"
+              min={10}
+              max={1000}
+              step={10}
+              value={supporters}
+              onChange={(e) => setSupporters(Number(e.target.value))}
+              className="mt-2 w-full accent-primary"
+              aria-label="Number of supporters"
+            />
+          </label>
+          <label className="block">
+            <span className="flex items-baseline justify-between text-sm text-background/70">
+              Monthly price <span className="font-bold text-background">£{price}</span>
+            </span>
+            <input
+              type="range"
+              min={1}
+              max={30}
+              step={1}
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              className="mt-2 w-full accent-primary"
+              aria-label="Monthly tier price in pounds"
+            />
+          </label>
+        </div>
+        <div className="rounded-xl bg-background/10 p-5">
+          <p className="text-sm text-background/60">
+            £{gross.toLocaleString()} a month collected
+          </p>
+          <p className="mt-1 text-sm text-background/60">
+            minus £{fee.toLocaleString()} platform fee
+          </p>
+          <p className="mt-3 text-3xl font-bold text-background">
+            £{net.toLocaleString()} <span className="text-base font-semibold text-background/60">to you</span>
+          </p>
+          <p className="mt-2 text-xs text-background/50">
+            Before Stripe's processing fee. Illustrative only.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 /* ----------------------------- 6. PRICING + FAQ --------------------------- */
 
@@ -372,17 +580,29 @@ function PricingAndFaq() {
 
         <div className="md:col-span-7">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Questions</h2>
-          <dl className="mt-6 divide-y divide-border border-y border-border">
-            {FAQ_ITEMS.map((f) => (
-              <div key={f.q} className="py-5">
-                <dt className="font-bold text-ink">{f.q}</dt>
-                <dd className="mt-2 text-sm text-ink-soft">{f.a}</dd>
-              </div>
-            ))}
-          </dl>
+          <Faq />
         </div>
+
       </div>
     </section>
+  );
+}
+
+/** Collapsed on phones so the section stays scannable, open on desktop. */
+function Faq() {
+  const isDesktop = useIsDesktop();
+  return (
+    <div className="mt-6 divide-y divide-border border-y border-border">
+      {FAQ_ITEMS.map((f) => (
+        <details key={f.q} open={isDesktop} className="group py-4 md:py-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-ink md:cursor-default">
+            {f.q}
+            <span className="font-mono text-primary transition-transform group-open:rotate-45 md:hidden">+</span>
+          </summary>
+          <p className="mt-2 text-sm text-ink-soft">{f.a}</p>
+        </details>
+      ))}
+    </div>
   );
 }
 
@@ -390,7 +610,7 @@ function PricingAndFaq() {
 
 function Apply() {
   return (
-    <section id="apply" className="border-t border-border bg-surface py-16 md:py-20">
+    <section id="apply" className="border-t border-border bg-surface py-14 md:py-20">
       <div className="container-wide grid gap-10 md:grid-cols-12 md:items-start">
         <div className="md:col-span-5">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Apply for the beta</h2>
@@ -398,7 +618,22 @@ function Apply() {
             Printreon is small and invite-only while we get it right. Tell us what you make and we
             will send an invite when there is room. Supporters can join the list too.
           </p>
+          <ul className="mt-6 space-y-3 text-sm text-ink-soft">
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              We read applications weekly and invite in batches.
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              Invited creators get a setup link and keep the founding-creator fee.
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              We only email you about Printreon. Unsubscribe any time.
+            </li>
+          </ul>
         </div>
+
         <div className="md:col-span-7">
           <WaitlistForm />
         </div>
