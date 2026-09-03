@@ -22,6 +22,7 @@ import { template as adminFeedbackNotice } from './admin-feedback-notice'
 import { template as adminContactNotice } from './admin-contact-notice'
 import { template as adminBetaApplicationNotice } from './admin-beta-application-notice'
 import { template as newsletterWelcome } from './newsletter-welcome'
+import { template as creatorWelcome } from './creator-welcome'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'beta-invite': betaInvite,
@@ -29,4 +30,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'admin-contact-notice': adminContactNotice,
   'admin-beta-application-notice': adminBetaApplicationNotice,
   'newsletter-welcome': newsletterWelcome,
+  'creator-welcome': creatorWelcome,
 }
