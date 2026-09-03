@@ -274,14 +274,19 @@ function TheProduct() {
         </div>
 
         <div className="md:col-span-7">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <MockCaption label="Your file library" className="sm:col-span-2">
               <MockFileLibrary />
-            </div>
-            <MockTiers />
-            <MockSupporterLibrary />
+            </MockCaption>
+            <MockCaption label="Your tiers">
+              <MockTiers />
+            </MockCaption>
+            <MockCaption label="What a supporter sees">
+              <MockSupporterLibrary />
+            </MockCaption>
           </div>
         </div>
+
 
       </div>
     </section>
