@@ -23,12 +23,26 @@ function LibraryPage() {
   const [files, setFiles] = useState<any[]>([]);
   const [activeCreator, setActiveCreator] = useState<string>("all");
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "new" | "unlocked" | "3d">("all");
+  const [lastSeen, setLastSeen] = useState<number | null>(null);
 
   const downloadFn = useServerFn(getFileDownloadUrl);
   const previewFn = useServerFn(getFilePreviewUrl);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [previewBusyId, setPreviewBusyId] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ url: string; title: string; fileType: string | null; settings: any } | null>(null);
+
+  // Remember when this member last opened their library so we can flag new and
+  // updated files. Read once, then stamp the current visit.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("printreon:library-seen");
+      setLastSeen(raw ? Number(raw) : null);
+      localStorage.setItem("printreon:library-seen", String(Date.now()));
+    } catch {
+      setLastSeen(null);
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +61,7 @@ function LibraryPage() {
       const ids = list.map((s: any) => s.creator_id);
       const { data: f } = await supabase
         .from("creator_files")
-        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, material, layer_height_mm, infill_percent, print_time_minutes, recommended_printer, supports_required, creator_id, created_at, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
+        .select("id, title, slug, category, file_type, file_size, preview_images, is_free, tier_required_id, dim_x, dim_y, dim_z, material, layer_height_mm, infill_percent, print_time_minutes, recommended_printer, supports_required, creator_id, created_at, updated_at, version, creator_tiers:tier_required_id(price, name), creator_profiles(display_name, slug)")
         .in("creator_id", ids)
         .eq("is_published", true)
         .is("takedown_at", null)
@@ -56,6 +70,7 @@ function LibraryPage() {
       setFiles(f ?? []);
     })();
   }, [user]);
+
 
   const paidPriceByCreator = useMemo(() => {
     const m = new Map<string, number>();
