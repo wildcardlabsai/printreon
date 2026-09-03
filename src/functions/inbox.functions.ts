@@ -375,6 +375,15 @@ export const adminSendBetaInvite = createServerFn({ method: "POST" })
     const db = await admin();
 
     const inviteCode = `PRN-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+
+    await db.from("invite_codes").insert({
+      code: inviteCode,
+      email: data.email.toLowerCase(),
+      preregistration_id: data.applicationId ?? null,
+      max_uses: 1,
+      status: "active",
+    });
+
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
     const result = await sendTemplateEmail("beta-invite", data.email, {
       templateData: {
@@ -390,8 +399,14 @@ export const adminSendBetaInvite = createServerFn({ method: "POST" })
         .from("beta_preregistrations")
         .update({ status: "invited", invite_code: inviteCode, invited_at: new Date().toISOString() })
         .eq("id", data.applicationId);
+      await db.from("admin_activity_log").insert({
+        action: "invite.sent",
+        target_type: "beta_preregistration",
+        target_id: data.applicationId,
+        metadata: { code: inviteCode, email: data.email },
+      });
     }
-    return { ...result, inviteCode };
+    return { ...result, inviteCode, inviteUrl: `https://printreon.com/join?invite=${inviteCode}` };
   });
 
 /* ----------------------------- newsletter admin --------------------------- */
@@ -436,6 +451,26 @@ export const adminNewsletterSetStatus = createServerFn({ method: "POST" })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+/** Resends the welcome email to one existing subscriber. */
+export const adminNewsletterResendWelcome = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const db = await admin();
+    const { data: row } = await db
+      .from("newsletter_subscribers")
+      .select("id, email, name")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row) throw new Error("Subscriber not found");
+    const result = await send("newsletter-welcome", row.email, {
+      templateData: { name: row.name || undefined },
+      idempotencyKey: `newsletter-welcome-resend-${row.id}-${Date.now()}`,
+    });
+    return result;
   });
 
 /** One-off deliverability check: sends a live invite + feedback notice to the admin address. */
