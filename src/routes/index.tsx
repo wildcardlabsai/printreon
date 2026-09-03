@@ -3,11 +3,14 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { useDiscoveryEnabled } from "@/lib/use-discovery";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
-import heroImg from "@/assets/hero-dashboard-preview.png";
-import previewCube from "@/assets/demo-preview-cube.jpg";
-import previewBundle from "@/assets/demo-preview-bundle.jpg";
-import previewHero from "@/assets/hero.jpg";
+import {
+  MockStudioOverview,
+  MockFileLibrary,
+  MockTiers,
+  MockSupporterLibrary,
+} from "@/components/landing/DashboardMocks";
 import { Check, Lock, Upload, CreditCard, Download, Layers } from "lucide-react";
+
 
 const FAQ_ITEMS = [
   {
@@ -111,10 +114,10 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 blueprint-grid opacity-50" aria-hidden />
       <div className="container-wide relative grid gap-12 py-16 md:grid-cols-12 md:items-center md:py-20">
         <div className="md:col-span-6">
-          <span className="eyebrow">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Invite-only beta
-          </span>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-soft">
+            BATCH 001 <span className="text-primary">///</span> BETA OPEN <span className="text-primary">///</span> INVITE ONLY
+          </p>
+
           <h1 className="mt-5 text-[38px] font-bold leading-[1.05] text-ink md:text-[58px]">
             A membership home for 3D print creators.
           </h1>
@@ -142,16 +145,9 @@ function Hero() {
         </div>
 
         <div className="md:col-span-6">
-          <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-xl">
-            <img
-              src={heroImg}
-              alt="A Printreon creator dashboard showing uploaded STL files, membership tiers and monthly earnings"
-              className="w-full"
-              width={1200}
-              height={800}
-            />
-          </div>
+          <MockStudioOverview />
         </div>
+
       </div>
     </section>
   );
@@ -206,33 +202,15 @@ function TheProduct() {
         </div>
 
         <div className="md:col-span-7">
-          <div className="grid grid-cols-2 gap-4">
-            <figure className="col-span-2 overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewHero}
-                alt="Creator file library preview inside Printreon"
-                className="h-56 w-full object-cover md:h-72"
-                loading="lazy"
-              />
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewCube}
-                alt="Preview thumbnail of a printable STL model"
-                className="h-40 w-full object-cover"
-                loading="lazy"
-              />
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-border bg-surface">
-              <img
-                src={previewBundle}
-                alt="Preview thumbnail of a bundled set of printable files"
-                className="h-40 w-full object-cover"
-                loading="lazy"
-              />
-            </figure>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <MockFileLibrary />
+            </div>
+            <MockTiers />
+            <MockSupporterLibrary />
           </div>
         </div>
+
       </div>
     </section>
   );
