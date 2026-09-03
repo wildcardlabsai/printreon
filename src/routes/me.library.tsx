@@ -219,8 +219,14 @@ function LibraryPage() {
                   {canPreview(f.file_type) && (
                     <span className="absolute right-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-bold text-ink">3D</span>
                   )}
+                  {(isNew(f) || isUpdated(f)) && (
+                    <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground">
+                      {isNew(f) ? "NEW" : `UPDATED v${f.version}`}
+                    </span>
+                  )}
                 </div>
                 <h3 className="mt-3 font-semibold text-ink line-clamp-1">{f.title}</h3>
+
                 <Link to="/c/$slug" params={{ slug: f.creator_profiles?.slug ?? "" }} className="text-xs text-primary hover:underline">
                   {f.creator_profiles?.display_name}
                 </Link>
