@@ -99,14 +99,62 @@ function Landing() {
       <div id="features" />
       <TheProduct />
       <HowItWorks />
+      <Compare />
       <QualityBar />
       <Money />
       <PricingAndFaq />
       <Apply />
       <SiteFooter />
+      <StickyApply />
     </div>
   );
 }
+
+/** True once the viewport is at desktop width. Starts false so SSR matches mobile. */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
+/** Slim bar that appears once the hero has scrolled away, so applying is always one tap. */
+function StickyApply() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const nearBottom = y + window.innerHeight > document.body.scrollHeight - 700;
+      setShow(y > 700 && !nearBottom);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur transition-transform duration-200 md:hidden ${
+        show ? "translate-y-0" : "translate-y-full"
+      }`}
+    >
+      <div className="flex items-center gap-3 px-4 py-3">
+        <p className="min-w-0 flex-1 text-xs text-ink-soft">
+          Beta is invite-only. Batch 001 is open.
+        </p>
+        <a href="#apply" className="btn-primary h-10 shrink-0 px-4 text-sm">
+          Apply
+        </a>
+      </div>
+    </div>
+  );
+}
+
 
 /* --------------------------------- 1. HERO -------------------------------- */
 
