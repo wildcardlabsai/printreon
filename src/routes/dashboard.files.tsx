@@ -359,7 +359,40 @@ function FilesPage() {
     await refresh();
   };
 
+  // Bulk actions on the selected files.
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const bulkUpdate = async (patch: Record<string, any>) => {
+    if (selected.length === 0) return;
+    setBulkBusy(true);
+    const { error } = await supabase.from("creator_files").update(patch).in("id", selected);
+    setBulkBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Updated ${selected.length} ${selected.length === 1 ? "file" : "files"}`);
+    setSelected([]);
+    await refresh();
+  };
+
+  const bulkDelete = async () => {
+    if (selected.length === 0) return;
+    if (!confirm(`Delete ${selected.length} file(s)? This is permanent.`)) return;
+    setBulkBusy(true);
+    let failed = 0;
+    for (const id of selected) {
+      try {
+        await deleteFileFn({ data: { fileId: id } });
+      } catch {
+        failed++;
+      }
+    }
+    setBulkBusy(false);
+    if (failed) toast.error(`${failed} file(s) could not be deleted`);
+    else toast.success("Deleted");
+    setSelected([]);
+    await refresh();
+  };
+
   const untrusted = creator && !(creator as any).trusted_at;
+
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
