@@ -58,8 +58,9 @@ function LicencesPage() {
 
   const exportCsv = () => {
     const rows = issued ?? [];
-    const head = ["Member", "Email", "Tier", "Status", "Active since", "Renews/ends"];
+    const head = ["Licence no.", "Member", "Email", "Tier", "Status", "Active since", "Renews/ends"];
     const body = rows.map((r) => [
+      r.licenceNumber ?? "",
       r.memberName,
       r.memberEmail,
       r.tierName,
@@ -67,6 +68,7 @@ function LicencesPage() {
       r.activeSince ? new Date(r.activeSince).toISOString().slice(0, 10) : "",
       r.endsAt ? new Date(r.endsAt).toISOString().slice(0, 10) : "",
     ]);
+
     const csv = [head, ...body]
       .map((line) => line.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
       .join("\n");
