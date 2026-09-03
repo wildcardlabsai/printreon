@@ -364,7 +364,8 @@ function FilesPage() {
   const bulkUpdate = async (patch: Record<string, any>) => {
     if (selected.length === 0) return;
     setBulkBusy(true);
-    const { error } = await supabase.from("creator_files").update(patch).in("id", selected);
+    const { error } = await (supabase.from("creator_files") as any).update(patch).in("id", selected);
+
     setBulkBusy(false);
     if (error) return toast.error(error.message);
     toast.success(`Updated ${selected.length} ${selected.length === 1 ? "file" : "files"}`);
