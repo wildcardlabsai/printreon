@@ -322,6 +322,67 @@ function HowItWorks() {
   );
 }
 
+/** Labels a product mockup so it reads as a real screen rather than decoration. */
+function MockCaption({
+  label,
+  className = "",
+  children,
+}: {
+  label: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <figure className={className}>
+      {children}
+      <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-soft">
+        {label}
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ----------------------------- 3b. WHAT'S DIFFERENT ----------------------- */
+
+const DIFFERENCES = [
+  {
+    title: "Built around the file, not the post",
+    body: "Tier gating sits on the model itself, so access is decided per file rather than per announcement.",
+  },
+  {
+    title: "Previews before download",
+    body: "STL, 3MF and OBJ render in the browser, with dimensions, triangle count and your print settings attached.",
+  },
+  {
+    title: "Versions instead of duplicates",
+    body: "Upload a fix as v2 with a changelog. Links keep working and supporters get told what changed.",
+  },
+  {
+    title: "Files that stay behind the paywall",
+    body: "Private storage and short-lived signed links, not a shared drive folder that outlives the subscription.",
+  },
+] as const;
+
+function Compare() {
+  return (
+    <section className="container-wide py-16 md:py-20">
+      <span className="eyebrow">// Why not a drive folder</span>
+      <h2 className="mt-4 max-w-2xl text-3xl font-bold text-ink md:text-4xl">
+        What you get that a posts-and-links setup cannot do.
+      </h2>
+      <div className="mt-9 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        {DIFFERENCES.map((d) => (
+          <div key={d.title} className="border-l-2 border-primary/40 pl-4">
+            <h3 className="font-bold text-ink">{d.title}</h3>
+            <p className="mt-1 text-sm text-ink-soft">{d.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
 /* ------------------------------ 4. QUALITY BAR ---------------------------- */
 
 const BADGES = [
