@@ -18,9 +18,10 @@ import {
 
 const NAV_LINKS = [
   { id: "features", label: "How it works" },
-  { id: "apply", label: "Pricing" },
+  { id: "pricing", label: "Pricing" },
   { id: "apply", label: "Apply" },
 ] as const;
+
 
 
 export function SiteHeader() {
