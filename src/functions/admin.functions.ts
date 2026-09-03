@@ -27,6 +27,67 @@ export const adminSetPublished = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Publishes a creator page and sends them the branded welcome email. */
+const ActivateCreatorInput = z.object({ creatorId: z.string().uuid() });
+export const adminActivateCreator = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => ActivateCreatorInput.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+
+    const { data: cp, error: cpErr } = await supabaseAdmin
+      .from("creator_profiles")
+      .select("id, user_id, display_name, slug, is_published")
+      .eq("id", data.creatorId)
+      .maybeSingle();
+    if (cpErr || !cp) throw new Error("Creator not found");
+
+    if (!cp.is_published) {
+      const { error } = await supabaseAdmin
+        .from("creator_profiles")
+        .update({ is_published: true })
+        .eq("id", cp.id);
+      if (error) throw new Error(error.message);
+    }
+
+    const { data: prof } = await supabaseAdmin
+      .from("profiles")
+      .select("email, display_name")
+      .eq("user_id", cp.user_id)
+      .maybeSingle();
+
+    await supabaseAdmin
+      .from("user_roles")
+      .upsert({ user_id: cp.user_id, role: "creator" }, { onConflict: "user_id,role" });
+
+    let emailed: { sent: boolean; reason?: string } = { sent: false, reason: "no_email" };
+    if (prof?.email) {
+      try {
+        const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+        const r = await sendTemplateEmail("creator-welcome", prof.email, {
+          templateData: {
+            name: cp.display_name || prof.display_name || undefined,
+            slug: cp.slug,
+          },
+          idempotencyKey: `creator-welcome-${cp.id}`,
+        });
+        emailed = r.sent ? { sent: true } : { sent: false, reason: r.reason };
+      } catch (e: any) {
+        console.error("[email] creator-welcome failed:", e?.message ?? e);
+        emailed = { sent: false, reason: "error" };
+      }
+    }
+
+    await supabaseAdmin.from("admin_activity_log").insert({
+      action: "creator.activated",
+      target_type: "creator_profile",
+      target_id: cp.id,
+      metadata: { emailed },
+    });
+
+    return { ok: true, emailed, email: prof?.email ?? null };
+  });
+
 const GrantRoleInput = z.object({
   email: z.string().email(),
   role: z.enum(["admin", "creator", "member"]),
