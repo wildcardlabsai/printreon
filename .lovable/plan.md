@@ -1,69 +1,56 @@
-# Polish pass: dashboard, licensing, file handling
+# Landing page: recommended changes
 
-A shortlist of high-value additions based on what's already built. Pick the ones you want and I'll implement in that order.
+The page reads well and the structure is right (hero, product, how it works, quality, money, pricing + FAQ, apply). These are the changes I would make, in priority order. Pick any subset.
 
-## 1. File versioning that supporters can see (highest value)
+## 1. Make the first three seconds unambiguous
 
-Files carry a `version` number today, but there is no history behind it. Add a proper "upload new version" flow:
+The headline says "A membership home for 3D print creators", which is accurate but abstract to a cold visitor.
 
-- Creator uploads a replacement file with a short changelog note ("fixed non-manifold edges, added supports-free variant").
-- Old versions stay downloadable; the newest is default.
-- Supporters who downloaded a previous version get an "Updated" flag in their library and an optional notification email.
+- Add a one-line plain-English positioning line directly under the batch line or headline, e.g. "Monthly memberships for people who design printable models."
+- Split the audience explicitly in the hero: a creator CTA (Apply) and a supporter CTA, with one sentence each, so a supporter landing from a creator's link knows the page is also for them.
 
-Why: model updates are the number one reason people stay subscribed month to month.
+## 2. Mobile ordering and density
 
-## 2. Licence certificates
+On a phone the hero mockup sits below a fairly long block of text, so the product visual is far down.
 
-Commercial licences are currently derived on the fly from a supporter's commercial tier, so there is nothing a supporter can show a customer or a marketplace.
+- Move one mockup directly under the headline on small screens (visual before the paragraph), keeping the current order on desktop.
+- Reduce hero headline size slightly on small screens and tighten section padding from `py-16` to `py-12` on mobile so the page is less scroll-heavy.
 
-- Issue a licence record with a licence number, scope, issue date and creator/tier snapshot at the time of purchase.
-- Supporter-facing licence page and downloadable PDF/printable certificate.
-- Creator side keeps the current issued-licences list, plus revoke on refund/chargeback.
-- Snapshot matters: if a creator later changes tier terms, existing licences keep the terms they were sold under.
+## 3. A persistent way to apply
 
-## 3. File handling quality-of-life
+The only two entry points are the hero and the very bottom.
 
-- Bulk actions in the file library: publish, unpublish, retag, change tier, delete.
-- Drag-and-drop multi-file upload with a queue instead of one at a time.
-- Auto-inspect ZIP contents on upload and list what's inside (STL count, images, readme) so supporters know before downloading.
-- Per-file "what's included" summary generated from the archive, editable by the creator.
-- Duplicate detection by file hash so the same STL is not uploaded twice.
+- Add a slim sticky bottom bar on mobile (and a header button on desktop) with "Apply for the beta", appearing after the hero scrolls out.
 
-## 4. Supporter library upgrades
+## 4. Show the earnings maths
 
-- Search and filter across everything a supporter has unlocked.
-- "New since your last visit" section.
-- Download-all-as-zip for a creator's unlocked set (server-side, rate-limit aware; the current limit is 60 downloads per rolling hour).
-- Keep a permanent record of files unlocked while subscribed, clearly separated from files that need an active subscription to download again.
+"10% platform fee" is a number without a story.
 
-## 5. Creator dashboard depth
+- In the money section, add a small worked example: 100 supporters at £5/month is £500, you keep £450 before Stripe's processing fee.
+- Optionally make it a tiny interactive calculator (supporters x price) rather than static copy.
 
-Analytics currently covers a fixed 30-day window of downloads, new subs and revenue.
+## 5. Say what Printreon is instead of
 
-- Selectable range (7 / 30 / 90 / all) and month-over-month comparison.
-- Churn and retention: cancellations, net new, average supporter lifetime.
-- Revenue split by tier, and annual vs monthly mix.
-- CSV export for supporters, downloads and earnings.
-- A first-run checklist on the dashboard home (Stripe connected, first tier, first file, page published) so new creators know what's left.
+Creators will silently compare this to Patreon, Cults3D, MyMiniFactory and Patreon-plus-Google-Drive.
 
-## 6. Trust and safety follow-ups
+- Add a short comparison block: file-native library and previews, tier gating on the file itself, signed downloads, version history with supporter notifications, quality badges. Three or four rows, no competitor bashing.
 
-- Automatic mesh health check on upload (non-manifold, open edges, wall thickness warning) surfaced to the creator before publishing rather than after.
-- Print-proof reminders: nudge creators whose AI-disclosed files still lack a print photo.
-- Refund/chargeback handling that revokes access and reverses the ledger entry.
+## 6. Trust signals near the application form
 
-## Suggested order
+- Add a line under the form: what happens next and roughly when ("we review applications weekly"), plus a note that emails only relate to the beta.
+- Add a link to the terms and creator agreement next to the submit button.
 
-1. File versioning + update notifications
-2. Licence certificates
-3. Bulk file actions + multi-upload
-4. Supporter library search / new-since
-5. Analytics ranges, churn, CSV export
-6. Safety follow-ups
+## 7. Smaller polish
+
+- FAQ becomes a collapsible list on mobile so the section is scannable.
+- Add a proper social share image so links posted in Discord/Reddit render as a card rather than plain text.
+- Give each mockup a short caption ("Creator dashboard", "Supporter library") so it is obvious these are product screens, not decoration.
+- Reduce the hero from two mono status lines (header build line plus the batch line) to one, so it does not read as a motif being repeated.
+
+## What I would not change
+
+The mono/technical voice, the acid accent, the badge system section and the "The money part" dark band all work and give the page a specific identity. The mockups are the strongest asset on the page and should stay front and centre.
 
 ## Technical notes
 
-- Versioning needs a `creator_file_versions` table (file id, version, storage path, size, changelog, created_at) with RLS mirroring `creator_files`, plus grants; downloads resolve to a version id.
-- Licences need a `licences` table with a generated licence number and a term snapshot column; issue on subscription activation to a commercial tier via the existing subscription lifecycle handler, revoke on cancel/refund.
-- Bulk actions and zip inspection run as server functions (`createServerFn`) using the admin client after verifying creator ownership; ZIP listing must be a pure-JS unzip for the Worker runtime.
-- CSV export streams from a server function; no new client deps.
+All changes are contained to `src/routes/index.tsx`, `src/components/landing/DashboardMocks.tsx`, `src/components/WaitlistForm.tsx` and the route `head()` for the share image. No backend or schema work. Sticky CTA and FAQ collapse are local component state; the earnings calculator, if wanted, is client-side only.
