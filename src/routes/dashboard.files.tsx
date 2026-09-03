@@ -526,7 +526,41 @@ function FilesPage() {
       </div>
 
       <div className="lg:col-span-2">
-        <h2 className="text-lg font-bold text-ink">Your library ({files.length})</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-bold text-ink">Your library ({files.length})</h2>
+          {files.length > 0 && (
+            <button
+              onClick={() => setSelected(selected.length === files.length ? [] : files.map((f) => f.id))}
+              className="btn-ghost h-8 px-3 text-xs"
+            >
+              {selected.length === files.length ? "Clear selection" : "Select all"}
+            </button>
+          )}
+        </div>
+
+        {selected.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
+            <span className="text-sm font-semibold text-ink">{selected.length} selected</span>
+            <button onClick={() => bulkUpdate({ is_published: true })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Publish</button>
+            <button onClick={() => bulkUpdate({ is_published: false })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Unpublish</button>
+            <button onClick={() => bulkUpdate({ is_free: true, tier_required_id: null })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Make free</button>
+            <button onClick={() => bulkUpdate({ is_free: false })} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs">Make locked</button>
+            <select
+              defaultValue=""
+              onChange={(e) => { if (e.target.value) { bulkUpdate({ is_free: false, tier_required_id: e.target.value === "any" ? null : e.target.value }); e.target.value = ""; } }}
+              className="h-8 rounded-lg border border-input bg-background px-2 text-xs"
+            >
+              <option value="">Set tier…</option>
+              <option value="any">Any tier</option>
+              {tiers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+            <button onClick={bulkDelete} disabled={bulkBusy} className="btn-ghost h-8 px-3 text-xs text-destructive hover:bg-destructive/10">
+              Delete
+            </button>
+            {bulkBusy && <Loader2 className="h-4 w-4 animate-spin text-ink-soft" />}
+          </div>
+        )}
+
         {files.length === 0 ? (
           <EmptyState
             icon={FileBox}
@@ -542,6 +576,14 @@ function FilesPage() {
               const flags: string[] = Array.isArray(f.quality_flags) ? f.quality_flags : [];
               return (
               <li key={f.id} className="card-soft flex flex-wrap items-center gap-4">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(f.id)}
+                  onChange={(e) => setSelected((s) => (e.target.checked ? [...s, f.id] : s.filter((id) => id !== f.id)))}
+                  aria-label={`Select ${f.title}`}
+                  className="h-4 w-4 flex-shrink-0"
+                />
+
                 {thumb ? (
                   <img
                     src={thumb}
