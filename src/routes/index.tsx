@@ -580,15 +580,9 @@ function PricingAndFaq() {
 
         <div className="md:col-span-7">
           <h2 className="text-3xl font-bold text-ink md:text-4xl">Questions</h2>
-          <dl className="mt-6 divide-y divide-border border-y border-border">
-            {FAQ_ITEMS.map((f) => (
-              <div key={f.q} className="py-5">
-                <dt className="font-bold text-ink">{f.q}</dt>
-                <dd className="mt-2 text-sm text-ink-soft">{f.a}</dd>
-              </div>
-            ))}
-          </dl>
+          <Faq />
         </div>
+
       </div>
     </section>
   );
