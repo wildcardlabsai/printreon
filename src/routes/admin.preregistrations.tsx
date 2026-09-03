@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, StatusBadge, EmptyState, exportCsv } from "@/components/admin/AdminUI";
-import { Search, Mail, Tag, X } from "lucide-react";
+import { Search, Mail, Tag, X, Copy } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { adminSendBetaInvite } from "@/functions/inbox.functions";
 
 export const Route = createFileRoute("/admin/preregistrations")({ component: Preregs });
 
@@ -16,6 +18,8 @@ function Preregs() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [drawer, setDrawer] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState<string | null>(null);
+  const sendBetaInvite = useServerFn(adminSendBetaInvite);
 
   const refresh = async () => {
     setLoading(true);
@@ -62,19 +66,49 @@ function Preregs() {
   };
 
   const sendInvite = async (r: any) => {
-    const code = Math.random().toString(36).slice(2, 10).toUpperCase();
-    const { error: e1 } = await supabase.from("invite_codes").insert({
-      code, email: r.email, preregistration_id: r.id, max_uses: 1, status: "active",
-    });
-    if (e1) return toast.error(e1.message);
-    await supabase.from("beta_preregistrations").update({
-      status: "invited", invite_code: code, invited_at: new Date().toISOString(),
-    }).eq("id", r.id);
-    await supabase.from("admin_activity_log").insert({ action: "invite.sent", target_type: "beta_preregistration", target_id: r.id, metadata: { code } });
-    const link = `${window.location.origin}/join?invite=${code}`;
-    await navigator.clipboard.writeText(link).catch(() => {});
-    toast.success("Invite created — link copied");
+    if (r.status === "invited" && !window.confirm(`${r.email} was already invited. Send another invite with a new code?`)) return;
+    setSending(r.id);
+    try {
+      const res: any = await sendBetaInvite({
+        data: { email: r.email, name: r.creator_name || r.full_name || "", applicationId: r.id },
+      });
+      if (res?.sent) toast.success(`Invite emailed to ${r.email}`);
+      else if (res?.reason === "recipient_suppressed") toast.warning("Not sent: that address has unsubscribed or previously bounced.");
+      else toast.warning("Invite created, but the email did not send.");
+      if (drawer?.id === r.id) setDrawer({ ...drawer, status: "invited", invite_code: res?.inviteCode ?? drawer.invite_code });
+      refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to send invite");
+    } finally {
+      setSending(null);
+    }
+  };
+
+  const copyInviteLink = async (r: any) => {
+    if (!r.invite_code) return toast.error("No invite code yet. Send an invite first.");
+    await navigator.clipboard.writeText(`${window.location.origin}/join?invite=${r.invite_code}`).catch(() => {});
+    toast.success("Invite link copied");
+  };
+
+  const bulkInvite = async () => {
+    const ids = Object.keys(selected).filter((k) => selected[k]);
+    const targets = rows.filter((r) => ids.includes(r.id));
+    if (!targets.length) return;
+    if (!window.confirm(`Send invite emails to ${targets.length} applicant(s)?`)) return;
+    let ok = 0;
+    for (const t of targets) {
+      try {
+        const res: any = await sendBetaInvite({
+          data: { email: t.email, name: t.creator_name || t.full_name || "", applicationId: t.id },
+        });
+        if (res?.sent) ok += 1;
+      } catch {
+        /* keep going through the rest of the list */
+      }
+    }
+    setSelected({});
     refresh();
+    toast.success(`${ok} of ${targets.length} invites sent`);
   };
 
   return (
@@ -100,6 +134,7 @@ function Preregs() {
         </select>
         {Object.values(selected).some(Boolean) && (
           <div className="ml-auto flex gap-2">
+            <button onClick={bulkInvite} className="btn-primary h-9 text-xs">Send invites</button>
             <button onClick={() => bulk("shortlisted")} className="btn-ghost h-9 text-xs">Shortlist</button>
             <button onClick={() => bulk("waitlist")} className="btn-ghost h-9 text-xs">Waitlist</button>
             <button onClick={() => bulk("rejected")} className="btn-ghost h-9 text-xs">Reject</button>
@@ -135,6 +170,9 @@ function Preregs() {
                   <td className="px-3 py-2"><StatusBadge status={r.status} /></td>
                   <td className="px-3 py-2 text-ink-soft text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
                   <td className="px-3 py-2 text-right">
+                    <button onClick={() => sendInvite(r)} disabled={sending === r.id} className="btn-ghost h-7 text-xs disabled:opacity-50">
+                      {sending === r.id ? "Sending…" : r.status === "invited" ? "Resend invite" : "Send invite"}
+                    </button>
                     <button onClick={() => setDrawer(r)} className="btn-ghost h-7 text-xs">View</button>
                   </td>
                 </tr>
@@ -177,7 +215,10 @@ function Preregs() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-2">
-              <button onClick={() => sendInvite(drawer)} className="btn-primary"><Mail className="h-4 w-4 mr-1" />Send invite</button>
+              <button onClick={() => sendInvite(drawer)} disabled={sending === drawer.id} className="btn-primary disabled:opacity-50">
+                <Mail className="h-4 w-4 mr-1" />{sending === drawer.id ? "Sending…" : drawer.status === "invited" ? "Resend invite" : "Send invite"}
+              </button>
+              <button onClick={() => copyInviteLink(drawer)} className="btn-ghost"><Copy className="h-4 w-4 mr-1" />Copy link</button>
               <button onClick={() => updateStatus(drawer.id, "shortlisted")} className="btn-ghost">Shortlist</button>
               <button onClick={() => updateStatus(drawer.id, "waitlist")} className="btn-ghost">Waitlist</button>
               <button onClick={() => updateStatus(drawer.id, "rejected")} className="btn-ghost text-destructive">Reject</button>

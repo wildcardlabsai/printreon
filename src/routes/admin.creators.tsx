@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, EmptyState, StatusBadge } from "@/components/admin/AdminUI";
 import { useServerFn } from "@tanstack/react-start";
-import { adminSetPublished } from "@/functions/admin.functions";
+import { adminSetPublished, adminActivateCreator } from "@/functions/admin.functions";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 
@@ -13,6 +13,8 @@ function Creators() {
   const [rows, setRows] = useState<any[]>([]);
   const [q, setQ] = useState("");
   const setPublished = useServerFn(adminSetPublished);
+  const activate = useServerFn(adminActivateCreator);
+  const [busy, setBusy] = useState<string | null>(null);
 
   const refresh = async () => {
     const { data } = await supabase.from("creator_profiles").select("id, user_id, display_name, slug, bio, short_intro, profile_image_url, banner_image_url, website_url, instagram_url, tiktok_url, youtube_url, cults_url, printables_url, makerworld_url, is_verified, is_published, platform_fee_percentage, suspended_at, suspension_reason, created_at, updated_at").order("created_at", { ascending: false }).limit(500);
@@ -28,6 +30,22 @@ function Creators() {
       await supabase.from("admin_activity_log").insert({ action: cp.is_published ? "creator.unpublished" : "creator.published", target_type: "creator_profile", target_id: cp.id });
       refresh();
     } catch (e: any) { toast.error(e?.message ?? "Failed"); }
+  };
+
+  const activateCreator = async (cp: any) => {
+    setBusy(cp.id);
+    try {
+      const r: any = await activate({ data: { creatorId: cp.id } });
+      if (r?.emailed?.sent) toast.success(`Activated. Welcome email sent to ${r.email}.`);
+      else if (r?.emailed?.reason === "no_email") toast.warning("Activated, but no email on file for this creator.");
+      else if (r?.emailed?.reason === "recipient_suppressed") toast.warning("Activated. Welcome email blocked: that address has unsubscribed or bounced.");
+      else toast.warning("Activated, but the welcome email did not send.");
+      refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Activation failed");
+    } finally {
+      setBusy(null);
+    }
   };
 
   const verify = async (cp: any, val: boolean) => {
@@ -67,7 +85,12 @@ function Creators() {
                   <td className="px-3 py-2">{c.is_verified ? "✓" : "—"}</td>
                   <td className="px-3 py-2 text-xs text-ink-soft">{new Date(c.created_at).toLocaleDateString()}</td>
                   <td className="px-3 py-2 text-right space-x-1">
-                    <button onClick={() => toggle(c)} className="btn-ghost h-7 text-xs">{c.is_published ? "Unpublish" : "Publish"}</button>
+                    {!c.is_published && (
+                      <button onClick={() => activateCreator(c)} disabled={busy === c.id} className="btn-primary h-7 text-xs disabled:opacity-50">
+                        {busy === c.id ? "Activating…" : "Activate + email"}
+                      </button>
+                    )}
+                    <button onClick={() => toggle(c)} className="btn-ghost h-7 text-xs">{c.is_published ? "Unpublish" : "Publish only"}</button>
                     <button onClick={() => verify(c, !c.is_verified)} className="btn-ghost h-7 text-xs">{c.is_verified ? "Unverify" : "Verify"}</button>
                   </td>
                 </tr>
