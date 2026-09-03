@@ -52,9 +52,10 @@ export const adminActivateCreator = createServerFn({ method: "POST" })
 
     const { data: prof } = await supabaseAdmin
       .from("profiles")
-      .select("email, display_name")
+      .select("email, full_name")
       .eq("user_id", cp.user_id)
       .maybeSingle();
+
 
     await supabaseAdmin
       .from("user_roles")
