@@ -52,10 +52,11 @@ export function SiteHeader() {
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Logo />
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+          <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft sm:inline">
             <span className="hidden lg:inline">BUILD 0.9 <span className="text-primary">///</span> </span>
             BETA OPEN
           </span>
+
 
 
         </div>
