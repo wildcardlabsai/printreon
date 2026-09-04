@@ -44,17 +44,17 @@ const FAQ_ITEMS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Printreon | Sell STL Files by Monthly Membership" },
+      { title: "Printreon | Buy and Sell Licensed 3D Printable Files" },
       {
         name: "description",
         content:
-          "Printreon is a membership platform for 3D print creators. Set tiers, upload STL, 3MF, OBJ and ZIP files, and get paid monthly through Stripe.",
+          "Printreon is a digital marketplace for 3D printable files. Designers sell licensed STL, 3MF, OBJ and ZIP downloads on a monthly subscription, delivered instantly through protected links.",
       },
-      { property: "og:title", content: "Printreon — Sell STL Files by Monthly Membership" },
+      { property: "og:title", content: "Printreon — Licensed 3D Printable File Downloads" },
       {
         property: "og:description",
         content:
-          "Creator pages, membership tiers and protected STL delivery, built for 3D print designers. Invite-only beta.",
+          "A digital-goods marketplace for 3D printing. Licensed STL, 3MF, OBJ and ZIP downloads from approved designers, delivered instantly. Invite-only beta.",
       },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
