@@ -44,17 +44,17 @@ const FAQ_ITEMS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Printreon | Sell STL Files by Monthly Membership" },
+      { title: "Printreon | Buy and Sell Licensed 3D Printable Files" },
       {
         name: "description",
         content:
-          "Printreon is a membership platform for 3D print creators. Set tiers, upload STL, 3MF, OBJ and ZIP files, and get paid monthly through Stripe.",
+          "Printreon is a digital marketplace for 3D printable files. Designers sell licensed STL, 3MF, OBJ and ZIP downloads on a monthly subscription, delivered instantly through protected links.",
       },
-      { property: "og:title", content: "Printreon — Sell STL Files by Monthly Membership" },
+      { property: "og:title", content: "Printreon — Licensed 3D Printable File Downloads" },
       {
         property: "og:description",
         content:
-          "Creator pages, membership tiers and protected STL delivery, built for 3D print designers. Invite-only beta.",
+          "A digital-goods marketplace for 3D printing. Licensed STL, 3MF, OBJ and ZIP downloads from approved designers, delivered instantly. Invite-only beta.",
       },
       { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
@@ -62,10 +62,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
       { name: "twitter:card", content: "summary_large_image" },
 
-      { name: "twitter:title", content: "Printreon — Sell STL Files by Monthly Membership" },
+      { name: "twitter:title", content: "Printreon — Licensed 3D Printable File Downloads" },
       {
         name: "twitter:description",
-        content: "Creator pages, membership tiers and protected STL delivery for 3D print designers.",
+        content: "Licensed STL, 3MF, OBJ and ZIP downloads from approved 3D designers, delivered instantly.",
       },
       {
         "script:ld+json": {
@@ -168,11 +168,12 @@ function Hero() {
       <div className="container-wide relative grid gap-10 py-12 md:grid-cols-12 md:items-center md:gap-12 md:py-20">
         <div className="md:col-span-6">
           <h1 className="text-[32px] font-bold leading-[1.06] text-ink sm:text-[38px] md:text-[58px]">
-            A membership home for 3D print creators.
+            Licensed 3D printable files, sold by subscription.
           </h1>
           <p className="mt-4 max-w-lg text-base text-ink-soft md:text-lg">
-            Monthly memberships for people who design printable models. Set your tiers, upload your
-            STL, 3MF, OBJ and ZIP files, and let supporters pay you every month for access.
+            Printreon is a digital marketplace for 3D printing. Approved designers publish STL, 3MF,
+            OBJ and ZIP files to a gated library, buyers pay a monthly price for licensed access, and
+            every download is delivered instantly through a protected link.
           </p>
 
           {/* On phones the product shot comes before the detail, so the first scroll shows the app. */}
@@ -184,7 +185,8 @@ function Hero() {
             <div className="rounded-2xl border border-border bg-card/70 p-4">
               <h2 className="text-sm font-bold text-ink">You design models</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                Get a creator page, tiers, a gated file library and Stripe payouts.
+                Sell your files: a storefront page, subscription pricing, a licensed file library and
+                Stripe payouts.
               </p>
               <a href="#apply" className="btn-primary mt-3 h-11 w-full px-5 text-sm">
                 Apply as a creator
@@ -193,7 +195,7 @@ function Hero() {
             <div className="rounded-2xl border border-border bg-card/70 p-4">
               <h2 className="text-sm font-bold text-ink">You print them</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                Subscribe to the designers you like and download their files any time.
+                Buy a monthly licence to a designer's library and download their print files any time.
               </p>
               {discoveryEnabled ? (
                 <Link to="/explore" className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
@@ -208,7 +210,7 @@ function Hero() {
           </div>
 
           <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
-            10% platform fee · Stripe payouts · Free to open a page
+            Digital downloads only · 10% marketplace fee · Stripe payouts
           </p>
         </div>
 

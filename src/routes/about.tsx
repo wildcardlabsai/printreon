@@ -8,9 +8,9 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — Printreon" },
-      { name: "description", content: "Printreon is the membership platform purpose-built for 3D printing creators. Partnered with MakerMind App." },
+      { name: "description", content: "Printreon is a digital marketplace for licensed 3D printable files, sold by approved designers on monthly subscription. Partnered with MakerMind App." },
       { property: "og:title", content: "About Printreon" },
-      { property: "og:description", content: "Built for 3D printing creators. Partnered with MakerMind App." },
+      { property: "og:description", content: "A digital marketplace for licensed 3D printable file downloads. Partnered with MakerMind App." },
       { property: "og:url", content: `${SITE_URL}/about` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
@@ -27,13 +27,30 @@ function About() {
         <span className="eyebrow">// About</span>
         <h1 className="mt-4 text-4xl font-bold text-ink md:text-5xl">About Printreon</h1>
         <p className="mt-6 text-lg text-ink-soft">
-          Printreon is a membership platform for 3D printing creators. STL designers, miniature
-          sculptors, cosplay makers, functional-print designers and print farms.
+          Printreon is a digital marketplace for licensed 3D printable files. Approved designers sell
+          .stl, .3mf, .obj and .zip downloads to buyers on a monthly subscription.
         </p>
         <p className="mt-4 text-ink-soft">
-          Native uploads for .stl, .3mf, .obj and .zip, tier-gated downloads, free lead-magnet files,
-          and analytics built around a file library rather than a video feed.
+          Nothing physical ships. Every purchase delivers digital files instantly through an expiring,
+          protected download link, with a licence record attached to each file.
         </p>
+
+        <div className="mt-8 rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-lg font-bold text-ink">What Printreon sells</h2>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-ink-soft">
+            <li><strong className="text-ink">Product:</strong> licensed digital 3D model files for 3D printing (.stl, .3mf, .obj, .zip). No physical goods, no shipping.</li>
+            <li><strong className="text-ink">How it is sold:</strong> a monthly subscription that licenses access to a designer's file library, plus one-off file and bundle purchases.</li>
+            <li><strong className="text-ink">Delivery:</strong> instant digital delivery via expiring signed download links, with download limits and per-file licence records.</li>
+            <li><strong className="text-ink">Who sells:</strong> invite-only, manually approved designers with identity-verified Stripe accounts. There is no open seller signup.</li>
+            <li><strong className="text-ink">Controls:</strong> upload review for new sellers, mesh checks, AI disclosure with print-proof requirements, IP and DMCA policy, reporting and suspension.</li>
+          </ul>
+          <p className="mt-4 text-sm text-ink-soft">
+            Full detail: <Link to="/legal/terms" className="font-semibold text-primary hover:underline">Terms of Service</Link>,{" "}
+            <Link to="/legal/creator-agreement" className="font-semibold text-primary hover:underline">Creator Agreement</Link>,{" "}
+            <Link to="/legal/dmca" className="font-semibold text-primary hover:underline">DMCA policy</Link>,{" "}
+            <Link to="/legal/privacy" className="font-semibold text-primary hover:underline">Privacy Policy</Link>.
+          </p>
+        </div>
 
         <h2 className="mt-12 text-2xl font-bold text-ink">Why we built this</h2>
         <p className="mt-3 text-ink-soft">

@@ -220,7 +220,7 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-3 max-w-sm text-sm text-ink-soft">
-            Memberships built for 3D printing creators. The beta is live — browse creators, or apply to start your own page.
+            A digital marketplace for licensed 3D printable files. Buy a monthly licence to a designer's library, or apply to sell your own files.
           </p>
           <p className="mt-3 text-xs text-ink-soft">
             In partnership with{" "}
