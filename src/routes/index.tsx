@@ -185,7 +185,8 @@ function Hero() {
             <div className="rounded-2xl border border-border bg-card/70 p-4">
               <h2 className="text-sm font-bold text-ink">You design models</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                Get a creator page, tiers, a gated file library and Stripe payouts.
+                Sell your files: a storefront page, subscription pricing, a licensed file library and
+                Stripe payouts.
               </p>
               <a href="#apply" className="btn-primary mt-3 h-11 w-full px-5 text-sm">
                 Apply as a creator
