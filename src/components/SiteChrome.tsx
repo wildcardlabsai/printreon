@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu, ChevronDown, ShoppingBag, Palette, Shield, LogOut, MessageSquare } from "lucide-react";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Logo } from "./Logo";
+import { StatusBanner } from "./StatusBanner";
 import { PARTNER } from "@/lib/site";
 import { useAuth } from "@/lib/auth-context";
 import { useDiscoveryEnabled } from "@/lib/use-discovery";
@@ -48,6 +49,8 @@ export function SiteHeader() {
   };
 
   return (
+    <>
+    <StatusBanner />
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
