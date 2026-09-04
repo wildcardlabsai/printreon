@@ -8,9 +8,9 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — Printreon" },
-      { name: "description", content: "Printreon is the membership platform purpose-built for 3D printing creators. Partnered with MakerMind App." },
+      { name: "description", content: "Printreon is a digital marketplace for licensed 3D printable files, sold by approved designers on monthly subscription. Partnered with MakerMind App." },
       { property: "og:title", content: "About Printreon" },
-      { property: "og:description", content: "Built for 3D printing creators. Partnered with MakerMind App." },
+      { property: "og:description", content: "A digital marketplace for licensed 3D printable file downloads. Partnered with MakerMind App." },
       { property: "og:url", content: `${SITE_URL}/about` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
