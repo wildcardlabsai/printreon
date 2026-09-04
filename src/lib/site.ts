@@ -6,7 +6,7 @@
 export const SITE_NAME = "Printreon";
 export const SITE_URL = "https://printreon.com";
 export const SITE_DESCRIPTION =
-  "Sell STL, 3MF and printable files through monthly memberships. The Patreon alternative purpose-built for 3D printing creators.";
+  "A digital marketplace for licensed 3D printable files. Designers sell STL, 3MF, OBJ and ZIP downloads on a monthly subscription, delivered instantly through protected links.";
 
 export const PARTNER = {
   name: "MakerMind App",
