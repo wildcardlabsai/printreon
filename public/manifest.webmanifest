@@ -1,7 +1,7 @@
 {
   "name": "Printreon",
   "short_name": "Printreon",
-  "description": "Memberships for 3D printing creators",
+  "description": "Licensed 3D printable file downloads",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

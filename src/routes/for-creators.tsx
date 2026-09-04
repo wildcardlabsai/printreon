@@ -8,7 +8,7 @@ const STEPS = [
 ] as const;
 
 export const Route = createFileRoute("/for-creators")({
-  head: () => ({ meta: [{ title: "For Creators — Printreon" }, { name: "description", content: "Why STL designers and 3D print creators are choosing Printreon over Patreon." }] }),
+  head: () => ({ meta: [{ title: "For Creators — Printreon" }, { name: "description", content: "Sell licensed STL, 3MF, OBJ and ZIP downloads by subscription, with instant protected delivery and Stripe payouts." }] }),
   component: ForCreators,
 });
 
@@ -19,14 +19,14 @@ function ForCreators() {
       <div className="container-page py-16">
         <span className="eyebrow">// For creators</span>
         <h1 className="mt-4 text-4xl font-bold text-ink md:text-5xl">For 3D print creators.</h1>
-        <p className="mt-4 max-w-2xl text-ink-soft">Native STL, 3MF, OBJ and ZIP support, tiered memberships and protected downloads. The things you would otherwise bolt onto Patreon are built in here.</p>
+        <p className="mt-4 max-w-2xl text-ink-soft">Sell licensed 3D printable files as digital downloads. Native STL, 3MF, OBJ and ZIP support, subscription pricing, protected delivery and Stripe payouts.</p>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {[
-            { title: "Tiered memberships", desc: "Unlimited tiers with their own price and gated benefits." },
+            { title: "Subscription pricing tiers", desc: "Unlimited tiers, each with its own monthly price and licensed file access." },
             { title: "Native STL / 3MF / OBJ / ZIP", desc: "Real 3D-aware uploads with previews, tags and tier-gated downloads." },
             { title: "Embedded Stripe checkout", desc: "Subscribers check out without ever leaving your page." },
-            { title: "Stripe Connect payouts", desc: "Money lands in your own bank account. Printreon keeps 10% of paid subscription revenue." },
+            { title: "Stripe Connect payouts", desc: "Money lands in your own bank account. Printreon keeps a 10% marketplace fee on digital file sales." },
             { title: "Auto-emails on new drops", desc: "Subscribers and followers get an email the moment you publish a new file or post." },
             { title: "Posts, comments & DMs", desc: "Posts, threaded comments and direct messages, so the page is more than a paywall." },
             { title: "Bundles & promo codes", desc: "Run launches, sales and bundles without duct-taping third-party tools." },

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/pricing")({
       <SiteHeader />
       <div className="container-page py-16">
         <h1 className="text-4xl font-bold text-ink md:text-5xl">Pricing</h1>
-        <p className="mt-3 max-w-xl text-ink-soft">Free to start. Printreon keeps 10% of paid subscription revenue, and nothing else.</p>
+        <p className="mt-3 max-w-xl text-ink-soft">Free to list your files. Printreon keeps a 10% marketplace fee on digital file sales, and nothing else.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           <div className="card-soft">
             <h2 className="text-xl font-bold text-ink">Creator</h2>
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/pricing")({
             <ul className="mt-5 space-y-2 text-sm text-ink">
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" />Unlimited tiers and uploads</li>
               <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" />Built-in growth tools</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" />10% platform fee on paid subscriptions</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" />10% marketplace fee on digital file sales</li>
             </ul>
             <Link to="/auth" search={{ mode: "signup", as: "creator" }} className="btn-primary mt-6 w-full">Start as a creator</Link>
           </div>
