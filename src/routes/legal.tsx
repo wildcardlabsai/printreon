@@ -26,6 +26,14 @@ function LegalLayout() {
               </Link>
             ))}
           </nav>
+          <div className="mt-6 rounded-xl border border-border bg-card p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-ink">What we sell</h3>
+            <p className="mt-2 text-xs text-ink-soft">
+              Licensed digital 3D printable files (.stl, .3mf, .obj, .zip). Nothing physical ships.
+              Files are delivered instantly through expiring protected download links, sold by
+              approved, identity-verified designers.
+            </p>
+          </div>
         </aside>
         <main className="prose max-w-none">
           <Outlet />
