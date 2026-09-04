@@ -168,11 +168,12 @@ function Hero() {
       <div className="container-wide relative grid gap-10 py-12 md:grid-cols-12 md:items-center md:gap-12 md:py-20">
         <div className="md:col-span-6">
           <h1 className="text-[32px] font-bold leading-[1.06] text-ink sm:text-[38px] md:text-[58px]">
-            A membership home for 3D print creators.
+            Licensed 3D printable files, sold by subscription.
           </h1>
           <p className="mt-4 max-w-lg text-base text-ink-soft md:text-lg">
-            Monthly memberships for people who design printable models. Set your tiers, upload your
-            STL, 3MF, OBJ and ZIP files, and let supporters pay you every month for access.
+            Printreon is a digital marketplace for 3D printing. Approved designers publish STL, 3MF,
+            OBJ and ZIP files to a gated library, buyers pay a monthly price for licensed access, and
+            every download is delivered instantly through a protected link.
           </p>
 
           {/* On phones the product shot comes before the detail, so the first scroll shows the app. */}
