@@ -195,7 +195,7 @@ function Hero() {
             <div className="rounded-2xl border border-border bg-card/70 p-4">
               <h2 className="text-sm font-bold text-ink">You print them</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                Subscribe to the designers you like and download their files any time.
+                Buy a monthly licence to a designer's library and download their print files any time.
               </p>
               {discoveryEnabled ? (
                 <Link to="/explore" className="btn-ghost mt-3 h-11 w-full px-5 text-sm">
