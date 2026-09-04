@@ -11,14 +11,14 @@ const MESSAGE =
   "Some creators are seeing an intermittent error when connecting a payout account. Stripe are reviewing it and we expect it resolved shortly. Everything else works as normal.";
 
 export function StatusBanner() {
-  const [dismissed, setDismissed] = useState(true);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     if (!ACTIVE) return;
     try {
-      setDismissed(window.localStorage.getItem(DISMISS_KEY) === "1");
+      if (window.localStorage.getItem(DISMISS_KEY) === "1") setDismissed(true);
     } catch {
-      setDismissed(false);
+      /* ignore */
     }
   }, []);
 
