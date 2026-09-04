@@ -210,7 +210,7 @@ function Hero() {
           </div>
 
           <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
-            10% platform fee · Stripe payouts · Free to open a page
+            Digital downloads only · 10% marketplace fee · Stripe payouts
           </p>
         </div>
 
